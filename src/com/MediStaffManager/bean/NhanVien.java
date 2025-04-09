@@ -1,5 +1,6 @@
 package com.MediStaffManager.bean;
- 
+ // bean dùng để chứa thuộc tính và các hàm get/set
+
 public class NhanVien {
     private int idNhanVien;
     private String cccd;

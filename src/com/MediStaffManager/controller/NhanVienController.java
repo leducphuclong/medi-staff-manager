@@ -21,6 +21,10 @@ public class NhanVienController {
     	return nhanVienBO.xoaNhanVien(idNhanVien);
     }
 
+    //Phương thức thêm nhân viên
+    public boolean themNhanVien(NhanVien nv) {
+        return nhanVienBO.themNhanVien(nv);
+    }
     // Optionally, you can add more methods to handle specific operations:
     // Example: public NhanVien getEmployeeById(int id) { return nhanVienBO.getEmployeeById(id); }
 }
