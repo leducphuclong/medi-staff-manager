@@ -21,4 +21,12 @@ public class NhanVienBO {
     public boolean xoaNhanVien(int idNhanVien) {
     	return employeeDAO.xoaNhanVien(idNhanVien);
     }
+    
+    public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
+    	return employeeDAO.layNhanVienTheoPhongBan(tenPhongBan);
+    }
+    
+    public boolean xoaNhanVienTrongPhongBan(String tenPhongBan) {
+    	return employeeDAO.xoaTatCaNhanVienTrongPhongBan(tenPhongBan);
+    }
 }

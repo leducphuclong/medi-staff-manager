@@ -23,4 +23,12 @@ public class NhanVienController {
 
     // Optionally, you can add more methods to handle specific operations:
     // Example: public NhanVien getEmployeeById(int id) { return nhanVienBO.getEmployeeById(id); }
+    
+    public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
+    	return nhanVienBO.layNhanVienTheoPhongBan(tenPhongBan);
+    }
+    
+    public boolean xoaTatCaNhanVienTrongPhongBan(String tenPhongBan) {
+    	return nhanVienBO.xoaNhanVienTrongPhongBan(tenPhongBan);
+    }
 }
