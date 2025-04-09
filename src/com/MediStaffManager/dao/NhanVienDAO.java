@@ -98,4 +98,58 @@ public class NhanVienDAO {
         }
         return null;
     }
+    
+    // Phương thức lấy thông tin tất cả nhân viên theo phòng ban
+    public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
+    	List<NhanVien> employees = new ArrayList<>();
+    	String query = "SELECT nv.IDNhanVien, nv.CCCD, nv.HoTen, nv.Sdt, nv.Email, nv.GioiTinh, nv.NgaySinh, " +
+    					"nv.IDChucVu, nv.IDPhongBan, cv.TenChucVu, pb.TenPhongBan " +
+    					"FROM nhan_vien nv " +
+    					"JOIN chuc_vu cv ON nv.IDChucVu = cv.IDChucVu " +
+    					"JOIN phong_ban pb ON nv.IDPhongBan = pb.IDPhongBan " +
+    					"WHERE pb.TenPhongBan = ?";
+    	
+    	try (PreparedStatement stmt = connection.prepareStatement(query)) {
+    		stmt.setString(1, tenPhongBan);
+    		try (ResultSet rs = stmt.executeQuery()) {
+    			while (rs.next()) {
+    				int idNhanVien = rs.getInt("IDNhanVien");
+    				String cccd = rs.getString("CCCD");
+    				String hoTen = rs.getString("HoTen");
+    				String sdt = rs.getString("Sdt");
+    				String email = rs.getString("Email");
+    				String gioiTinh = rs.getString("GioiTinh");
+    				String ngaySinh = rs.getString("NgaySinh");
+    				int idChucVu = rs.getInt("IDChucVu");
+    				int idPhongBan = rs.getInt("IDPhongBan");
+    				String tenChucVu = rs.getString("TenChucVu");
+    				String tenPhongBanResult = rs.getString("TenPhongBan");
+    				
+    				NhanVien nhanVien = new NhanVien(idNhanVien, cccd, hoTen, sdt, email, gioiTinh, ngaySinh, 
+                            idChucVu, idPhongBan, tenChucVu, tenPhongBanResult);   
+    				
+    				employees.add(nhanVien);
+    			}
+    		}
+    	} catch (SQLException e) {
+    	e.printStackTrace();
+    	}
+    	return employees;
+    }
+    
+    // Phương thức xóa tất cả nhân viên trong 1 phòng ban
+    public boolean xoaTatCaNhanVienTrongPhongBan(String tenPhongBan) {
+    	String query = "DELETE nv FROM nhan_vien nv " +
+                "JOIN phong_ban pb ON nv.IDPhongBan = pb.IDPhongBan " +
+                "WHERE pb.TenPhongBan = ?";
+    	try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, tenPhongBan);
+            return stmt.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    	
+    }
 }
