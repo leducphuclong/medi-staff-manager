@@ -1,14 +1,20 @@
 package com.MediStaffManager.dao;
-
+/*Chứa các lớp Data Access Object (DAO), chịu trách nhiệm tương tác với CSDL.
+Ví dụ: NhanVienDAO.java có các phương thức như getAllEmployees(), addEmployee(), updateEmployee(), deleteEmployee(), v.v.
+NhanVienDAO là lớp chịu trách nhiệm tương tác trực tiếp với CSDL để thực hiện các truy vấn liên quan đến nhân viên.
+ * 
+ */
 import java.sql.*;
 import java.util.*;
 import com.MediStaffManager.bean.NhanVien;
 import com.MediStaffManager.utils.DBConnection;
 
 public class NhanVienDAO {
-    private Connection connection;
+    private Connection connection; 
+    //Đây là đối tượng Connection dùng để kết nối đến cơ sở dữ liệu.
 
     // Constructor để thiết lập kết nối cơ sở dữ liệu
+    // Khi đối tượng NhanVienDAO được khởi tạo, nó thiết lập kết nối đến CSDL thông qua lớp tiện ích DBConnection.
     public NhanVienDAO() {
         this.connection = DBConnection.connect();
     }
@@ -48,6 +54,37 @@ public class NhanVienDAO {
             e.printStackTrace();
         }
         return employees;
+    }
+
+    // Phương thức thêm nhân viên ( trả về true nếu thành công)
+    public boolean themNhanVien(NhanVien nv) {
+        // Lưu ý: Không cần truyền IDNhanVien vì database tự tăng
+        String query = "INSERT INTO nhan_vien (CCCD, HoTen, Sdt, Email, GioiTinh, NgaySinh, IDChucVu, IDPhongBan) " +
+                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, nv.getCccd());
+            stmt.setString(2, nv.getHoTen());
+            stmt.setString(3, nv.getSdt());
+            stmt.setString(4, nv.getEmail());
+            stmt.setString(5, nv.getGioiTinh());
+            stmt.setString(6, nv.getNgaySinh());
+            stmt.setInt(7, nv.getIdChucVu());
+            stmt.setInt(8, nv.getIdPhongBan());
+            
+            int rowsInserted = stmt.executeUpdate();
+            if (rowsInserted > 0) {
+                // Nếu cần, lấy ID tự sinh cập nhật lại cho đối tượng nv
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        nv.setIdNhanVien(generatedKeys.getInt(1));
+                    }
+                }
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     

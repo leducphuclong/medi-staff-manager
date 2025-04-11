@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `chuc_vu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `chuc_vu` (
-  `IDChucVu` int NOT NULL,
+  `IDChucVu` int NOT NULL AUTO_INCREMENT,
   `TenChucVu` varchar(255) DEFAULT NULL,
   `HeSoLuong` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`IDChucVu`)
@@ -110,7 +110,7 @@ DROP TABLE IF EXISTS `nhan_vien`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `nhan_vien` (
-  `IDNhanVien` int NOT NULL,
+  `IDNhanVien` int NOT NULL AUTO_INCREMENT,
   `CCCD` varchar(20) DEFAULT NULL,
   `HoTen` varchar(255) DEFAULT NULL,
   `SDT` varchar(20) DEFAULT NULL,
