@@ -123,14 +123,7 @@ public class LichLamViecThang implements Serializable {
         // Columns Name of calendar
         String[] columnNames = {"Tuần", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
         calendarTable = new JTable(new DefaultTableModel(new Object[6][8], columnNames));
-//        // Data - days
-//        Object[][] data = {
-//                {"w1", "31", "1", "2", "3", "4", "5", "6"},
-//                {"w2", "7",  "8", "9", "10", "11", "12", "13"},
-//                {"w3", "14", "15", "16", "17", "18", "19", "20"},
-//                {"w4", "21", "22", "23", "24", "25", "26", "27"},
-//                {"w5", "28", "29", "30", "", "", "", ""}
-//        };
+        
         // Create a JTable to contain the data
 //        JTable calendarTable = new JTable(data, columnNames);
         calendarTable.setRowHeight(150);
