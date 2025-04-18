@@ -44,15 +44,17 @@ public class phongBanDAO {
         return false;
     }
     
-    public List<String> layDanhSachPhongBan() {
-        List<String> phongBanList = new ArrayList<>();
-        String query = "SELECT TenPhongBan FROM phong_ban";
+    public List<Object[]> layDanhSachPhongBan() {
+        List<Object[]> phongBanList = new ArrayList<>();
+        String query = "SELECT IDPhongBan, TenPhongBan FROM phong_ban";
 
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                phongBanList.add(rs.getString("TenPhongBan"));
+                int idPhongBan = rs.getInt("IDPhongBan");
+                String tenPhongBan = rs.getString("TenPhongBan");
+                phongBanList.add(new Object[]{idPhongBan, tenPhongBan});
             }
 
         } catch (SQLException e) {
@@ -96,7 +98,6 @@ public class phongBanDAO {
         try {
             connection.setAutoCommit(false);
 
-            // Thêm hoặc cập nhật phòng ban mới
             try (PreparedStatement stmtThemPhongBanMoi = connection.prepareStatement(queryThemPhongBanMoi)) {
                 stmtThemPhongBanMoi.setInt(1, idPhongBanMoi);
                 stmtThemPhongBanMoi.setString(2, tenPhongBanMoi);
@@ -104,14 +105,12 @@ public class phongBanDAO {
                 stmtThemPhongBanMoi.executeUpdate();
             }
 
-            // Cập nhật ID phòng ban trong bảng nhan_vien
             try (PreparedStatement stmtNhanVien = connection.prepareStatement(queryCapNhatNhanVien)) {
                 stmtNhanVien.setInt(1, idPhongBanMoi);
                 stmtNhanVien.setInt(2, idPhongBanCu);
                 stmtNhanVien.executeUpdate();
             }
 
-            // Xóa phòng ban cũ
             try (PreparedStatement stmtXoaPhongBanCu = connection.prepareStatement(queryXoaPhongBanCu)) {
                 stmtXoaPhongBanCu.setInt(1, idPhongBanCu);
                 stmtXoaPhongBanCu.executeUpdate();

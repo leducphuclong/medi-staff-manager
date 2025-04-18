@@ -13,6 +13,8 @@ import java.util.List;
 public class XemNhanVienTheoPhongBan extends JFrame{
 	private JComboBox<String> phongBanComboBox;
 	private JTable table;
+	private DefaultTableModel phongBanTableModel;
+	private JTable phongBanTable;
     private DefaultTableModel tableModel;
     private NhanVienController controller;
     
@@ -20,7 +22,7 @@ public class XemNhanVienTheoPhongBan extends JFrame{
     public XemNhanVienTheoPhongBan() {
     	controller = new NhanVienController();
     	setTitle("Xem Nhân Viên Theo Từng Phòng Ban");
-    	setSize(800, 600);
+    	setSize(1000, 900);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	setLocationRelativeTo(null);
     	
@@ -35,7 +37,8 @@ public class XemNhanVienTheoPhongBan extends JFrame{
         JButton xoaPhongBanButton = new JButton("Xóa phòng ban");
         JButton themPhongBanButton = new JButton("Thêm phòng ban");
         JButton suaPhongBanButton = new JButton("Sửa phòng ban");
-
+        JButton xemPhongBanButton = new JButton("Xem phòng ban"); 
+        
         inputPanel.add(suaPhongBanButton);
         inputPanel.add(xoaPhongBanButton);
         inputPanel.add(phongBanLabel);
@@ -43,6 +46,7 @@ public class XemNhanVienTheoPhongBan extends JFrame{
         inputPanel.add(xemButton);
         inputPanel.add(themPhongBanButton);
         inputPanel.add(xoaTatCaButton);
+        inputPanel.add(xemPhongBanButton);
         add(inputPanel, BorderLayout.NORTH);
         
         // Create the table to display data
@@ -52,6 +56,12 @@ public class XemNhanVienTheoPhongBan extends JFrame{
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
         
+        // Table to display department list
+        String[] phongBanColumnNames = {"ID phòng ban", "Tên phòng ban"};
+        phongBanTableModel = new DefaultTableModel(phongBanColumnNames, 0);
+        phongBanTable = new JTable(phongBanTableModel);
+        JScrollPane phongBanScrollPane = new JScrollPane(phongBanTable);
+        add(phongBanScrollPane, BorderLayout.EAST);
         
      // Event for the "Thêm phòng ban" button
         themPhongBanButton.addActionListener(new ActionListener() {
@@ -92,13 +102,22 @@ public class XemNhanVienTheoPhongBan extends JFrame{
                 suaPhongBan();
             }
         });
+        
+        // Event for the "Xem phòng ban" button
+        xemPhongBanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xemDanhSachPhongBan();
+            }
+        });
     }
     
     private void loadPhongBanComboBox() {
         phongBanComboBox.removeAllItems();
-        List<String> phongBanList = controller.layDanhSachPhongBan();
-        for (String phongBan : phongBanList) {
-            phongBanComboBox.addItem(phongBan);
+        List<Object[]> phongBanList = controller.layDanhSachPhongBan();
+        for (Object[] phongBan : phongBanList) {
+            String tenPhongBan = (String) phongBan[1];
+            phongBanComboBox.addItem(tenPhongBan);
         }
     }
     
@@ -205,6 +224,19 @@ public class XemNhanVienTheoPhongBan extends JFrame{
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "ID phòng ban phải là số nguyên!");
             }
+        }
+    }
+    
+ // Method to load department list into the table
+    private void xemDanhSachPhongBan() {
+        List<Object[]> phongBanList = controller.layDanhSachPhongBan();
+        phongBanTableModel.setRowCount(0);
+        for (Object[] phongBan : phongBanList) {
+            phongBanTableModel.addRow(phongBan);
+        }
+
+        if (phongBanList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Không có phòng ban nào!");
         }
     }
     

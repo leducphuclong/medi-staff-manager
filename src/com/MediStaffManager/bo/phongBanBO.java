@@ -15,7 +15,7 @@ public class phongBanBO {
         this.nhanVienDAO = new NhanVienDAO();
     }
     
-    public List<String> layDanhSachPhongBan() {
+    public List<Object[]> layDanhSachPhongBan() {
         return PhongBanDAO.layDanhSachPhongBan();
     }
 
