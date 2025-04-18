@@ -1,6 +1,7 @@
 package com.MediStaffManager.bo;
 
 import com.MediStaffManager.dao.NhanVienDAO;
+import com.MediStaffManager.bo.phongBanBO;
 import com.MediStaffManager.bean.NhanVien;  // Using NhanVien bean
 import java.util.List;
 

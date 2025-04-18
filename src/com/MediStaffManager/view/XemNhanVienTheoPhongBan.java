@@ -11,8 +11,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class XemNhanVienTheoPhongBan extends JFrame{
-	private JTextField phongBanField;
-    private JTable table;
+	private JComboBox<String> phongBanComboBox;
+	private JTable table;
     private DefaultTableModel tableModel;
     private NhanVienController controller;
     
@@ -27,13 +27,21 @@ public class XemNhanVienTheoPhongBan extends JFrame{
     	// Panel for entering the department name
     	JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout());
-        JLabel phongBanLabel = new JLabel("Tên phòng ban:");
-        phongBanField = new JTextField(20);
+        JLabel phongBanLabel = new JLabel("Chọn phòng ban:");
+        phongBanComboBox = new JComboBox<>();
+        loadPhongBanComboBox(); // Load danh sách phòng ban vào ComboBox
         JButton xemButton = new JButton("Xem");
         JButton xoaTatCaButton = new JButton("Xoa tat ca");
+        JButton xoaPhongBanButton = new JButton("Xóa phòng ban");
+        JButton themPhongBanButton = new JButton("Thêm phòng ban");
+        JButton suaPhongBanButton = new JButton("Sửa phòng ban");
+
+        inputPanel.add(suaPhongBanButton);
+        inputPanel.add(xoaPhongBanButton);
         inputPanel.add(phongBanLabel);
-        inputPanel.add(phongBanField);
+        inputPanel.add(phongBanComboBox);
         inputPanel.add(xemButton);
+        inputPanel.add(themPhongBanButton);
         inputPanel.add(xoaTatCaButton);
         add(inputPanel, BorderLayout.NORTH);
         
@@ -45,7 +53,15 @@ public class XemNhanVienTheoPhongBan extends JFrame{
         add(scrollPane, BorderLayout.CENTER);
         
         
-        // Event for the "View" button
+     // Event for the "Thêm phòng ban" button
+        themPhongBanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                themPhongBan();
+            }
+        });
+        
+        // Event for the "Xem" button
         xemButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -53,7 +69,7 @@ public class XemNhanVienTheoPhongBan extends JFrame{
             }
         });
         
-        // // Event for the "Delete All" button
+        // Event for the "Xóa" button
         xoaTatCaButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -61,11 +77,35 @@ public class XemNhanVienTheoPhongBan extends JFrame{
             }
         });
         
+        // Event for the "Xóa phòng ban" button
+        xoaPhongBanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xoaPhongBan();
+            }
+        });
+        
+        //Event for the "Sửa phòng ban" button
+        suaPhongBanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                suaPhongBan();
+            }
+        });
     }
+    
+    private void loadPhongBanComboBox() {
+        phongBanComboBox.removeAllItems();
+        List<String> phongBanList = controller.layDanhSachPhongBan();
+        for (String phongBan : phongBanList) {
+            phongBanComboBox.addItem(phongBan);
+        }
+    }
+    
     // Method to view employees by department
     private void xemNhanVienTheoPhongBan() {
-    	String tenPhongBan = phongBanField.getText().trim();
-    	if (tenPhongBan.isEmpty()) {
+    	String tenPhongBan = (String) phongBanComboBox.getSelectedItem();
+    	if (tenPhongBan == null || tenPhongBan.isEmpty()) {
     		JOptionPane.showMessageDialog(this, "Vui lòng nhập tên phòng ban!");
     		return;
     	}
@@ -94,7 +134,7 @@ public class XemNhanVienTheoPhongBan extends JFrame{
     
     // Method to delete all employees in a department
     private void xoaTatCaNhanVienTrongPhongBan() {
-    	String tenPhongBan = phongBanField.getText().trim();
+        String tenPhongBan = (String) phongBanComboBox.getSelectedItem();
     	if (tenPhongBan.isEmpty()) {
     		JOptionPane.showMessageDialog(this, "Vui lòng nhập tên phòng ban!");
     		return;
@@ -113,6 +153,97 @@ public class XemNhanVienTheoPhongBan extends JFrame{
     	}
     	
     }
+    
+    // Method to delete a department
+    private void xoaPhongBan() {
+        String tenPhongBan = (String) phongBanComboBox.getSelectedItem();
+        if (tenPhongBan == null || tenPhongBan.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn phòng ban!");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa phòng ban này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = controller.xoaPhongBan(tenPhongBan.trim());
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Xóa phòng ban thành công!");
+                loadPhongBanComboBox();
+            } else {
+                JOptionPane.showMessageDialog(this, "Không thể xóa phòng ban vì vẫn còn nhân viên!");
+            }
+        }
+    }
+    
+    // Method to add new department
+    private void themPhongBan() {
+        JTextField idPhongBanField = new JTextField();
+        JTextField tenPhongBanField = new JTextField();
+        Object[] message = {
+            "ID phòng ban:", idPhongBanField,
+            "Tên phòng ban:", tenPhongBanField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Thêm phòng ban mới", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                int idPhongBan = Integer.parseInt(idPhongBanField.getText().trim());
+                String tenPhongBan = tenPhongBanField.getText().trim();
+
+                if (tenPhongBan.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Tên phòng ban không được để trống!");
+                    return;
+                }
+
+                boolean success = controller.themPhongBan(idPhongBan, tenPhongBan);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Thêm phòng ban thành công!");
+                    loadPhongBanComboBox();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm phòng ban thất bại! ID có thể đã tồn tại.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "ID phòng ban phải là số nguyên!");
+            }
+        }
+    }
+    
+    // Method to edit a department
+    private void suaPhongBan() {
+        JTextField idPhongBanCuField = new JTextField();
+        JTextField idPhongBanMoiField = new JTextField();
+        JTextField tenPhongBanMoiField = new JTextField();
+        Object[] message = {
+            "ID phòng ban cũ:", idPhongBanCuField,
+            "ID phòng ban mới:", idPhongBanMoiField,
+            "Tên phòng ban mới:", tenPhongBanMoiField
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Sửa phòng ban", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                int idPhongBanCu = Integer.parseInt(idPhongBanCuField.getText().trim());
+                int idPhongBanMoi = Integer.parseInt(idPhongBanMoiField.getText().trim());
+                String tenPhongBanMoi = tenPhongBanMoiField.getText().trim();
+
+                if (tenPhongBanMoi.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Tên phòng ban không được để trống!");
+                    return;
+                }
+
+                boolean success = controller.suaPhongBan(idPhongBanCu, idPhongBanMoi, tenPhongBanMoi);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Sửa phòng ban thành công!");
+                    loadPhongBanComboBox();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Sửa phòng ban thất bại! Kiểm tra lại thông tin.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "ID phòng ban phải là số nguyên!");
+            }
+        }
+    }
+    
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
