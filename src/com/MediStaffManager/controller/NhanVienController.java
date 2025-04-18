@@ -23,7 +23,7 @@ public class NhanVienController {
     }
     
     // Method to retrieve all department from the BO
-    public List<String> layDanhSachPhongBan() {
+    public List<Object[]> layDanhSachPhongBan() {
         return phongBanBO.layDanhSachPhongBan();
     }
     
