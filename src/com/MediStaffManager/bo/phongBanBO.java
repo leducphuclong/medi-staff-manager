@@ -34,4 +34,8 @@ public class phongBanBO {
     public boolean suaPhongBan(int idPhongBanCu, int idPhongBanMoi, String tenPhongBanMoi) {
         return PhongBanDAO.suaPhongBan(idPhongBanCu, idPhongBanMoi, tenPhongBanMoi);
     }
+
+    public int layIdPhongBanTheoTen(String tenPhongBan) {
+        return PhongBanDAO.layIdPhongBanTheoTen(tenPhongBan);
+    }
 }

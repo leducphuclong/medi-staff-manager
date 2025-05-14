@@ -135,4 +135,18 @@ public class phongBanDAO {
         return false;
     }
     
+    public int layIdPhongBanTheoTen(String tenPhongBan) {
+        String query = "SELECT IDPhongBan FROM phong_ban WHERE TenPhongBan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, tenPhongBan);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("IDPhongBan");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }
