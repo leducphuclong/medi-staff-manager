@@ -1,73 +1,214 @@
 package com.MediStaffManager.bean;
- 
+import javafx.beans.property.*;
+
 public class NhanVien {
-    private int idNhanVien;
-    private String cccd;
-    private String hoTen;
-    private String sdt;
-    private String email;
-    private String gioiTinh;
-    private String ngaySinh;
-    private int idChucVu;
-    private int idPhongBan;
-    private String tenChucVu;
-    private String tenPhongBan;
- 
-    public NhanVien() {}
- 
+    private IntegerProperty idNhanVien;
+    private StringProperty cccd;
+    private StringProperty hoTen;
+    private StringProperty sdt;
+    private StringProperty email;
+    private StringProperty gioiTinh;
+    private StringProperty ngaySinh;
+    private IntegerProperty idChucVu;
+    private IntegerProperty idPhongBan;
+    private StringProperty tenChucVu;
+    private StringProperty tenPhongBan;
+    private BooleanProperty selected; // Thuộc tính để hỗ trợ checkbox
+
+    public NhanVien() {
+        this.idNhanVien = new SimpleIntegerProperty();
+        this.cccd = new SimpleStringProperty();
+        this.hoTen = new SimpleStringProperty();
+        this.sdt = new SimpleStringProperty();
+        this.email = new SimpleStringProperty();
+        this.gioiTinh = new SimpleStringProperty();
+        this.ngaySinh = new SimpleStringProperty();
+        this.idChucVu = new SimpleIntegerProperty();
+        this.idPhongBan = new SimpleIntegerProperty();
+        this.tenChucVu = new SimpleStringProperty();
+        this.tenPhongBan = new SimpleStringProperty();
+        this.selected = new SimpleBooleanProperty(false); // Mặc định không được chọn
+    }
+
     public NhanVien(int idNhanVien, String cccd, String hoTen, String sdt, String email,
                     String gioiTinh, String ngaySinh, int idChucVu, int idPhongBan,
                     String tenChucVu, String tenPhongBan) {
-        this.idNhanVien = idNhanVien;
-        this.cccd = cccd;
-        this.hoTen = hoTen;
-        this.sdt = sdt;
-        this.email = email;
-        this.gioiTinh = gioiTinh;
-        this.ngaySinh = ngaySinh;
-        this.idChucVu = idChucVu;
-        this.idPhongBan = idPhongBan;
-        this.tenChucVu = tenChucVu;
-        this.tenPhongBan = tenPhongBan;
+        this.idNhanVien = new SimpleIntegerProperty(idNhanVien);
+        this.cccd = new SimpleStringProperty(cccd);
+        this.hoTen = new SimpleStringProperty(hoTen);
+        this.sdt = new SimpleStringProperty(sdt);
+        this.email = new SimpleStringProperty(email);
+        this.gioiTinh = new SimpleStringProperty(gioiTinh);
+        this.ngaySinh = new SimpleStringProperty(ngaySinh);
+        this.idChucVu = new SimpleIntegerProperty(idChucVu);
+        this.idPhongBan = new SimpleIntegerProperty(idPhongBan);
+        this.tenChucVu = new SimpleStringProperty(tenChucVu);
+        this.tenPhongBan = new SimpleStringProperty(tenPhongBan);
+        this.selected = new SimpleBooleanProperty(false); // Mặc định không được chọn
     }
- 
-    public int getIdNhanVien() { return idNhanVien; }
-    public void setIdNhanVien(int idNhanVien) { this.idNhanVien = idNhanVien; }
-    public String getCccd() { return cccd; }
-    public void setCccd(String cccd) { this.cccd = cccd; }
-    public String getHoTen() { return hoTen; }
-    public void setHoTen(String hoTen) { this.hoTen = hoTen; }
-    public String getSdt() { return sdt; }
-    public void setSdt(String sdt) { this.sdt = sdt; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getGioiTinh() { return gioiTinh; }
-    public void setGioiTinh(String gioiTinh) { this.gioiTinh = gioiTinh; }
-    public String getNgaySinh() { return ngaySinh; }
-    public void setNgaySinh(String ngaySinh) { this.ngaySinh = ngaySinh; }
-    public int getIdChucVu() { return idChucVu; }
-    public void setIdChucVu(int idChucVu) { this.idChucVu = idChucVu; }
-    public int getIdPhongBan() { return idPhongBan; }
-    public void setIdPhongBan(int idPhongBan) { this.idPhongBan = idPhongBan; }
-    public String getTenChucVu() { return tenChucVu; }
-    public void setTenChucVu(String tenChucVu) { this.tenChucVu = tenChucVu; }
-    public String getTenPhongBan() { return tenPhongBan; }
-    public void setTenPhongBan(String tenPhongBan) { this.tenPhongBan = tenPhongBan; }
- 
+
+    // Getter và Setter cho thuộc tính selected
+    public BooleanProperty selectedProperty() {
+        return selected;
+    }
+
+    public boolean isSelected() {
+        return selected.get();
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
+    }
+
+    // Getters for properties
+    public IntegerProperty idNhanVienProperty() {
+        return idNhanVien;
+    }
+
+    public StringProperty cccdProperty() {
+        return cccd;
+    }
+
+    public StringProperty hoTenProperty() {
+        return hoTen;
+    }
+
+    public StringProperty sdtProperty() {
+        return sdt;
+    }
+
+    public StringProperty emailProperty() {
+        return email;
+    }
+
+    public StringProperty gioiTinhProperty() {
+        return gioiTinh;
+    }
+
+    public StringProperty ngaySinhProperty() {
+        return ngaySinh;
+    }
+
+    public IntegerProperty idChucVuProperty() {
+        return idChucVu;
+    }
+
+    public IntegerProperty idPhongBanProperty() {
+        return idPhongBan;
+    }
+
+    public StringProperty tenChucVuProperty() {
+        return tenChucVu;
+    }
+
+    public StringProperty tenPhongBanProperty() {
+        return tenPhongBan;
+    }
+
+    // Getters for raw values
+    public int getIdNhanVien() {
+        return idNhanVien.get();
+    }
+
+    public String getCccd() {
+        return cccd.get();
+    }
+
+    public String getHoTen() {
+        return hoTen.get();
+    }
+
+    public String getSdt() {
+        return sdt.get();
+    }
+
+    public String getEmail() {
+        return email.get();
+    }
+
+    public String getGioiTinh() {
+        return gioiTinh.get();
+    }
+
+    public String getNgaySinh() {
+        return ngaySinh.get();
+    }
+
+    public int getIdChucVu() {
+        return idChucVu.get();
+    }
+
+    public int getIdPhongBan() {
+        return idPhongBan.get();
+    }
+
+    public String getTenChucVu() {
+        return tenChucVu.get();
+    }
+
+    public String getTenPhongBan() {
+        return tenPhongBan.get();
+    }
+
+    // Setters
+    public void setIdNhanVien(int idNhanVien) {
+        this.idNhanVien.set(idNhanVien);
+    }
+
+    public void setCccd(String cccd) {
+        this.cccd.set(cccd);
+    }
+
+    public void setHoTen(String hoTen) {
+        this.hoTen.set(hoTen);
+    }
+
+    public void setSdt(String sdt) {
+        this.sdt.set(sdt);
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
+    }
+
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh.set(gioiTinh);
+    }
+
+    public void setNgaySinh(String ngaySinh) {
+        this.ngaySinh.set(ngaySinh);
+    }
+
+    public void setIdChucVu(int idChucVu) {
+        this.idChucVu.set(idChucVu);
+    }
+
+    public void setIdPhongBan(int idPhongBan) {
+        this.idPhongBan.set(idPhongBan);
+    }
+
+    public void setTenChucVu(String tenChucVu) {
+        this.tenChucVu.set(tenChucVu);
+    }
+
+    public void setTenPhongBan(String tenPhongBan) {
+        this.tenPhongBan.set(tenPhongBan);
+    }
+
     @Override
     public String toString() {
-        return "Employee{" +
-                "idNhanVien=" + idNhanVien +
-                ", cccd='" + cccd + '\'' +
-                ", hoTen='" + hoTen + '\'' +
-                ", sdt='" + sdt + '\'' +
-                ", email='" + email + '\'' +
-                ", gioiTinh='" + gioiTinh + '\'' +
-                ", ngaySinh='" + ngaySinh + '\'' +
-                ", idChucVu=" + idChucVu +
-                ", idPhongBan=" + idPhongBan +
-                ", tenChucVu='" + tenChucVu + '\'' +
-                ", tenPhongBan='" + tenPhongBan + '\'' +
+        return "NhanVien{" +
+                "idNhanVien=" + idNhanVien.get() +
+                ", cccd='" + cccd.get() + '\'' +
+                ", hoTen='" + hoTen.get() + '\'' +
+                ", sdt='" + sdt.get() + '\'' +
+                ", email='" + email.get() + '\'' +
+                ", gioiTinh='" + gioiTinh.get() + '\'' +
+                ", ngaySinh='" + ngaySinh.get() + '\'' +
+                ", idChucVu=" + idChucVu.get() +
+                ", idPhongBan=" + idPhongBan.get() +
+                ", tenChucVu='" + tenChucVu.get() + '\'' +
+                ", tenPhongBan='" + tenPhongBan.get() + '\'' +
                 '}';
     }
 }

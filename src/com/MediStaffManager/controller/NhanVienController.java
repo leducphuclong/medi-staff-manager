@@ -22,6 +22,11 @@ public class NhanVienController {
         return nhanVienBO.layToanBoNhanVien();  // Call the BO to fetch employee data
     }
     
+    // Method to delete an employee from a department
+    public boolean xoaNhanVienTrongPhongBan(int idNhanVien, int idPhongBan) {
+        return nhanVienBO.xoaNhanVienTrongPhongBan(idNhanVien, idPhongBan); // Gọi phương thức từ BO
+    }
+
     // Method to retrieve all department from the BO
     public List<Object[]> layDanhSachPhongBan() {
         return phongBanBO.layDanhSachPhongBan();
@@ -53,4 +58,13 @@ public class NhanVienController {
     public boolean suaPhongBan(int idPhongBanCu, int idPhongBanMoi, String tenPhongBanMoi) {
         return phongBanBO.suaPhongBan(idPhongBanCu, idPhongBanMoi, tenPhongBanMoi);
     }
+
+    public int layIdPhongBanTheoTen(String tenPhongBan) {
+        return phongBanBO.layIdPhongBanTheoTen(tenPhongBan);
+    }
+    
+    public boolean chuyenPhongBan(List<Integer> danhSachIdNhanVien, int idPhongBanMoi) {
+        return nhanVienBO.chuyenPhongBan(danhSachIdNhanVien, idPhongBanMoi);
+    }
 }
+

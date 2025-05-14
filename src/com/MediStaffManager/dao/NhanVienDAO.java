@@ -65,6 +65,22 @@ public class NhanVienDAO {
         return false;
     }
 
+    // phương thức xóa 1 nhân viên trong phòng ban 
+    public boolean xoaNhanVienTrongPhongBan(int idNhanVien, int idPhongBan) {
+        String query = "DELETE nv FROM nhan_vien nv " +
+                       "JOIN phong_ban pb ON nv.IDPhongBan = pb.IDPhongBan " +
+                       "WHERE nv.IDNhanVien = ? AND pb.IDPhongBan = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idNhanVien);
+            stmt.setInt(2, idPhongBan);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     // Phương thức lấy thông tin một nhân viên theo ID
     public NhanVien getNhanVienById(int idNhanVien) {
         String query = "SELECT nv.IDNhanVien, nv.CCCD, nv.HoTen, nv.Sdt, nv.Email, nv.GioiTinh, nv.NgaySinh, " +
@@ -152,4 +168,26 @@ public class NhanVienDAO {
         return false;
     	
     }
+    
+    public boolean chuyenPhongBan(List<Integer> danhSachIdNhanVien, int idPhongBanMoi) {
+        String query = "UPDATE nhan_vien SET IDPhongBan = ? WHERE IDNhanVien = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            for (int idNhanVien : danhSachIdNhanVien) {
+                stmt.setInt(1, idPhongBanMoi);
+                stmt.setInt(2, idNhanVien);
+                stmt.addBatch();
+            }
+            int[] results = stmt.executeBatch();
+            for (int result : results) {
+                if (result <= 0) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
 }
