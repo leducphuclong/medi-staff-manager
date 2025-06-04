@@ -1,0 +1,326 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.app-window { /* Lớp bao ngoài cùng, mô phỏng cửa sổ ứng dụng */
+    display: flex;
+    flex-direction: column;
+    margin: 20px auto;
+    width: 95%;
+    max-width: 1100px;
+    height: calc(100vh - 40px); /* Chiều cao gần full màn hình, có chút lề */
+    background-color: #f8f9fa;
+    border: 1px solid #adb5bd; /* Viền cửa sổ */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden; /* Quan trọng để footer không bị tràn */
+}
+
+/* ---- Header Chung (Family Hospital) ---- */
+.main-header {
+    background-color: #003366; /* Màu xanh đậm */
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #002244;
+}
+
+.main-header .hospital-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 40px;
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.main-nav li {
+    margin-right: 25px;
+}
+
+.main-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 8px 0;
+    position: relative;
+}
+.main-nav a:hover, .main-nav a.active {
+    /* border-bottom: 2px solid #ffc107; */ /* Gạch chân màu vàng khi hover/active */
+    color: #ffc107;
+}
+
+/* ---- Sub Header (Nút Trở lại) ---- */
+.sub-header {
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* ---- Khu vực nội dung chính ---- */
+.content-area {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto; /* Cho phép cuộn nội dung chính nếu cần */
+    background-color: #ffffff; /* Nền trắng cho nội dung */
+}
+
+.content-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* ---- Bảng ---- */
+.table-container {
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background-color: #fff; /* Đảm bảo nền bảng là trắng */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #f1f3f5; /* Màu nền header bảng */
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap; /* Ngăn tiêu đề xuống dòng */
+}
+thead th:first-child, tbody td:first-child {
+    /* Điều chỉnh độ rộng cột đầu tiên nếu là checkbox */
+}
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+tbody tr:hover {
+    background-color: #e9ecef;
+}
+tbody tr.selected-row { /* Khi một hàng được chọn (ví dụ: Phòng Điều Hành) */
+    background-color: #007bff; /* Màu xanh dương */
+    color: white;
+}
+tbody tr.selected-row td {
+    color: white; /* Chữ màu trắng cho hàng được chọn */
+}
+tbody tr.selected-row:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover hàng được chọn */
+}
+
+
+/* ---- Các nút chung ---- */
+.btn {
+    padding: 8px 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-back {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+}
+.btn-back:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+.btn-edit { /* Nút Sửa */
+    background-color: #007bff;
+    color: white;
+}
+.btn-edit:hover {
+    background-color: #0056b3;
+}
+
+/* ---- Footer chung ---- */
+.app-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+    background-color: #f8f9fa; /* Nền footer */
+    flex-shrink: 0; /* Ngăn footer co lại */
+}
+
+/* ---- Modal Styles ---- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: none; /* Ẩn ban đầu */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 0;
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 400px;
+    animation: fadeInModal 0.3s ease-out;
+    border: 1px solid #adb5bd; /* Viền cho modal */
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0; /* Màu header modal */
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.close-button {
+    font-size: 24px;
+    font-weight: bold;
+    color: #6c757d;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.close-button:hover {
+    color: #343a40;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.confirmation-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background-color: #e7f3fe;
+    padding: 10px;
+    border: 1px solid #b3d7f9;
+    border-radius: 4px;
+}
+
+.question-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.confirmation-section p {
+    margin: 0;
+    font-size: 14px;
+    color: #004085;
+}
+
+#department-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+    box-sizing: border-box; /* Quan trọng để padding không làm tăng kích thước */
+}
+
+.modal-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+    background-color: #f0f0f0; /* Màu footer modal */
+}
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.modal-buttons {
+    margin-top: 15px;
+    text-align: right;
+}
+
+.modal-buttons button {
+    margin-left: 10px;
+}
