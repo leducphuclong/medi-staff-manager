@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quên mật khẩu - Medi Staff Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="overlay">
+    <div class="login-container" role="main" aria-label="Form quên mật khẩu">
+      <span class="icon">⚕️</span>
+      <h1>Quên mật khẩu?</h1>
+      <p>Đừng lo lắng! Nhập địa chỉ email đã đăng ký của bạn và chúng tôi sẽ gửi cho bạn một liên kết để đặt lại mật khẩu.</p>
+
+      <form id="forgotPasswordForm">
+        <div class="input-group">
+          <label for="email">Địa chỉ Email</label>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com" required />
+        </div>
+
+        <button type="submit" class="login-btn">Gửi yêu cầu đặt lại</button>
+      </form>
+
+      <div class="forgot-password">
+        <p>Nhớ mật khẩu rồi? <a href="#" onclick="bridge.getDangNhapBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;">Đăng nhập tại đây</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
