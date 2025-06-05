@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phòng Ban - Family Hospital</title>
+    <link rel="stylesheet" href="phongBan.css">
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="hospital-title">Family Hospital</div>
+        <div class="nav-links">
+            <button id="navNhanVien">Nhân viên</button>
+            <button id="navPhongBan" class="active">Phòng ban</button>
+            <button id="navLichLamViec">Lịch làm việc</button>
+            <button id="navLogout">Đăng xuất</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2>Danh sách Phòng Ban</h2>
+            </div>
+            <div class="card-body">
+                <table id="phongBanTable">
+                    <thead>
+                        <tr>
+                            <th>ID Phòng Ban</th>
+                            <th>Tên Phòng Ban</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="phongBanTableBody">
+                        <!-- Dữ liệu sẽ được JavaScript đổ vào từ Java -->
+                    </tbody>
+                </table>
+                <p id="placeholderLabel" style="display: none; text-align: center; padding: 20px;">
+                    Hiện không có phòng ban nào trong danh sách.
+                </p>
+            </div>
+        </div>
+        <button id="themPhongBanBtn" class="fab-add-button">+</button>
+    </div>
+
+    <!-- Add/Edit Dialog -->
+    <div id="phongBanDialog" class="dialog-overlay" style="display: none;">
+        <div class="dialog-content">
+            <h3 id="dialogTitle">Thêm Phòng Ban Mới</h3>
+            <form id="phongBanForm">
+                <input type="hidden" id="formMode" name="mode" value="add">
+                <input type="hidden" id="currentPhongBanIdForEdit" name="currentId" value="">
+                <div>
+                    <label for="idPhongBanInput">ID Phòng Ban:</label>
+                    <input type="number" id="idPhongBanInput" name="idPhongBan" required>
+                </div>
+                <div>
+                    <label for="tenPhongBanInput">Tên Phòng Ban:</label>
+                    <input type="text" id="tenPhongBanInput" name="tenPhongBan" required>
+                </div>
+                <div class="dialog-actions">
+                    <button type="submit" id="savePhongBanBtn">Lưu</button>
+                    <button type="button" id="closeDialogBtn">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="customConfirmModal" class="dialog-overlay" style="display: none; z-index: 1050;">
+        <div class="dialog-content confirm-dialog-content">
+            <h3 id="customConfirmTitle">Xác nhận</h3>
+            <p id="customConfirmMessage" style="white-space: pre-wrap;"></p>
+            <div class="dialog-actions confirm-dialog-actions">
+                <button id="customConfirmCancel" type="button" class="btn btn-secondary">Hủy</button>
+                <button id="customConfirmOk" type="button" class="btn btn-danger">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Assume javaConnector is injected by JavaFX WebView
+        // interface JavaConnector {
+        //     loadPhongBanData(): void;
+        //     themPhongBan(id: number, ten: string): boolean;
+        //     suaPhongBan(idCu: number, idMoi: number, tenMoi: string): boolean;
+        //     xoaPhongBan(id: number, ten: string): boolean; // Added ten for confirmation dialog
+        //     navigateToNhanVien(): void;
+        //     navigateToPhongBan(): void; // Or a general refresh/reload
+        //     navigateToLichLamViec(): void;
+        //     logout(): void;
+        //     viewNhanVienTheoPhongBan(id: number, ten: string): void; // Example
+        //     showAlert(type: string, message: string): void; // For JS to show JavaFX alerts
+        // }
+
+        const themPhongBanBtn = document.getElementById('themPhongBanBtn');
+        const phongBanDialog = document.getElementById('phongBanDialog');
+        const dialogTitle = document.getElementById('dialogTitle');
+        const phongBanForm = document.getElementById('phongBanForm');
+        const formModeInput = document.getElementById('formMode');
+        const currentPhongBanIdForEditInput = document.getElementById('currentPhongBanIdForEdit');
+        const idPhongBanInput = document.getElementById('idPhongBanInput');
+        const tenPhongBanInput = document.getElementById('tenPhongBanInput');
+        const closeDialogBtn = document.getElementById('closeDialogBtn');
+        const phongBanTableBody = document.getElementById('phongBanTableBody');
+        const placeholderLabel = document.getElementById('placeholderLabel');
+
+        // Navigation
+        document.getElementById('navNhanVien').addEventListener('click', () => javaConnector.navigateToNhanVien());
+        document.getElementById('navPhongBan').addEventListener('click', () => javaConnector.navigateToPhongBan()); // Or simply reload data
+        document.getElementById('navLichLamViec').addEventListener('click', () => javaConnector.navigateToLichLamViec());
+        document.getElementById('navLogout').addEventListener('click', () => javaConnector.logout());
+
+        function showDialog(mode, id = '', ten = '') {
+            formModeInput.value = mode;
+            idPhongBanInput.value = id;
+            tenPhongBanInput.value = ten;
+            currentPhongBanIdForEditInput.value = id; // Store original ID for edits
+
+            if (mode === 'add') {
+                dialogTitle.textContent = 'Thêm Phòng Ban Mới';
+                idPhongBanInput.disabled = false;
+            } else {
+                dialogTitle.textContent = 'Sửa Phòng Ban';
+                idPhongBanInput.disabled = true; // Typically ID is not changed during edit, or use currentPhongBanIdForEdit for the actual old ID
+            }
+            phongBanDialog.style.display = 'flex';
+        }
+
+        function closeDialog() {
+            phongBanDialog.style.display = 'none';
+            phongBanForm.reset();
+        }
+
+        themPhongBanBtn.addEventListener('click', () => showDialog('add'));
+        closeDialogBtn.addEventListener('click', closeDialog);
+
+        phongBanForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const id = parseInt(idPhongBanInput.value);
+            const ten = tenPhongBanInput.value.trim();
+            const mode = formModeInput.value;
+
+            if (!ten) {
+                javaConnector.showAlert('error', 'Tên phòng ban không được để trống.');
+                return;
+            }
+            if (isNaN(id) || id <=0) {
+                 javaConnector.showAlert('error', 'ID phòng ban phải là một số dương.');
+                 return;
+            }
+
+            let success = false;
+            if (mode === 'add') {
+                success = await javaConnector.themPhongBan(id, ten);
+                if (success) {
+                    javaConnector.showAlert('information', 'Thêm phòng ban thành công!');
+                } else {
+                    javaConnector.showAlert('error', 'Thêm phòng ban thất bại. ID có thể đã tồn tại.');
+                }
+            } else { // edit mode
+                const idCu = parseInt(currentPhongBanIdForEditInput.value);
+                success = await javaConnector.suaPhongBan(idCu, id, ten); // Assuming ID can be edited, if not, pass idCu as the new ID too.
+                                                                        // Or, if ID is not editable, the idPhongBanInput should be disabled and its value not sent as 'new ID'.
+                                                                        // For this example, let's assume the ID field in the form is the *new* ID if it's editable,
+                                                                        // and idCu is the *old* ID.
+                if (success) {
+                    javaConnector.showAlert('information', 'Sửa phòng ban thành công!');
+                } else {
+                    javaConnector.showAlert('error', 'Sửa phòng ban thất bại.');
+                }
+            }
+
+            if (success) {
+                closeDialog();
+                loadData(); // Reload data from Java
+            }
+        });
+
+        // Trong file phongBan.html
+        // Ví dụ hàm được gọi khi nhấn nút xóa trên một dòng (truyền ID và tên để hiển thị trong confirm)
+        function handleDeletePhongBan(phongBanId, phongBanTen) {
+            console.log("JS: Attempting to delete phongBan with ID: " + phongBanId + ", Name: " + phongBanTen);
+            // window.confirm sẽ được xử lý bởi webEngine.setConfirmHandler trong Java
+            if (window.confirm("Bạn có chắc chắn muốn xóa phòng ban '" + phongBanTen + "' (ID: " + phongBanId + ") không?")) {
+                console.log("JS: User confirmed deletion. Calling javaConnector.xoaPhongBan(" + phongBanId + ")");
+                const success = javaConnector.xoaPhongBan(phongBanId); // Gọi hàm đã sửa, chỉ truyền ID
+                
+                console.log("JS: Delete operation success status: " + success);
+                if (success) {
+                    javaConnector.loadPhongBanData(); // Tải lại dữ liệu bảng
+                    javaConnector.showAlert("information", "Xóa phòng ban thành công!");
+                } else {
+                    // Thông báo lỗi đã được hiển thị từ JavaConnector
+                    // javaConnector.showAlert("error", "Xóa phòng ban thất bại.");
+                }
+            } else {
+                console.log("JS: User cancelled deletion.");
+            }
+        }
+
+        // Khi tạo các nút xóa trong bảng, bạn sẽ gắn sự kiện gọi hàm này:
+        // deleteButton.onclick = function() { handleDeletePhongBan(phongBan.id, phongBan.ten); };
+
+        function handleSavePhongBan() {
+            const idInput = document.getElementById('phongBanIdInput'); // Giả sử ID của input ID
+            const tenInput = document.getElementById('phongBanTenInput'); // Giả sử ID của input Tên
+            const isEditMode = document.getElementById('phongBanDialog').dataset.isEditMode === 'true'; // Kiểm tra xem có phải chế độ sửa không
+            const currentEditId = parseInt(document.getElementById('phongBanDialog').dataset.currentEditId);
+
+            if (!idInput || !tenInput) {
+                console.error("JS: Input fields not found for save.");
+                javaConnector.showAlert("error", "Không tìm thấy trường nhập liệu.");
+                return;
+            }
+
+            const id = parseInt(idInput.value);
+            const ten = tenInput.value.trim();
+
+            if (isNaN(id) || id <= 0) {
+                javaConnector.showAlert("error", "ID phòng ban phải là một số dương.");
+                return;
+            }
+            if (ten === "") {
+                javaConnector.showAlert("error", "Tên phòng ban không được để trống.");
+                return;
+            }
+
+            let success = false;
+            if (isEditMode) {
+                console.log("JS: Calling javaConnector.suaPhongBan(" + currentEditId + ", " + id + ", '" + ten + "')");
+                success = javaConnector.suaPhongBan(currentEditId, id, ten);
+            } else {
+                console.log("JS: Calling javaConnector.themPhongBan(" + id + ", '" + ten + "')");
+                success = javaConnector.themPhongBan(id, ten);
+            }
+
+            console.log("JS: Save operation success status: " + success);
+            if (success) {
+                hidePhongBanDialog(); // Hàm ẩn dialog của bạn
+                javaConnector.loadPhongBanData(); // Tải lại dữ liệu bảng
+                javaConnector.showAlert("information", isEditMode ? "Cập nhật phòng ban thành công!" : "Thêm phòng ban thành công!");
+            } else {
+                // Thông báo lỗi đã được hiển thị từ JavaConnector nếu có lỗi từ controller
+                // Nếu muốn, bạn có thể thêm một thông báo chung ở đây, nhưng thường thì thông báo lỗi cụ thể từ Java tốt hơn.
+                javaConnector.showAlert("error", "Thao tác thất bại. Vui lòng kiểm tra lại thông tin.");
+            }
+        }
+
+        document.getElementById('savePhongBanButton').addEventListener('click', handleSavePhongBan);
+
+        function loadData() {
+            if (window.javaConnector && typeof window.javaConnector.loadPhongBanData === 'function') {
+                javaConnector.loadPhongBanData();
+            } else {
+                console.error("javaConnector not available or loadPhongBanData is not a function.");
+                // Optionally, display a message to the user in the UI
+                phongBanTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Không thể tải dữ liệu. javaConnector không sẵn sàng.</td></tr>';
+            }
+        }
+
+
+        
+        // This function is called by Java to populate the table
+        // Ensure Java calls this with a JSON string of List<PhongBanSimple>
+        // globalThis.populateTableWithData = function(jsonData) { ... }
+        // Making it global so Java can call it easily.
+        window.populateTableWithData = function(dataFromJava) {
+            let phongBanList;
+            if (typeof dataFromJava === 'string') {
+                console.log("JS: Received data as STRING: ", dataFromJava ? dataFromJava.substring(0,100) + "..." : "null or empty string");
+                try {
+                    if (!dataFromJava) { // Handle empty string case explicitly if necessary
+                        phongBanList = [];
+                    } else {
+                        phongBanList = JSON.parse(dataFromJava);
+                    }
+                } catch (e) {
+                    console.error("JS: Error parsing JSON string: ", e, "Data:", dataFromJava);
+                    phongBanTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Lỗi phân tích dữ liệu JSON.</td></tr>';
+                    placeholderLabel.style.display = 'block';
+                    placeholderLabel.textContent = 'Lỗi tải dữ liệu phòng ban (JSON parse error).';
+                    return;
+                }
+            } else if (typeof dataFromJava === 'object' && dataFromJava !== null) {
+                console.log("JS: Received data as OBJECT: ", dataFromJava);
+                phongBanList = dataFromJava; // Already an object/array
+            } else {
+                console.error("JS: Received data in unexpected format: ", typeof dataFromJava, dataFromJava);
+                phongBanTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Dữ liệu không hợp lệ.</td></tr>';
+                placeholderLabel.style.display = 'block';
+                placeholderLabel.textContent = 'Lỗi tải dữ liệu phòng ban (invalid data format).';
+                return;
+            }
+
+            try {
+                phongBanTableBody.innerHTML = ''; // Clear existing rows
+
+                if (phongBanList && phongBanList.length > 0) {
+                    placeholderLabel.style.display = 'none';
+                    phongBanList.forEach(pb => {
+                        const row = phongBanTableBody.insertRow();
+                        row.insertCell().textContent = pb.id;
+                        
+                        const tenCell = row.insertCell();
+                        tenCell.textContent = pb.ten;
+
+                        const actionsCell = row.insertCell();
+                        actionsCell.classList.add('actions');
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = 'Sửa';
+                        editButton.classList.add('edit-btn');
+                        editButton.onclick = () => showDialog('edit', pb.id, pb.ten);
+                        actionsCell.appendChild(editButton);
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Xóa';
+                        deleteButton.classList.add('delete-btn');
+                        deleteButton.onclick = () => confirmDelete(pb.id, pb.ten);
+                        actionsCell.appendChild(deleteButton);
+                    });
+                } else {
+                    placeholderLabel.style.display = 'block';
+                    placeholderLabel.textContent = 'Hiện không có phòng ban nào trong danh sách.';
+                }
+            } catch (e) {
+                console.error("JS: Error populating table with processed data", e);
+                phongBanTableBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Lỗi hiển thị dữ liệu.</td></tr>';
+                placeholderLabel.style.display = 'block';
+                placeholderLabel.textContent = 'Lỗi tải dữ liệu phòng ban (table population error).';
+            }
+        };
+
+        async function confirmDelete(id, ten) {
+            // Use JavaFX confirm dialog via javaConnector if available and preferred
+            // For now, using browser's confirm
+            if (confirm(`Bạn có chắc chắn muốn xóa phòng ban "${ten}" (ID: ${id}) không?`)) {
+                const success = await javaConnector.xoaPhongBan(id, ten);
+                if (success) {
+                    javaConnector.showAlert('information', `Phòng ban "${ten}" đã được xóa.`);
+                    loadData();
+                } else {
+                    javaConnector.showAlert('error', `Xóa phòng ban "${ten}" thất bại.`);
+                }
+            }
+        }
+
+        // Initial data load when the page is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if javaConnector is ready. Sometimes it might be injected after DOMContentLoaded.
+            // A small delay or a specific event from Java indicating readiness might be better.
+            if (window.javaConnector) {
+                loadData();
+            } else {
+                // Fallback or wait mechanism if javaConnector is not immediately available
+                console.warn("JS: javaConnector not immediately available on DOMContentLoaded. Will try again shortly.");
+                setTimeout(() => {
+                    if (window.javaConnector) {
+                        loadData();
+                    } else {
+                         console.error("JS: javaConnector still not available after delay.");
+                         placeholderLabel.textContent = "Không thể kết nối với ứng dụng Java.";
+                         placeholderLabel.style.display = 'block';
+                    }
+                }, 500); // Wait 500ms
+            }
+        });
+
+    </script>
+</body>
+</html>

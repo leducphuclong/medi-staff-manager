@@ -18,6 +18,9 @@ public class NhanVienBO {
     public List<NhanVien> layToanBoNhanVien() {
         return employeeDAO.layToanBoNhanVien();  // Calls the DAO to get employee data
     }
+    public boolean xoaNhieuNhanVien(List<Integer> ids) {
+        return employeeDAO.xoaNhieuNhanVien(ids);
+    }
     
     public boolean xoaNhanVien(int idNhanVien) {
     	return employeeDAO.xoaNhanVien(idNhanVien);
@@ -38,4 +41,9 @@ public class NhanVienBO {
     public boolean chuyenPhongBan(List<Integer> danhSachIdNhanVien, int idPhongBanMoi) {
         return employeeDAO.chuyenPhongBan(danhSachIdNhanVien, idPhongBanMoi);
     }
+    
+    public List<NhanVien> layNhanVienTheoIdPhongBan(int idPhongBan) {
+        return employeeDAO.layNhanVienTheoIdPhongBan(idPhongBan);
+    }
+
 }
