@@ -39,6 +39,10 @@ public class NhanVienController {
     // Optionally, you can add more methods to handle specific operations:
     // Example: public NhanVien getEmployeeById(int id) { return nhanVienBO.getEmployeeById(id); }
     
+    public boolean xoaNhieuNhanVien(List<Integer> ids) {
+        return nhanVienBO.xoaNhieuNhanVien(ids);
+    }
+    
     public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
     	return phongBanBO.layNhanVienTheoPhongBan(tenPhongBan);
     }
@@ -47,9 +51,21 @@ public class NhanVienController {
     	return nhanVienBO.xoaNhanVienTrongPhongBan(tenPhongBan);
     }
     
-    public boolean xoaPhongBan(String tenPhongBan) {
-        return phongBanBO.xoaPhongBan(tenPhongBan);
+    // Sửa đổi để gọi xoaPhongBanById từ phongBanBO
+    public boolean xoaPhongBan(String idPhongBanStr) { // Nhận ID dưới dạng String từ Bridge
+        try {
+            int idPhongBan = Integer.parseInt(idPhongBanStr);
+            return phongBanBO.xoaPhongBanById(idPhongBan); // Gọi phương thức mới trong BO
+        } catch (NumberFormatException e) {
+            System.err.println("Controller: ID phòng ban không hợp lệ: " + idPhongBanStr);
+            return false;
+        }
     }
+    
+    public List<NhanVien> layNhanVienTheoIdPhongBan(int idPhongBan) {
+        return nhanVienBO.layNhanVienTheoIdPhongBan(idPhongBan);
+    }
+
     
     public boolean themPhongBan(int idPhongBan, String tenPhongBan) {
         return phongBanBO.themPhongBan(idPhongBan, tenPhongBan);

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phòng Điều Hành</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #e9ecef; /* Màu nền xám nhạt giống Windows */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for scroll */
+            min-height: 100vh;
+            padding-top: 20px; /* Give some space at the top */
+        }
+
+        .app-container {
+            background-color: #f8f9fa; /* Màu nền chính của cửa sổ */
+            border: 1px solid #dee2e6;
+            border-radius: 0; /* Windows thường không có bo tròn nhiều */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1000px; /* Giới hạn chiều rộng tối đa */
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            padding: 10px 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            border-color: #6c757d;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .content-area {
+            padding: 20px;
+            flex-grow: 1; /* Cho phép nội dung chính mở rộng */
+        }
+
+        .content-area h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #212529;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        thead th:first-child, tbody td:first-child {
+            width: 100px; /* Độ rộng cho cột checkbox */
+            text-align: center;
+        }
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .app-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #dee2e6;
+            text-align: right;
+            background-color: #f8f9fa;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            margin-right: 10px;
+        }
+        .btn-delete:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* Nền mờ */
+            display: none; /* Ẩn ban đầu */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 0; /* Header sẽ có padding riêng */
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px; /* Kích thước modal */
+            animation: fadeInModal 0.3s ease-out;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa; /* Giống header Windows */
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .close-button {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6c757d;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .close-button:hover {
+            color: #343a40;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .confirmation-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background-color: #e7f3fe; /* Nền xanh nhạt cho confirmation */
+            padding: 10px;
+            border: 1px solid #b3d7f9;
+            border-radius: 4px;
+        }
+
+        .question-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .confirmation-section p {
+            margin: 0;
+            font-size: 14px;
+            color: #004085;
+        }
+
+        #department-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #fff;
+        }
+
+        .modal-footer {
+            padding: 10px 15px;
+            border-top: 1px solid #e9ecef;
+            text-align: right;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <button class="btn btn-back">← Trở lại</button>
+        </header>
+
+        <main class="content-area">
+            <h1>Phòng Điều Hành</h1>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all"> Chọn tất cả</th>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>SĐT</th>
+                            <th>Email</th>
+                            <th>Chức vụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td>4</td>
+                            <td>Phạm Thị D</td>
+                            <td>0987654324</td>
+                            <td>d.pham@example.com</td>
+                            <td>Giám đốc</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td>7</td>
+                            <td>Trần Văn G</td>
+                            <td>0987654327</td>
+                            <td>g.tran@example.com</td>
+                            <td>Quản lý</td>
+                        </tr>
+                        <!-- Thêm các hàng khác nếu cần -->
+                         <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td>8</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>0123456788</td>
+                            <td>a.nguyen@example.com</td>
+                            <td>Nhân viên</td>
+                        </tr>
+                         <tr>
+                            <td><input type="checkbox" class="row-checkbox"></td>
+                            <td>9</td>
+                            <td>Lê Thị B</td>
+                            <td>0123456789</td>
+                            <td>b.le@example.com</td>
+                            <td>Trưởng nhóm</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <button class="btn btn-delete">Xóa</button>
+            <button class="btn btn-primary" id="btn-transfer-department">Chuyển phòng ban</button>
+        </footer>
+    </div>
+
+    <!-- Modal Chuyển phòng ban -->
+    <div id="transferModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Chọn phòng ban mới</h3>
+                <span class="close-button" id="closeModal">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-section">
+                    <span class="question-icon">?</span>
+                    <p>Confirmation</p>
+                </div>
+                <select id="department-select">
+                    <option value="" disabled selected>-- Chọn phòng ban --</option>
+                    <option value="pkth">Phòng Kỹ Thuật</option>
+                    <option value="pnsu_1">Phòng Nhân Sự</option>
+                    <option value="pnsu_2">phòng nhân sự</option>
+                    <option value="ptch">Phòng Tài Chính</option>
+                    <option value="pdh_1">Phòng Điều Hành</option>
+                    <option value="pdh_2">Phòng điều hành</option>
+                    <option value="a">A</option>
+                    <option value="b">B</option>
+                    <option value="c">C</option>
+                    <option value="d">D</option>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <!-- Nút trong modal, có thể thêm nút "Hủy" và "Xác nhận" nếu logic yêu cầu -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+            const transferButton = document.getElementById('btn-transfer-department');
+            const modalOverlay = document.getElementById('transferModal');
+            const closeModalButton = document.getElementById('closeModal');
+
+            // Xử lý "Chọn tất cả"
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    rowCheckboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            }
+
+            // Nếu bỏ chọn 1 dòng, bỏ chọn "Chọn tất cả"
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (!checkbox.checked) {
+                        selectAllCheckbox.checked = false;
+                    }
+                    // Kiểm tra nếu tất cả các dòng được chọn thì check "Chọn tất cả"
+                    let allChecked = true;
+                    rowCheckboxes.forEach(cb => {
+                        if (!cb.checked) {
+                            allChecked = false;
+                        }
+                    });
+                    if (rowCheckboxes.length > 0) { // Đảm bảo có checkbox để kiểm tra
+                        selectAllCheckbox.checked = allChecked;
+                    }
+                });
+            });
+
+            // Mở modal
+            if (transferButton && modalOverlay) {
+                transferButton.addEventListener('click', function() {
+                    // Kiểm tra xem có nhân viên nào được chọn không
+                    let selectedCount = 0;
+                    rowCheckboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            selectedCount++;
+                        }
+                    });
+
+                    if (selectedCount === 0) {
+                        alert("Vui lòng chọn ít nhất một nhân viên để chuyển phòng ban.");
+                        return;
+                    }
+                    modalOverlay.style.display = 'flex';
+                });
+            }
+
+            // Đóng modal bằng nút X
+            if (closeModalButton && modalOverlay) {
+                closeModalButton.addEventListener('click', function() {
+                    modalOverlay.style.display = 'none';
+                });
+            }
+
+            // Đóng modal khi click ra ngoài (vào overlay)
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(event) {
+                    if (event.target === modalOverlay) { // Chỉ đóng nếu click trực tiếp vào overlay
+                        modalOverlay.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

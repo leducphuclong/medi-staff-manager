@@ -22,6 +22,10 @@ public class phongBanBO {
     public boolean xoaPhongBan(String tenPhongBan) {
         return PhongBanDAO.xoaPhongBan(tenPhongBan);
     }
+
+    public boolean xoaPhongBanById(int idPhongBan) {
+        return PhongBanDAO.xoaPhongBanById(idPhongBan);
+    }
     
     public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
         return nhanVienDAO.layNhanVienTheoPhongBan(tenPhongBan);

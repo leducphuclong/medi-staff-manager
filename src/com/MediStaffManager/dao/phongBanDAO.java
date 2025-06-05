@@ -1,11 +1,10 @@
 package com.MediStaffManager.dao;
 
 import com.MediStaffManager.utils.DBConnection;
-import com.MediStaffManager.bean.NhanVien;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.*;
+import java.sql.ResultSet; // Specifically import ResultSet
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +13,41 @@ public class phongBanDAO {
 
     public phongBanDAO() {
         this.connection = DBConnection.connect();
+    }
+
+    // Phương thức xóa một phòng ban theo ID
+    public boolean xoaPhongBanById(int idPhongBan) {
+        String queryKiemTraNhanVien = "SELECT COUNT(*) FROM nhan_vien WHERE IDPhongBan = ?";
+        String queryXoaPhongBan = "DELETE FROM phong_ban WHERE IDPhongBan = ?";
+        try {
+            // Kiểm tra xem phòng ban còn nhân viên không
+            try (PreparedStatement stmtKiemTra = connection.prepareStatement(queryKiemTraNhanVien)) {
+                stmtKiemTra.setInt(1, idPhongBan);
+                try (ResultSet rs = stmtKiemTra.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        System.out.println("DAO: Phòng ban (ID: " + idPhongBan + ") vẫn còn nhân viên. Không thể xóa.");
+                        return false; // Không thể xóa nếu còn nhân viên
+                    }
+                }
+            }
+
+            // Nếu không còn nhân viên, tiến hành xóa phòng ban
+            try (PreparedStatement stmtXoaPhongBan = connection.prepareStatement(queryXoaPhongBan)) {
+                stmtXoaPhongBan.setInt(1, idPhongBan);
+                int affectedRows = stmtXoaPhongBan.executeUpdate();
+                if (affectedRows > 0) {
+                    System.out.println("DAO: Đã xóa phòng ban (ID: " + idPhongBan + ")");
+                    return true;
+                } else {
+                    System.out.println("DAO: Không tìm thấy phòng ban (ID: " + idPhongBan + ") để xóa.");
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("DAO: Lỗi SQL khi xóa phòng ban (ID: " + idPhongBan + "): " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 
     // Phương thức xóa một phòng ban theo tên
@@ -92,10 +126,37 @@ public class phongBanDAO {
     }
     
     public boolean suaPhongBan(int idPhongBanCu, int idPhongBanMoi, String tenPhongBanMoi) {
+        // Kiểm tra trùng ID (ngoại trừ chính nó)
+        String checkIdSql = "SELECT COUNT(*) FROM phong_ban WHERE IDPhongBan = ? AND IDPhongBan <> ?";
+        // Kiểm tra trùng tên (ngoại trừ chính nó)
+        String checkNameSql = "SELECT COUNT(*) FROM phong_ban WHERE TenPhongBan = ? AND IDPhongBan <> ?";
         String queryThemPhongBanMoi = "INSERT INTO phong_ban (IDPhongBan, TenPhongBan) VALUES (?, ?) ON DUPLICATE KEY UPDATE TenPhongBan = ?";
         String queryCapNhatNhanVien = "UPDATE nhan_vien SET IDPhongBan = ? WHERE IDPhongBan = ?";
         String queryXoaPhongBanCu = "DELETE FROM phong_ban WHERE IDPhongBan = ?";
         try {
+            // Kiểm tra trùng ID
+            try (PreparedStatement stmtCheckId = connection.prepareStatement(checkIdSql)) {
+                stmtCheckId.setInt(1, idPhongBanMoi);
+                stmtCheckId.setInt(2, idPhongBanCu);
+                try (ResultSet rs = stmtCheckId.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        // Đã tồn tại ID khác
+                        return false;
+                    }
+                }
+            }
+            // Kiểm tra trùng tên
+            try (PreparedStatement stmtCheckName = connection.prepareStatement(checkNameSql)) {
+                stmtCheckName.setString(1, tenPhongBanMoi);
+                stmtCheckName.setInt(2, idPhongBanCu);
+                try (ResultSet rs = stmtCheckName.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        // Đã tồn tại tên khác
+                        return false;
+                    }
+                }
+            }
+
             connection.setAutoCommit(false);
 
             try (PreparedStatement stmtThemPhongBanMoi = connection.prepareStatement(queryThemPhongBanMoi)) {
@@ -111,9 +172,22 @@ public class phongBanDAO {
                 stmtNhanVien.executeUpdate();
             }
 
-            try (PreparedStatement stmtXoaPhongBanCu = connection.prepareStatement(queryXoaPhongBanCu)) {
-                stmtXoaPhongBanCu.setInt(1, idPhongBanCu);
-                stmtXoaPhongBanCu.executeUpdate();
+            // Chỉ xóa phòng ban cũ nếu ID thực sự thay đổi
+            if (idPhongBanCu != idPhongBanMoi) {
+                try (PreparedStatement stmtXoaPhongBanCu = connection.prepareStatement(queryXoaPhongBanCu)) {
+                    stmtXoaPhongBanCu.setInt(1, idPhongBanCu);
+                    int deletedRows = stmtXoaPhongBanCu.executeUpdate();
+                    if (deletedRows > 0) {
+                        System.out.println("DAO: Đã xóa phòng ban cũ (ID: " + idPhongBanCu + ")");
+                    } else {
+                        System.out.println("DAO: Không tìm thấy phòng ban cũ (ID: " + idPhongBanCu + ") để xóa.");
+                        // Điều này không nên xảy ra nếu idPhongBanCu tồn tại và khác idPhongBanMoi
+                    }
+                }
+            } else {
+                // Trường hợp ID không đổi, chỉ cập nhật tên (đã được xử lý bởi queryThemPhongBanMoi với ON DUPLICATE KEY UPDATE)
+                // Không cần hành động xóa ở đây.
+                System.out.println("DAO: ID phòng ban không thay đổi (ID: " + idPhongBanCu + "). Chỉ cập nhật thông tin.");
             }
 
             connection.commit();
@@ -134,7 +208,8 @@ public class phongBanDAO {
         }
         return false;
     }
-    
+
+
     public int layIdPhongBanTheoTen(String tenPhongBan) {
         String query = "SELECT IDPhongBan FROM phong_ban WHERE TenPhongBan = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {

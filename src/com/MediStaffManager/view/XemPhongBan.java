@@ -1,335 +1,286 @@
 package com.MediStaffManager.view;
 
-import com.MediStaffManager.controller.NhanVienController;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
-import javafx.geometry.Pos;
-
+// Standard Java imports
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+// JavaFX imports
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Worker;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+
+// JavaScript bridge (requires jdk.jsobject module if using Java 9+ modules)
+import netscape.javascript.JSObject;
+
+// External library for JSON processing (ensure Gson is in your project's classpath)
+import com.google.gson.Gson;
+
+// Local project imports
+import com.MediStaffManager.controller.NhanVienController;
 
 public class XemPhongBan extends Application {
-    private TableView<Object[]> phongBanTable;
-    private ObservableList<Object[]> phongBanData;
     private NhanVienController controller;
+    private WebView webView;
+    private WebEngine webEngine;
+    private Stage primaryStage;
+
+    // Path to the HTML file relative to the classpath root.
+    private static final String HTML_FILE_PATH = "/com/MediStaffManager/view/phongBan.html";
 
     @Override
     public void start(Stage primaryStage) {
-        controller = new NhanVienController();
-        primaryStage.setTitle("Quản lý Phòng Ban");
+        this.primaryStage = primaryStage;
+        this.controller = new NhanVienController(); // Ensure NhanVienController is initialized
+        primaryStage.setTitle("Quản lý Phòng Ban - Family Hospital");
 
-        // Navigation bar
-        HBox navBar = new HBox(30);
-        navBar.setPadding(new Insets(14, 30, 14, 30));
-        navBar.setStyle("-fx-background-color: #001f4d;");
-        navBar.setPrefWidth(Double.MAX_VALUE);
-        navBar.setAlignment(Pos.CENTER_LEFT);
+        this.webView = new WebView();
+        this.webEngine = webView.getEngine();
 
-        // Tiêu đề bệnh viện
-        Label hospitalLabel = new Label("Family Hospital");
-        hospitalLabel.setStyle(
-            "-fx-text-fill: #ffffff;" +
-            "-fx-font-size: 20px;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-weight: bold;"
-        );
+        webEngine.setJavaScriptEnabled(true);
 
-        // Các nút điều hướng (mỏng hơn, màu dịu hơn)
-        Button nhanVienButton = new Button("Nhân viên");
-        Button phongBanButton = new Button("Phòng ban");
-        Button lichLamViecButton = new Button("Lịch làm việc");
-
-        styleLightNavButton(nhanVienButton);
-        styleLightNavButton(phongBanButton);
-        styleLightNavButton(lichLamViecButton);
-
-        // Sự kiện cho nút "Phòng ban"
-        phongBanButton.setOnAction(e -> {
-            try {
-                new XemPhongBan().start(new Stage());
-                primaryStage.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        // Log JavaScript console messages to Java console for easier debugging
+        webEngine.setOnConsoleMessage(event -> {
+            System.out.println("JS Console: [" + event.sourceID() + ":" + event.lineNumber() + "] " + event.message());
         });
 
-        navBar.getChildren().addAll(hospitalLabel, nhanVienButton, phongBanButton, lichLamViecButton);
+        // Handle JavaScript alert() calls by showing a JavaFX Alert
+        webEngine.setOnAlert(event -> showAlertInJava(AlertType.INFORMATION, "Thông báo từ Web", event.getData()));
 
+        // Handle JavaScript confirm() calls using a JavaFX Alert
+        webEngine.setConfirmHandler(message -> {
+            Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+            confirmDialog.setTitle("Xác nhận");
+            confirmDialog.setHeaderText(null);
+            confirmDialog.setContentText(message);
+            styleAlertDialog(confirmDialog);
+            return confirmDialog.showAndWait().filter(response -> response == ButtonType.OK).isPresent();
+        });
 
-        // Title for TableView
-        Label tableTitle = new Label("Quản lý phòng ban");
-        tableTitle.setMaxWidth(Double.MAX_VALUE);
-        tableTitle.setAlignment(Pos.CENTER_LEFT);
-        tableTitle.setStyle(
-            "-fx-font-size: 24px;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 12px;" +
-            "-fx-background-color: #f2f2f2;" +
-            "-fx-border-color: #cccccc;" +
-            "-fx-border-width: 1px 1px 1px 1px;" +
-            "-fx-background-radius: 10px 10px 0 0;" +
-            "-fx-border-radius: 10px 10px 0 0;"
-        );
-
-        
-
-        // TableView setup
-        phongBanTable = new TableView<>();
-        phongBanData = FXCollections.observableArrayList();
-        phongBanTable.setItems(phongBanData);
-
-        phongBanTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-        TableColumn<Object[], Integer> idColumn = new TableColumn<>("ID phòng ban");
-        idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>((Integer) cellData.getValue()[0]));
-        idColumn.setPrefWidth(150);
-        idColumn.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object[], String> nameColumn = new TableColumn<>("Tên phòng ban");
-        nameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>((String) cellData.getValue()[1]));
-        nameColumn.setPrefWidth(300);
-        nameColumn.setStyle("-fx-alignment: CENTER;");
-
-        TableColumn<Object[], String> actionColumn = new TableColumn<>("Thao tác");
-        actionColumn.setCellFactory(col -> new TableCell<>() {
-            private final Button suaButton = new Button("Sửa");
-            private final Button xoaButton = new Button("Xóa");
-            private final HBox actionBox = new HBox(10, suaButton, xoaButton);
-
-            {
-                suaButton.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-                xoaButton.setStyle("-fx-background-color: #DC3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5px 10px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-
-                suaButton.setOnAction(e -> suaPhongBan(getTableRow().getItem()));
-                xoaButton.setOnAction(e -> xoaPhongBan(getTableRow().getItem()));
-                actionBox.setStyle("-fx-alignment: CENTER;");
+        // Load HTML content
+        try {
+            // Correctly load HTML file from classpath
+            java.net.URL htmlUrl = getClass().getResource(HTML_FILE_PATH);
+            if (htmlUrl == null) {
+                String errorMsg = "Không thể tìm thấy tệp giao diện: " + HTML_FILE_PATH +
+                                  "\nVui lòng kiểm tra đường dẫn và cấu trúc project." +
+                                  "\nĐường dẫn tìm kiếm từ gốc classpath: " + HTML_FILE_PATH;
+                System.err.println(errorMsg);
+                showAlertInJava(AlertType.ERROR, "Lỗi nghiêm trọng", errorMsg);
+                return;
             }
+            String localUrl = htmlUrl.toExternalForm();
+            System.out.println("Java: Loading HTML from: " + localUrl);
+            webEngine.load(localUrl);
+        } catch (Exception e) { // Catch generic Exception for any loading issues
+            e.printStackTrace();
+            showAlertInJava(AlertType.ERROR, "Lỗi nghiêm trọng", "Không thể tải giao diện người dùng: " + e.getMessage());
+            return;
+        }
 
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || getTableRow().getItem() == null) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(actionBox);
+        // Bridge Java and JavaScript once the page is loaded
+        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                JSObject window = (JSObject) webEngine.executeScript("window");
+                window.setMember("javaConnector", new JavaConnector());
+                System.out.println("Java: JavaConnector injected into JavaScript.");
+            } else if (newState == Worker.State.FAILED) {
+                System.err.println("Java: WebEngine failed to load the page.");
+                showAlertInJava(AlertType.ERROR, "Lỗi WebEngine", "Không thể tải trang. Kiểm tra console (System.err) để biết thêm chi tiết.");
+                if (webEngine.getLoadWorker().getException() != null) {
+                    webEngine.getLoadWorker().getException().printStackTrace();
                 }
             }
         });
 
-        // Sự kiện nhấn đúp chuột vào hàng trong TableView
-        phongBanTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Object[] selectedPhongBan = phongBanTable.getSelectionModel().getSelectedItem();
-                if (selectedPhongBan != null) {
-                    int idPhongBan = (int) selectedPhongBan[0];
-                    String tenPhongBan = (String) selectedPhongBan[1];
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setCenter(webView);
 
-                    // Mở giao diện XemNhanVien với thông tin phòng ban
-                    XemNhanVien xemNhanVien = new XemNhanVien(idPhongBan, tenPhongBan);
-                    try {
-                        xemNhanVien.start(new Stage());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        actionColumn.setPrefWidth(200);
-        actionColumn.setStyle("-fx-alignment: CENTER;");
-
-        phongBanTable.getColumns().addAll(idColumn, nameColumn, actionColumn);
-
-        // Add padding around TableView
-        VBox tableContainer = new VBox(0, tableTitle, phongBanTable);
-        tableContainer.setPadding(new Insets(15));
-        tableContainer.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-
-        // Add button "Thêm" at bottom-right
-        Button themButton = new Button("Thêm");
-        themButton.setStyle("-fx-background-color: #007BFF; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10px 20px; -fx-border-radius: 5px; -fx-background-radius: 5px;");
-        themButton.setOnAction(e -> themPhongBan());
-
-        StackPane stackPane = new StackPane();
-        stackPane.getChildren().addAll(tableContainer, themButton);
-        StackPane.setMargin(themButton, new Insets(0, 15, 15, 0));
-        StackPane.setAlignment(themButton, Pos.BOTTOM_RIGHT);
-
-        // Layout
-        BorderPane layout = new BorderPane();
-        layout.setTop(navBar);
-        layout.setCenter(stackPane);
-        layout.setStyle("-fx-background-color: #F8F9FA;");
-
-        Scene scene = new Scene(layout, 900, 600);
+        Scene scene = new Scene(mainLayout, 950, 650);
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Load data
-        xemDanhSachPhongBan();
     }
 
-    private void styleLightNavButton(Button button) {
-        button.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-text-fill: #dddddd;" + // màu sáng nhưng không trắng
-            "-fx-font-size: 16px;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-weight: normal;" +
-            "-fx-cursor: hand;"
-        );
-        button.setOnMouseEntered(e -> button.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-text-fill: white;" + // hover sáng hơn
-            "-fx-font-size: 16px;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-weight: normal;" +
-            "-fx-cursor: hand;"
-        ));
-        button.setOnMouseExited(e -> button.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-text-fill: #dddddd;" +
-            "-fx-font-size: 16px;" +
-            "-fx-font-family: 'Segoe UI';" +
-            "-fx-font-weight: normal;" +
-            "-fx-cursor: hand;"
-        ));
-    }
+    // Inner class to expose Java methods to JavaScript
+    public class JavaConnector {
+        private final Gson gson = new Gson();
 
-    
-    private void styleNavButton(Button button) {
-        button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-        button.setOnMouseEntered(e -> button.setStyle("-fx-background-color: #555555; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"));
-        button.setOnMouseExited(e -> button.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"));
-    }
+        public void loadPhongBanData() {
+            System.out.println("JavaConnector: loadPhongBanData called by JavaScript."); // Log added
+            Platform.runLater(() -> {
+                try {
+                    if (controller == null) {
+                         System.err.println("JavaConnector: NhanVienController is null in loadPhongBanData.");
+                         showAlertInJava(AlertType.ERROR, "Lỗi", "Controller chưa được khởi tạo.");
+                         return;
+                    }
+                    List<Object[]> phongBanListRaw = controller.layDanhSachPhongBan();
+                    List<PhongBanSimple> phongBanList = phongBanListRaw.stream()
+                        .map(objArray -> new PhongBanSimple((Integer)objArray[0], (String)objArray[1]))
+                        .collect(Collectors.toList());
+                    String jsonData = gson.toJson(phongBanList);
+                    System.out.println("JavaConnector: Sending data to JS populateTableWithData: " + (jsonData.length() > 100 ? jsonData.substring(0, 100) + "..." : jsonData)); // Log added
 
-    private void xemDanhSachPhongBan() {
-        List<Object[]> phongBanList = controller.layDanhSachPhongBan();
-        phongBanData.setAll(phongBanList);
+                    String script = String.format("if(typeof window.populateTableWithData === 'function') { window.populateTableWithData('%s'); } else { console.error('JavaScript function populateTableWithData not found.'); }", escapeJsString(jsonData));
+                    webEngine.executeScript(script);
 
-        if (phongBanList.isEmpty()) {
-            showAlert(Alert.AlertType.INFORMATION, "Không có phòng ban nào!");
+                } catch (Exception e) {
+                    System.err.println("JavaConnector: Exception in loadPhongBanData: " + e.getMessage()); // Log added
+                    e.printStackTrace();
+                    showAlertInJava(AlertType.ERROR, "Lỗi", "Không thể cập nhật danh sách phòng ban: " + e.getMessage());
+                }
+            });
+        }
+
+        public boolean themPhongBan(int id, String ten) {
+            System.out.println("JavaConnector: themPhongBan called with ID: " + id + ", Ten: " + ten); // Log added
+            if (controller == null) {
+                System.err.println("JavaConnector: NhanVienController is null in themPhongBan.");
+                showAlertInJava(AlertType.ERROR, "Lỗi", "Controller chưa được khởi tạo.");
+                return false;
+            }
+            boolean result = false;
+            try {
+                result = controller.themPhongBan(id, ten);
+            } catch (Exception e) {
+                System.err.println("JavaConnector: Exception in controller.themPhongBan: " + e.getMessage());
+                e.printStackTrace();
+                showAlertInJava(AlertType.ERROR, "Lỗi Controller", "Lỗi khi thêm phòng ban: " + e.getMessage());
+                return false;
+            }
+            System.out.println("JavaConnector: themPhongBan result from controller: " + result); // Log added
+            return result;
+        }
+
+        public boolean suaPhongBan(int idCu, int idMoi, String tenMoi) {
+            System.out.println("JavaConnector: suaPhongBan called with ID Cũ: " + idCu + ", ID Mới: " + idMoi + ", Tên Mới: " + tenMoi); // Log added
+            if (controller == null) {
+                System.err.println("JavaConnector: NhanVienController is null in suaPhongBan.");
+                showAlertInJava(AlertType.ERROR, "Lỗi", "Controller chưa được khởi tạo.");
+                return false;
+            }
+            boolean result = false;
+            try {
+                result = controller.suaPhongBan(idCu, idMoi, tenMoi);
+            } catch (Exception e) {
+                System.err.println("JavaConnector: Exception in controller.suaPhongBan: " + e.getMessage());
+                e.printStackTrace();
+                showAlertInJava(AlertType.ERROR, "Lỗi Controller", "Lỗi khi sửa phòng ban: " + e.getMessage());
+                return false;
+            }
+            System.out.println("JavaConnector: suaPhongBan result from controller: " + result); // Log added
+            return result;
+        }
+
+        public boolean xoaPhongBan(int id, String ten) {
+            System.out.println("JavaConnector: xoaPhongBan called with ID: " + id + ", Ten (for context): " + ten); // Log added
+            if (controller == null) {
+                System.err.println("JavaConnector: NhanVienController is null in xoaPhongBan.");
+                showAlertInJava(AlertType.ERROR, "Lỗi", "Controller chưa được khởi tạo.");
+                return false;
+            }
+            boolean result = false;
+            try {
+                result = controller.xoaPhongBan(id);
+            } catch (Exception e) {
+                System.err.println("JavaConnector: Exception in controller.xoaPhongBan: " + e.getMessage());
+                e.printStackTrace();
+                showAlertInJava(AlertType.ERROR, "Lỗi Controller", "Lỗi khi xóa phòng ban: " + e.getMessage());
+                return false;
+            }
+            System.out.println("JavaConnector: xoaPhongBan result from controller: " + result); // Log added
+            return result;
+        }
+
+        public void navigateToNhanVien() {
+            Platform.runLater(() -> {
+                showAlertInJava(AlertType.INFORMATION, "Thông báo", "Chuyển đến trang Nhân viên (chưa triển khai).");
+            });
+        }
+
+        public void navigateToPhongBan() {
+            Platform.runLater(() -> {
+                loadPhongBanData();
+            });
+        }
+
+        public void navigateToLichLamViec() {
+            Platform.runLater(() -> {
+                showAlertInJava(AlertType.INFORMATION, "Thông báo", "Chức năng Lịch Làm Việc chưa được triển khai.");
+            });
+        }
+
+        public void logout() {
+             Platform.runLater(() -> {
+                showAlertInJava(AlertType.INFORMATION, "Thông báo", "Đăng xuất (chưa triển khai).");
+            });
+        }
+
+        public void viewNhanVienTheoPhongBan(int id, String ten) {
+            Platform.runLater(() -> {
+                showAlertInJava(AlertType.INFORMATION, "Thông báo", 
+                    "Xem nhân viên theo phòng ban: " + ten + " (ID: " + id + ") (chưa triển khai).");
+            });
+        }
+
+        public void showAlert(String type, String message) {
+            Platform.runLater(() -> {
+                AlertType alertTypeEnum;
+                switch (type.toUpperCase()) {
+                    case "ERROR": alertTypeEnum = AlertType.ERROR; break;
+                    case "WARNING": alertTypeEnum = AlertType.WARNING; break;
+                    case "INFORMATION":
+                    default: alertTypeEnum = AlertType.INFORMATION; break;
+                }
+                showAlertInJava(alertTypeEnum, type.substring(0,1).toUpperCase() + type.substring(1).toLowerCase() + " Dialog", message);
+            });
         }
     }
 
-    private void themPhongBan() {
-        TextField idPhongBanField = new TextField();
-        TextField tenPhongBanField = new TextField();
-
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Thêm phòng ban mới");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(10));
-        grid.add(new Label("ID phòng ban:"), 0, 0);
-        grid.add(idPhongBanField, 1, 0);
-        grid.add(new Label("Tên phòng ban:"), 0, 1);
-        grid.add(tenPhongBanField, 1, 1);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    int idPhongBan = Integer.parseInt(idPhongBanField.getText().trim());
-                    String tenPhongBan = tenPhongBanField.getText().trim();
-
-                    if (tenPhongBan.isEmpty()) {
-                        showAlert(Alert.AlertType.WARNING, "Tên phòng ban không được để trống!");
-                        return;
-                    }
-
-                    boolean success = controller.themPhongBan(idPhongBan, tenPhongBan);
-                    if (success) {
-                        showAlert(Alert.AlertType.INFORMATION, "Thêm phòng ban thành công!");
-                        xemDanhSachPhongBan();
-                    } else {
-                        showAlert(Alert.AlertType.ERROR, "Thêm phòng ban thất bại! ID có thể đã tồn tại.");
-                    }
-                } catch (NumberFormatException e) {
-                    showAlert(Alert.AlertType.ERROR, "ID phòng ban phải là số nguyên!");
-                }
-            }
-        });
+    public static class PhongBanSimple {
+        int id;
+        String ten;
+        public PhongBanSimple(int id, String ten) {
+            this.id = id;
+            this.ten = ten;
+        }
+        public int getId() { return id; }
+        public String getTen() { return ten; }
     }
 
-    private void suaPhongBan(Object[] phongBan) {
-        TextField idPhongBanCuField = new TextField(String.valueOf(phongBan[0]));
-        TextField idPhongBanMoiField = new TextField();
-        TextField tenPhongBanMoiField = new TextField();
-
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setTitle("Sửa phòng ban");
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(10));
-        grid.add(new Label("ID phòng ban cũ:"), 0, 0);
-        grid.add(idPhongBanCuField, 1, 0);
-        grid.add(new Label("ID phòng ban mới:"), 0, 1);
-        grid.add(idPhongBanMoiField, 1, 1);
-        grid.add(new Label("Tên phòng ban mới:"), 0, 2);
-        grid.add(tenPhongBanMoiField, 1, 2);
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    int idPhongBanCu = Integer.parseInt(idPhongBanCuField.getText().trim());
-                    int idPhongBanMoi = Integer.parseInt(idPhongBanMoiField.getText().trim());
-                    String tenPhongBanMoi = tenPhongBanMoiField.getText().trim();
-
-                    if (tenPhongBanMoi.isEmpty()) {
-                        showAlert(Alert.AlertType.WARNING, "Tên phòng ban không được để trống!");
-                        return;
-                    }
-
-                    boolean success = controller.suaPhongBan(idPhongBanCu, idPhongBanMoi, tenPhongBanMoi);
-                    if (success) {
-                        showAlert(Alert.AlertType.INFORMATION, "Sửa phòng ban thành công!");
-                        xemDanhSachPhongBan();
-                    } else {
-                        showAlert(Alert.AlertType.ERROR, "Sửa phòng ban thất bại! Kiểm tra lại thông tin.");
-                    }
-                } catch (NumberFormatException e) {
-                    showAlert(Alert.AlertType.ERROR, "ID phòng ban phải là số nguyên!");
-                }
-            }
-        });
+    private void showAlertInJava(AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        styleAlertDialog(alert);
+        alert.showAndWait();
     }
 
-    private void xoaPhongBan(Object[] phongBan) {
-        String tenPhongBan = (String) phongBan[1];
-
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION, "Bạn có chắc chắn muốn xóa phòng ban này?", ButtonType.YES, ButtonType.NO);
-        confirmAlert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                boolean success = controller.xoaPhongBan(tenPhongBan);
-                if (success) {
-                    showAlert(Alert.AlertType.INFORMATION, "Xóa phòng ban thành công!");
-                    xemDanhSachPhongBan();
-                } else {
-                    showAlert(Alert.AlertType.ERROR, "Không thể xóa phòng ban vì vẫn còn nhân viên!");
-                }
-            }
-        });
+    private void styleAlertDialog(Alert alert) {
+        alert.getDialogPane().setStyle("-fx-font-family: 'System', 'Segoe UI', sans-serif; -fx-font-size: 13px;");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
     }
 
-    private void showAlert(Alert.AlertType alertType, String message) {
-        Alert alert = new Alert(alertType, message, ButtonType.OK);
-        alert.show();
+    private String escapeJsString(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\")
+                .replace("'", "\\'")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t")
+                .replace("\b", "\\b")
+                .replace("\f", "\\f");
     }
 
     public static void main(String[] args) {

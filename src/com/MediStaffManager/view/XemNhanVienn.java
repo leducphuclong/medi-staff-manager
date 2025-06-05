@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XemNhanVien extends Application {
+public class XemNhanVienn extends Application {
     private TableView<NhanVien> table;
     private ObservableList<NhanVien> employeeData;
     private NhanVienController controller;
@@ -54,12 +54,12 @@ public class XemNhanVien extends Application {
             "-fx-border-radius: 10px; " +
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 12, 0.0, 0, 3);"; // Softer shadow
 
-    public XemNhanVien(int idPhongBan, String tenPhongBan) {
+    public XemNhanVienn(int idPhongBan, String tenPhongBan) {
         this.idPhongBan = idPhongBan;
         this.tenPhongBan = tenPhongBan;
     }
 
-    public XemNhanVien() {
+    public XemNhanVienn() {
         // Default constructor for cases where it might be needed by JavaFX launch mechanism
         // Or if you plan to launch it without specific department info initially.
         // For this example, assuming it's always launched with department info.
@@ -77,7 +77,7 @@ public class XemNhanVien extends Application {
         troLaiButton.setStyle(COMMON_BUTTON_STYLE_BASE + "-fx-background-color: " + SECONDARY_BUTTON_COLOR + ";");
         troLaiButton.setOnAction(e -> {
             try {
-                new XemPhongBan().start(new Stage());
+                new XemPhongBann().start(new Stage());
                 primaryStage.close();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -391,7 +391,7 @@ public class XemNhanVien extends Application {
         @Override
         public void start(Stage primaryStage) throws Exception {
             // Example: Launch with a default department for testing
-             XemNhanVien view = new XemNhanVien(1, "Khoa Khám Bệnh"); // Example department
+             XemNhanVienn view = new XemNhanVienn(1, "Khoa Khám Bệnh"); // Example department
              view.start(primaryStage);
         }
     }
