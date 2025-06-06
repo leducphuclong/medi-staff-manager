@@ -101,7 +101,7 @@ function displaySearchResults(results) {
 
         const editButton = document.createElement('button');
         editButton.className = 'btn btn-edit';
-        editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+        editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>&nbsp;Sửa';
         editButton.title = "Sửa thông tin phòng ban";
         editButton.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -111,7 +111,7 @@ function displaySearchResults(results) {
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'btn btn-danger';
-        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>&nbsp;Xóa';
         deleteButton.title = "Xóa phòng ban";
         deleteButton.addEventListener('click', (event) => {
             event.stopPropagation();
@@ -180,7 +180,7 @@ function loadDepartmentTableData() {
 
             const editButton = document.createElement('button');
             editButton.className = 'btn btn-edit';
-            editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>'; // Changed from textContent
+            editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>&nbsp;Sửa';
             editButton.title = "Sửa thông tin phòng ban"; // Added title
             editButton.addEventListener('click', (event) => {
                 event.stopPropagation();
@@ -188,7 +188,7 @@ function loadDepartmentTableData() {
             });
             actionsCell.appendChild(editButton);            const deleteButton = document.createElement('button');
             deleteButton.className = 'btn btn-danger';
-            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>'; // Changed from textContent
+            deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>&nbsp;Xóa';
             deleteButton.title = "Xóa phòng ban"; // Added title
             deleteButton.addEventListener('click', (event) => {
                 event.stopPropagation();
