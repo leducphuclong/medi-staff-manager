@@ -15,6 +15,16 @@ public class phongBanBO {
         this.nhanVienDAO = new NhanVienDAO();
     }
     
+    // Phương thức tìm kiếm phòng ban theo tên
+    public List<Object[]> timKiemPhongBanTheoTen(String tenPhongBan) {
+        return PhongBanDAO.timKiemPhongBanTheoTen(tenPhongBan);
+    }
+    
+    // Phương thức tìm kiếm phòng ban theo ID
+    public List<Object[]> timKiemPhongBanTheoId(int idPhongBan) {
+        return PhongBanDAO.timKiemPhongBanTheoId(idPhongBan);
+    }
+    
     public List<Object[]> layDanhSachPhongBan() {
         return PhongBanDAO.layDanhSachPhongBan();
     }
