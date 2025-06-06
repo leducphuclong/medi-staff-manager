@@ -15,6 +15,48 @@ public class phongBanDAO {
         this.connection = DBConnection.connect();
     }
 
+    // Phương thức tìm kiếm phòng ban theo tên
+    public List<Object[]> timKiemPhongBanTheoTen(String tenPhongBan) {
+        List<Object[]> ketQua = new ArrayList<>();
+        String query = "SELECT IDPhongBan, TenPhongBan FROM phong_ban WHERE TenPhongBan LIKE ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, "%" + tenPhongBan + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idPhongBan = rs.getInt("IDPhongBan");
+                    String tenPB = rs.getString("TenPhongBan");
+                    ketQua.add(new Object[]{idPhongBan, tenPB});
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("DAO: Lỗi SQL khi tìm kiếm phòng ban theo tên: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
+
+    // Phương thức tìm kiếm phòng ban theo ID
+    public List<Object[]> timKiemPhongBanTheoId(int idPhongBan) {
+        List<Object[]> ketQua = new ArrayList<>();
+        String query = "SELECT IDPhongBan, TenPhongBan FROM phong_ban WHERE IDPhongBan = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idPhongBan);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int idPB = rs.getInt("IDPhongBan");
+                    String tenPhongBan = rs.getString("TenPhongBan");
+                    ketQua.add(new Object[]{idPB, tenPhongBan});
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("DAO: Lỗi SQL khi tìm kiếm phòng ban theo ID: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
+    
     // Phương thức xóa một phòng ban theo ID
     public boolean xoaPhongBanById(int idPhongBan) {
         String queryKiemTraNhanVien = "SELECT COUNT(*) FROM nhan_vien WHERE IDPhongBan = ?";
@@ -224,4 +266,5 @@ public class phongBanDAO {
         }
         return -1;
     }
+
 }

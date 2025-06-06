@@ -109,8 +109,8 @@ function handleDeleteSelectedEmployees() {
     quanLyPhongBanBridge.log(`handleDeleteSelectedEmployees: Raw csvIds = '${csvIds}', type = ${typeof csvIds}, length = ${csvIds ? csvIds.length : 'N/A'}`);
 
     if (!csvIds || csvIds.trim() === "") {
-        quanLyPhongBanBridge.log("handleDeleteSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is TRUE. Calling showCustomWarning.");
-        showCustomWarning(); // Changed to use default message
+        quanLyPhongBanBridge.log("handleDeleteSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is TRUE. Calling showNotification.");
+        showNotification("Chưa có nhân viên nào được chọn", "warning");
         return;
     } else {
         quanLyPhongBanBridge.log("handleDeleteSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is FALSE. Proceeding.");
@@ -171,8 +171,8 @@ function handleTransferSelectedEmployees() {
     quanLyPhongBanBridge.log(`handleTransferSelectedEmployees: Raw csvIds = '${csvIds}', type = ${typeof csvIds}, length = ${csvIds ? csvIds.length : 'N/A'}`);
 
     if (!csvIds || csvIds.trim() === "") {
-        quanLyPhongBanBridge.log("handleTransferSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is TRUE. Calling showCustomWarning.");
-        showCustomWarning(); // Changed to use default message
+        quanLyPhongBanBridge.log("handleTransferSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is TRUE. Calling showNotification.");
+        showNotification("Chưa có nhân viên nào được chọn", "warning");
         return;
     } else {
         quanLyPhongBanBridge.log("handleTransferSelectedEmployees: Condition (!csvIds || csvIds.trim() === \"\") is FALSE. Proceeding.");
@@ -186,27 +186,27 @@ function handleTransferSelectedEmployees() {
 
     if (!transferModal) {
         quanLyPhongBanBridge.log("JS Error: transferModal not found!");
-        alert("Lỗi giao diện: Modal chuyển phòng ban không tìm thấy (ID: transferModal).");
+        showNotification("Lỗi giao diện: Modal chuyển phòng ban không tìm thấy (ID: transferModal).", "error");
         return;
     }
     if (!departmentSelect) {
         quanLyPhongBanBridge.log("JS Error: department-select not found!");
-        alert("Lỗi giao diện: Dropdown chọn phòng ban không tìm thấy (ID: department-select).");
+        showNotification("Lỗi giao diện: Dropdown chọn phòng ban không tìm thấy (ID: department-select).", "error");
         return;
     }
     if (!btnConfirmTransferOriginal) {
         quanLyPhongBanBridge.log("JS Error: btn-confirm-transfer-action not found!");
-        alert("Lỗi giao diện: Nút xác nhận chuyển không tìm thấy (ID: btn-confirm-transfer-action).");
+        showNotification("Lỗi giao diện: Nút xác nhận chuyển không tìm thấy (ID: btn-confirm-transfer-action).", "error");
         return;
     }
     if (!btnCancelTransferOriginal) {
         quanLyPhongBanBridge.log("JS Error: btn-cancel-transfer-action not found!");
-        alert("Lỗi giao diện: Nút hủy chuyển không tìm thấy (ID: btn-cancel-transfer-action).");
+        showNotification("Lỗi giao diện: Nút hủy chuyển không tìm thấy (ID: btn-cancel-transfer-action).", "error");
         return;
     }
     if (!closeTransferModalButtonOriginal) {
         quanLyPhongBanBridge.log("JS Error: #transferModal .close-button not found!");
-        alert("Lỗi giao diện: Nút đóng modal (X) không tìm thấy (selector: #transferModal .close-button).");
+        showNotification("Lỗi giao diện: Nút đóng modal (X) không tìm thấy (selector: #transferModal .close-button).", "error");
         return;
     }
 
@@ -227,13 +227,12 @@ function handleTransferSelectedEmployees() {
                 });
             } else {
                 quanLyPhongBanBridge.log("JS: Không có phòng ban nào được trả về từ bridge.");
-            }
-        } catch (e) {
+            }        } catch (e) {
             quanLyPhongBanBridge.log("JS: Lỗi khi parse JSON phòng ban: " + e.message);
-            alert("Lỗi khi tải danh sách phòng ban.");
+            showNotification("Lỗi khi tải danh sách phòng ban.", "error");
             return; 
         }    } else {
-        alert("Chức năng tải danh sách phòng ban không khả dụng (lỗi bridge).");
+        showNotification("Chức năng tải danh sách phòng ban không khả dụng (lỗi bridge).", "error");
         return; 
     }
 
@@ -248,12 +247,10 @@ function handleTransferSelectedEmployees() {
     const closeTransferModalButton = closeTransferModalButtonOriginal.cloneNode(true);
     closeTransferModalButtonOriginal.parentNode.replaceChild(closeTransferModalButton, closeTransferModalButtonOriginal);
 
-    let windowClickListener;
-
-    function onConfirmTransferAction() {
+    let windowClickListener;    function onConfirmTransferAction() {
         const newDepartmentId = departmentSelect.value;
         if (!newDepartmentId) {
-            alert('Vui lòng chọn phòng ban mới!');
+            showNotification('Vui lòng chọn phòng ban mới!', 'warning');
             return;
         }
 
@@ -377,59 +374,7 @@ function showCustomConfirm(message, title, onOk, onCancel) {
 }
 
 // Function to show a custom warning alert using a modal
-function showCustomWarning(message) {
-    const defaultMessage = "Chưa có nhân viên nào được chọn";
-    const finalMessage = message || defaultMessage;
-
-    const warningModal = document.getElementById('customWarningModal'); 
-    const warningTitle = document.getElementById('customWarningTitle'); 
-    const warningMessageElement = document.getElementById('customWarningMessage');
-    const warningOkButton = document.getElementById('customWarningOk');
-    const closeButton = warningModal ? warningModal.querySelector('.close-warning-button') : null; // Assuming a class for the close button
-
-    if (!warningModal || !warningMessageElement || !warningOkButton || !closeButton) {
-        quanLyPhongBanBridge.log("JS Error: Custom warning modal elements not found. Falling back to native alert.");
-        alert(finalMessage); // Fallback to native alert
-        return;
-    }
-
-    if(warningTitle) { // Title is optional
-        warningTitle.textContent = "Cảnh báo"; // Or make this a parameter
-    }
-    warningMessageElement.textContent = finalMessage;
-    
-    // Clone OK button to remove previous listeners and attach new one
-    const newWarningOkButton = warningOkButton.cloneNode(true);
-    warningOkButton.parentNode.replaceChild(newWarningOkButton, warningOkButton);
-
-    // Clone Close button to remove previous listeners
-    const newCloseButton = closeButton.cloneNode(true);
-    closeButton.parentNode.replaceChild(newCloseButton, closeButton);
-
-    let windowClickListenerForWarning;
-
-    function closeWarningModalAction() {
-        warningModal.style.display = 'none';
-        newWarningOkButton.removeEventListener('click', closeWarningModalAction);
-        newCloseButton.removeEventListener('click', closeWarningModalAction);
-        if (windowClickListenerForWarning) {
-            window.removeEventListener('click', windowClickListenerForWarning);
-        }
-    }
-
-    newWarningOkButton.addEventListener('click', closeWarningModalAction);
-    newCloseButton.addEventListener('click', closeWarningModalAction);
-    
-    // Optional: Close modal if clicked outside of it
-    windowClickListenerForWarning = function(event) {
-        if (event.target === warningModal) {
-            closeWarningModalAction();
-        }
-    };    window.addEventListener('click', windowClickListenerForWarning);
-
-    quanLyPhongBanBridge.log("JS: Displaying custom warning modal with message: " + finalMessage);
-    warningModal.style.display = 'flex'; // Changed from 'block' to 'flex' for proper centering
-}
+// function showCustomWarning(message) { ... }
 
 function loadEmployeeTableData() {
 	quanLyPhongBanBridge.log("get in...");

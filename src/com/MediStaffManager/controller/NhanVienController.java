@@ -82,5 +82,20 @@ public class NhanVienController {
     public boolean chuyenPhongBan(List<Integer> danhSachIdNhanVien, int idPhongBanMoi) {
         return nhanVienBO.chuyenPhongBan(danhSachIdNhanVien, idPhongBanMoi);
     }
+    
+    // Phương thức tìm kiếm phòng ban theo tên
+    public List<Object[]> timKiemPhongBanTheoTen(String tenPhongBan) {
+        return phongBanBO.timKiemPhongBanTheoTen(tenPhongBan);
+    }
+    
+    // Phương thức tìm kiếm phòng ban theo ID
+    public List<Object[]> timKiemPhongBanTheoId(int idPhongBan) {
+        try {
+            return phongBanBO.timKiemPhongBanTheoId(idPhongBan);
+        } catch (NumberFormatException e) {
+            System.err.println("Controller: ID phòng ban không hợp lệ: " + idPhongBan);
+            return null;
+        }
+    }
 }
 

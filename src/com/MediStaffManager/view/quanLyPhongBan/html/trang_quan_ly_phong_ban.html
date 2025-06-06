@@ -20,7 +20,18 @@
 			<div id="notificationArea" style="display: none;">
 			    <span id="notificationMessage"></span>
 			    <button onclick="this.parentElement.style.display='none';" title="Đóng">×</button>
-			</div>
+			</div>            <!-- Khu vực tìm kiếm -->
+            <div class="search-container">
+                <div class="search-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm phòng ban..." />
+                    <select id="searchType" class="form-control">
+                        <option value="ten">Tìm theo tên</option>
+                        <option value="id">Tìm theo ID</option>
+                    </select>                    <button id="btnSearch" class="btn btn-search"><i class="fas fa-search"></i> Tìm Kiếm</button>
+                    <button id="btnReset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Làm Mới</button>
+                </div>
+            </div>
+            
             <div class="table-container">
                 <table id="departmentTable"> 
                     <thead>

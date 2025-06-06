@@ -1,10 +1,14 @@
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     background-color: #e9ecef;
     color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+
 }
 
+body, button, input, select, textarea {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
 /* Style mới cho container chính thay thế app-window */
 .page-container {
     display: flex;
@@ -139,6 +143,10 @@ th, td {
     vertical-align: middle;
 }
 
+
+
+
+
 th {
     padding: 0.875rem 1rem;
     font-weight: 600;
@@ -151,11 +159,14 @@ th {
     white-space: nowrap; /* Ngăn tiêu đề xuống dòng */
     border-bottom: 2px solid #BFDBFE; /* blue-300 */
 }
+
 thead th:first-child,
 tbody td:first-child {
     width: 60px;
     text-align: center;
 }
+
+
 
 input[type="checkbox"] {
     width: 16px;
@@ -468,10 +479,28 @@ tbody tr.selected-row:hover {
 }
 
 .modal-footer {
-    padding: 10px 15px;
+    padding: 15px;
     border-top: 1px solid #e9ecef;
-    text-align: right;
+    text-align: center;
     background-color: #f0f0f0; /* Màu footer modal */
+    display: flex;
+    justify-content: center;
+}
+
+/* Standardized button styling for all modal footers */
+.modal-footer .btn {
+    min-width: 110px;
+    height: 38px;
+    margin: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 15px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    transition: all 0.2s ease;
 }
 
 .modal {
@@ -562,12 +591,18 @@ tbody tr.selected-row:hover {
 }
 
 .confirm-modal .btn {
-    padding: 8px 20px;
+    min-width: 110px;
+    height: 38px;
+    padding: 8px 15px;
     border-radius: 4px;
     font-size: 14px;
-    font-weight: normal;
+    font-weight: 500;
     margin: 0 5px;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .confirm-modal .btn-secondary {
@@ -845,4 +880,185 @@ tbody tr.selected-row:hover {
     color: #6c757d;
     margin: 0;
 }
+
+/* Search container styles */
+.search-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+.search-group .form-control {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    height: 38px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-group .form-control:focus {
+    border-color: #4a89dc;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 137, 220, 0.15);
+}
+
+/* Style for the search input similar to the image */
+.search-group input[type="text"] {
+    flex-grow: 1;
+    min-width: 300px;
+    padding-left: 38px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%236C757D" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: 12px center;
+    background-size: 16px;
+}
+
+/* Dropdown style matching the image */
+.search-group select {
+    width: 180px;
+    background-color: white;
+    border: 1px solid #ced4da;
+    padding: 8px 30px 8px 12px;
+    border-radius: 4px;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%236C757D" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: calc(100% - 10px) center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+/* Style for the search and add buttons */
+.btn-search, .btn-add, .btn-secondary {
+    min-width: 120px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-weight: 500;
+    gap: 5px;
+    box-sizing: border-box;
+}
+
+.btn-search {
+    background-color: #4a89dc;
+    color: white;
+}
+
+.btn-search:hover {
+    background-color: #3a70c0;
+}
+
+.btn-add {
+    background-color: #37d07f;
+    color: white;
+    white-space: nowrap;
+}
+
+.btn-add:hover {
+    background-color: #2bb66c;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-group {
+        flex-direction: column;
+        margin-bottom: 15px;
+    }
+    
+    .search-group select,
+    .search-group input[type="text"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .btn-search, .btn-add {
+        width: 100%;
+        margin-top: 5px;
+    }
+}
+
+.toast-notification {
+    position: fixed;
+    top: 20px; /* Hiển thị ở trên cùng */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    background-color: white;
+    color: #333;
+    border-left: 4px solid;
+    border-radius: 6px;
+    min-width: 320px;
+    max-width: 500px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+    font-size: 14px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Màu sắc theo từng loại */
+.toast-notification.success  { border-color: #4ade80; background-color: #f0fdf4; color: #166534; }
+.toast-notification.error    { border-color: #f87171; background-color: #fef2f2; color: #991b1b; }
+.toast-notification.warning  { border-color: #facc15; background-color: #fffbeb; color: #92400e; }
+.toast-notification.info     { border-color: #60a5fa; background-color: #eff6ff; color: #1e40af; }
+
+/* Header và body toast */
+.toast-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.toast-icon {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.toast-title {
+    flex-grow: 1;
+    font-size: 15px;
+}
+
+.toast-body {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Nút đóng thông báo */
+.toast-notification .close-button {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #888;
+    cursor: pointer;
+}
+.toast-notification .close-button:hover {
+    color: #333;
+}
+
+/* ---- Header Chung (Family Hospital) ---- */
 

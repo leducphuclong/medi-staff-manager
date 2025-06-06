@@ -199,4 +199,49 @@ public class QuanLyPhongBanBridge {
 		return list;
 	}
 
+	// Phương thức tìm kiếm phòng ban theo tên
+    public String timKiemPhongBanTheoTen(String tenPhongBan) {
+        log("Bridge: Tìm kiếm phòng ban theo tên: " + tenPhongBan);
+        List<Object[]> danhSach = nhanVienController.timKiemPhongBanTheoTen(tenPhongBan);
+        return chuyenDanhSachPhongBanThanhJson(danhSach);
+    }
+    
+    // Phương thức tìm kiếm phòng ban theo ID
+    public String timKiemPhongBanTheoId(String idPhongBanStr) {
+        log("Bridge: Tìm kiếm phòng ban theo ID: " + idPhongBanStr);
+        try {
+            int idPhongBan = Integer.parseInt(idPhongBanStr);
+            List<Object[]> danhSach = nhanVienController.timKiemPhongBanTheoId(idPhongBan);
+            return chuyenDanhSachPhongBanThanhJson(danhSach);
+        } catch (NumberFormatException e) {
+            log("Bridge: ID phòng ban không hợp lệ: " + idPhongBanStr);
+            return "[]"; // Trả về mảng rỗng nếu ID không hợp lệ
+        }
+    }
+    
+    // Phương thức hỗ trợ chuyển danh sách phòng ban thành chuỗi JSON
+    private String chuyenDanhSachPhongBanThanhJson(List<Object[]> danhSach) {
+        StringBuilder jsonBuilder = new StringBuilder("[");
+        if (danhSach != null && !danhSach.isEmpty()) {
+            for (int i = 0; i < danhSach.size(); i++) {
+                Object[] phongBanData = danhSach.get(i);
+                if (phongBanData != null && phongBanData.length >= 2 && phongBanData[0] instanceof Integer && phongBanData[1] instanceof String) {
+                    jsonBuilder.append("{");
+                    jsonBuilder.append("\"idPhongBan\":").append(phongBanData[0]);
+                    jsonBuilder.append(",");
+                    jsonBuilder.append("\"tenPhongBan\":\"").append(escapeJsonString((String) phongBanData[1])).append("\"");
+                    jsonBuilder.append("}");
+                    if (i < danhSach.size() - 1) {
+                        jsonBuilder.append(",");
+                    }
+                } else {
+                    log("Bridge: Invalid data format for phongBan: " + (phongBanData != null ? java.util.Arrays.toString(phongBanData) : "null"));
+                }
+            }
+        }
+        jsonBuilder.append("]");
+        return jsonBuilder.toString();
+    }
+
+	
 }

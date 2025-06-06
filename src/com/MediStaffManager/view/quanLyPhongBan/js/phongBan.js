@@ -15,6 +15,127 @@ function initializeDepartmentPage() {
         btnAddDept.parentNode.replaceChild(newBtnAddDept, btnAddDept);
         newBtnAddDept.addEventListener('click', handleAddDepartment);
     }
+    
+    // Thêm xử lý sự kiện tìm kiếm
+    const btnSearch = document.getElementById("btnSearch");
+    if (btnSearch) {
+        const newBtnSearch = btnSearch.cloneNode(true);
+        btnSearch.parentNode.replaceChild(newBtnSearch, btnSearch);
+        newBtnSearch.addEventListener('click', handleSearch);
+    }
+    
+    // Thêm xử lý sự kiện làm mới
+    const btnReset = document.getElementById("btnReset");
+    if (btnReset) {
+        const newBtnReset = btnReset.cloneNode(true);
+        btnReset.parentNode.replaceChild(newBtnReset, btnReset);
+        newBtnReset.addEventListener('click', handleResetSearch);
+    }
+    
+    // Xử lý sự kiện nhấn Enter trong ô tìm kiếm
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
+}
+
+// Hàm xử lý tìm kiếm
+function handleSearch() {
+    const searchType = document.getElementById("searchType").value;
+    const searchValue = document.getElementById("searchInput").value.trim();
+    
+    if (!searchValue) {
+        showNotification("Vui lòng nhập từ khóa tìm kiếm", "warning");
+        return;
+    }
+    
+    quanLyPhongBanBridge.log(`Tìm kiếm phòng ban: loại=${searchType}, giá trị=${searchValue}`);
+    
+    try {
+        let resultJson = "";
+        if (searchType === "ten") {
+            resultJson = quanLyPhongBanBridge.timKiemPhongBanTheoTen(searchValue);
+        } else if (searchType === "id") {
+            if (isNaN(parseInt(searchValue))) {
+                showNotification("ID phải là số nguyên", "error");
+                return;
+            }
+            resultJson = quanLyPhongBanBridge.timKiemPhongBanTheoId(searchValue);
+        }
+        
+        const results = JSON.parse(resultJson);
+        displaySearchResults(results);
+        
+    } catch (e) {
+        quanLyPhongBanBridge.log("Lỗi khi tìm kiếm: " + e);
+        showNotification("Đã xảy ra lỗi khi tìm kiếm", "error");
+    }
+}
+
+// Hàm hiển thị kết quả tìm kiếm
+function displaySearchResults(results) {
+    const tbody = document.querySelector("#departmentTable tbody");
+    tbody.innerHTML = '';
+    
+    if (!results || results.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Không tìm thấy kết quả phù hợp.</td></tr>';
+        return;
+    }
+    
+    results.forEach(dept => {
+        if (typeof dept.idPhongBan === 'undefined' || typeof dept.tenPhongBan === 'undefined') {
+            quanLyPhongBanBridge.log("Dữ liệu phòng ban không hợp lệ từ kết quả tìm kiếm:");
+            return;
+        }
+
+        const row = tbody.insertRow();
+        row.insertCell().textContent = dept.idPhongBan;
+        row.insertCell().textContent = dept.tenPhongBan;
+
+        const actionsCell = row.insertCell();
+        actionsCell.style.whiteSpace = "nowrap";
+
+        const editButton = document.createElement('button');
+        editButton.className = 'btn btn-edit';
+        editButton.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+        editButton.title = "Sửa thông tin phòng ban";
+        editButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            handleEditDepartment(dept.idPhongBan, dept.tenPhongBan);
+        });
+        actionsCell.appendChild(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-danger';
+        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteButton.title = "Xóa phòng ban";
+        deleteButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            handleDeleteDepartment(dept.idPhongBan, dept.tenPhongBan);
+        });
+        actionsCell.appendChild(deleteButton);
+
+        row.style.cursor = "pointer";
+        row.setAttribute('title', `Xem chi tiết ${escapeJsString(dept.tenPhongBan)}`);
+        row.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON' || event.target.closest('button')) return;
+            if (typeof window.quanLyPhongBanBridge !== 'undefined' && typeof window.quanLyPhongBanBridge.navigateToDepartmentDetail === 'function') {
+                window.quanLyPhongBanBridge.navigateToDepartmentDetail(dept.idPhongBan, dept.tenPhongBan);
+            } else { console.error("JS: javaApp.navigateToDepartmentDetail is not available."); }
+        });
+    });
+}
+
+// Hàm làm mới tìm kiếm
+function handleResetSearch() {
+    // Làm mới các trường tìm kiếm và hiển thị lại toàn bộ danh sách phòng ban
+    document.getElementById("searchInput").value = '';
+    document.getElementById("searchType").selectedIndex = 0;
+    loadDepartmentTableData();
 }
 
 function loadDepartmentTableData() {
