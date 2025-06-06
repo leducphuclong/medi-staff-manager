@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MediStaffManager</name>
+	<!-- Project Name -->
+	<name>MediStaffManagerJavaFX</name>
+
+	<!-- Comment Section -->
 	<comment></comment>
-	<projects>
-	</projects>
+
+	<!-- Projects (Empty in this case) -->
+	<projects></projects>
+
+	<!-- Build Specifications -->
 	<buildSpec>
+		<!-- Build Commands -->
 		<buildCommand>
-			<name>org.eclipse.jdt.core.javabuilder</name>
-			<arguments>
-			</arguments>
+			<name>org.eclipse.xtext.ui.shared.xtextBuilder</name>
+			<arguments></arguments>
+		</buildCommand>
+
+		<!-- Additional Build Command (Empty arguments) -->
+		<buildCommand>
+			<arguments></arguments>
 		</buildCommand>
 	</buildSpec>
+
+	<!-- Natures -->
 	<natures>
+		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+
+	<!-- Filtered Resources (Excluding certain directories) -->
 	<filteredResources>
 		<filter>
 			<id>1744164236220</id>

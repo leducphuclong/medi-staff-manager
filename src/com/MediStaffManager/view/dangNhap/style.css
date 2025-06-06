@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: url('backGround.jpg') no-repeat center center fixed; 
+  background-size: cover;
+  color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 25, 47, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.login-container {
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border-radius: 16px;
+  padding: 40px 45px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+/* NEW/MODIFIED: Style for the standalone icon */
+.login-container .icon {
+  display: block; /* Make it a block to take its own line and allow margin */
+  font-size: 32px; /* Adjust size as needed */
+  color: #60a5fa;   /* Icon color */
+  margin-bottom: 10px; /* Space below the icon, before H1 */
+  /* text-align: center; is inherited from .login-container */
+}
+
+/* MODIFIED: H1 styling adjustments */
+.login-container h1 {
+  /* Removed: display: flex, align-items, justify-content, gap (as icon is now outside) */
+  margin-bottom: 15px; /* Space below H1 */
+  font-size: 24px; /* Adjusted size slightly for balance */
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3; /* Adjust line height if text wraps unexpectedly on small screens */
+  /* text-align: center; is inherited from .login-container */
+}
+
+/* This rule is no longer needed as .icon is not inside h1 anymore */
+/*
+.login-container h1 .icon {
+  font-size: 30px;
+  color: #60a5fa;
+}
+*/
+
+.login-container p {
+  margin-bottom: 35px;
+  font-size: 15px;
+  color: #bdc3c7;
+  line-height: 1.6;
+  /* text-align: center; is inherited */
+}
+
+.input-group {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #a0aec0;
+}
+
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 16px;
+  color: #e0e0e0;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+  color: #718096;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+button.login-btn {
+  width: 100%;
+  padding: 15px 0;
+  font-size: 17px;
+  font-weight: 600;
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+button.login-btn:hover {
+  background-color: #357ABD;
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.35);
+  transform: translateY(-2px);
+}
+
+button.login-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 2px 8px rgba(74, 144, 226, 0.2);
+}
+
+.forgot-password {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.forgot-password a {
+  color: #a9c9ff;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255,255,255,0.25);
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255,255,255,0.4);
+}
+
+@media (max-width:480px) {
+  .login-container {
+    padding: 30px 25px;
+    margin: 0 10px;
+  }
+  /* Adjust icon size and H1 for smaller screens if needed */
+  .login-container .icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .login-container h1 {
+    font-size: 20px; /* Smaller h1 on mobile */
+    margin-bottom: 12px;
+  }
+  .login-container p {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+  input[type="text"], input[type="password"] {
+    padding: 12px 15px;
+  }
+  button.login-btn {
+    padding: 13px 0;
+    font-size: 16px;
+  }
+}
