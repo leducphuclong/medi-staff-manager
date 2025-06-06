@@ -103,12 +103,11 @@ body, button, input, select, textarea {
     border-bottom: 1px solid #dee2e6;
 }
 
-/* ---- Khu vực nội dung chính ---- */
 .content-area {
-    padding: 20px;
     flex-grow: 1;
-    overflow-y: auto; /* Cho phép cuộn nội dung chính nếu cần */
-    background-color: #ffffff; /* Nền trắng cho nội dung */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .content-title {
@@ -121,18 +120,18 @@ body, button, input, select, textarea {
     border-bottom: 1px solid #dee2e6;
 }
 
-/* ---- Bảng ---- */
 .table-container {
-    overflow-x: hidden; /* Changed from auto to hidden to prevent horizontal scrolling */
-    border: 1px solid #dee2e6;
-    border-radius: 0.5rem; /* rounded-lg */
-    background-color: #fff; /* Đảm bảo nền bảng là trắng */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+    max-height: 500px;    
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    overflow: visible;
 }
+
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 th, td {
@@ -150,14 +149,14 @@ th, td {
 th {
     padding: 0.875rem 1rem;
     font-weight: 600;
-    font-size: 0.8125rem; /* text-xs */
+    font-size: 0.8125rem; 
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background-color: #EFF6FF; /* blue-50 */
-    color: #1E40AF;       /* blue-800 */
+    background-color: #EFF6FF; 
+    color: #1E40AF;     
     text-align: left;
-    white-space: nowrap; /* Ngăn tiêu đề xuống dòng */
-    border-bottom: 2px solid #BFDBFE; /* blue-300 */
+    white-space: nowrap; 
+    border-bottom: 2px solid #BFDBFE;
 }
 
 thead th:first-child,
@@ -177,15 +176,15 @@ input[type="checkbox"] {
 tbody tr:hover {
     background-color: #e9ecef;
 }
-tbody tr.selected-row { /* Khi một hàng được chọn (ví dụ: Phòng Điều Hành) */
-    background-color: #007bff; /* Màu xanh dương */
+tbody tr.selected-row { 
+    background-color: #007bff; 
     color: white;
 }
 tbody tr.selected-row td {
-    color: white; /* Chữ màu trắng cho hàng được chọn */
+    color: white;
 }
 tbody tr.selected-row:hover {
-    background-color: #0056b3; /* Màu xanh đậm hơn khi hover hàng được chọn */
+    background-color: #0056b3; 
 }
 
 
@@ -223,38 +222,35 @@ tbody tr.selected-row:hover {
 .btn-danger {
     background-color: #dc3545;
     color: white;
-    border-color: #dc3545;
     border-radius: 8px;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
+    padding: 8px 12px;
     margin: 0 3px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; 
 }
+
 .btn-danger:hover {
     background-color: #c82333;
     border-color: #bd2130;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-.btn-edit { /* Nút Sửa */
+.btn-edit {
     background-color: #007bff;
     color: white;
     border-radius: 8px;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0;
+    padding: 8px 12px;
     margin: 0 3px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
+
 .btn-edit:hover {
     background-color: #0056b3;
     transform: translateY(-2px);
@@ -860,12 +856,11 @@ tbody tr.selected-row:hover {
     opacity: 1;
 }
 
-/* Style cho page-header (tiêu đề trang) */
 .page-header {
     padding: 25px 30px;
     background-color: #fff;
     border-bottom: 1px solid #dee2e6;
-    text-align: center; /* Thêm thuộc tính này để căn giữa nội dung */
+    text-align: center;
 }
 
 .page-header h1 {
@@ -881,17 +876,15 @@ tbody tr.selected-row:hover {
     margin: 0;
 }
 
-/* Search container styles */
 .search-container {
-    margin-bottom: 20px;
-    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
     background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
 }
+
 
 .search-group {
     display: flex;
@@ -943,7 +936,6 @@ tbody tr.selected-row:hover {
     cursor: pointer;
 }
 
-/* Style for the search and add buttons */
 .btn-search, .btn-add, .btn-secondary {
     min-width: 120px;
     height: 38px;
@@ -1001,7 +993,7 @@ tbody tr.selected-row:hover {
 
 .toast-notification {
     position: fixed;
-    top: 20px; /* Hiển thị ở trên cùng */
+    top: 20px; 
     left: 50%;
     transform: translateX(-50%);
     z-index: 3000;
@@ -1060,5 +1052,25 @@ tbody tr.selected-row:hover {
     color: #333;
 }
 
-/* ---- Header Chung (Family Hospital) ---- */
+.table-scroll-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 270px); 
+}
 
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#departmentTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #EFF6FF;
+    box-shadow: inset 0 -1px 0 #e0e0e0;
+}
