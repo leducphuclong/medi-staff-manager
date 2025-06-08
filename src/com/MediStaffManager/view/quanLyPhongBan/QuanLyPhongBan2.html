@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Nhân Viên - MediStaffManager</title>
+    <style>
+        /* --- CSS Variables for easy theming --- */
+        :root {
+            --primary-color: #007bff; /* A nice blue */
+            --secondary-color: #6c757d; /* Grey */
+            --success-color: #28a745; /* Green */
+            --danger-color: #dc3545; /* Red */
+            --warning-color: #ffc107; /* Yellow */
+            --light-color: #f8f9fa; /* Light grey */
+            --dark-color: #343a40; /* Dark grey */
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --border-radius: 0.25rem;
+            --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        /* --- General Body Styles --- */
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        .app-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .app-header h1 {
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        /* --- Main Content Container --- */
+        .main-content {
+            padding: 2rem;
+        }
+
+        /* --- Flex Container for Panels --- */
+        .container {
+            display: flex;
+            gap: 2rem; 
+            flex-wrap: wrap; 
+        }
+
+        /* --- Panel Styling --- */
+        .panel {
+            flex: 1;
+            min-width: 400px; /* Adjusted min-width */
+            padding: 1.5rem;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        .panel h2 { /* Original panel title */
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+         .panel .panel-subtitle { /* For dynamic titles like "Nhân Viên - Phòng X" */
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold; /* Make it consistent with h2 */
+        }
+        .panel h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        /* --- Form Elements Styling --- */
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            box-sizing: border-box; 
+            font-size: 0.95rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        /* --- Button Styling --- */
+        button {
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+        }
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0px);
+        }
+
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-success:hover { background-color: #1e7e34; }
+        .btn-secondary { background-color: var(--secondary-color); color: white; }
+        .btn-secondary:hover { background-color: #545b62; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-warning { background-color: var(--warning-color); color: var(--dark-color); }
+        .btn-warning:hover { background-color: #e0a800; }
+
+        #phongBanForm button.btn-add { background-color: var(--success-color); color: white; }
+        #phongBanForm button.btn-add:hover { background-color: #1e7e34; }
+        #phongBanForm button.btn-edit { background-color: var(--warning-color); color: var(--dark-color); }
+        #phongBanForm button.btn-edit:hover { background-color: #e0a800; }
+        
+        .nhanvien-panel .btn-transfer { background-color: var(--primary-color); color: white; }
+        .nhanvien-panel .btn-transfer:hover { background-color: #0056b3; }
+
+        /* --- Table Styling --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            background-color: white; 
+            font-size: 0.9rem;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #e9ecef; 
+            color: #495057;
+            font-weight: 600;
+        }
+        tr:nth-child(even) td { 
+            background-color: var(--light-color);
+        }
+        /* Highlight for selected department row */
+        #phongBanTable tbody tr.selected-row td {
+            background-color: #cce5ff; /* Light blue highlight */
+            font-weight: bold;
+        }
+        #phongBanTable tbody tr:hover td { /* Keep hover distinct from selected */
+            background-color: #e2e6ea;
+        }
+        #phongBanTable tbody tr.selected-row:hover td { /* Hover on selected row */
+             background-color: #b8daff; /* Slightly darker blue */
+        }
+        #phongBanTable tbody tr { cursor: pointer; } /* Indicate rows are clickable */
+
+        td button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            margin: 0 0.15rem;
+        }
+        td button.btn-delete-inline { background-color: var(--danger-color); color: white; }
+        td button.btn-delete-inline:hover { background-color: #c82333;}
+        td button.btn-custom-action { background-color: var(--secondary-color); color: white; }
+        td button.btn-custom-action:hover { background-color: #545b62;}
+
+        th input[type="checkbox"] { margin: 0; vertical-align: middle; }
+
+        #phongBanForm {
+            margin-bottom: 1.5rem; padding: 1rem; background-color: #fdfdff; 
+            border: 1px solid #e9ecef; border-radius: var(--border-radius);
+        }
+        .nhanvien-actions { 
+            margin-top: 1rem; padding: 1rem; background-color: #fdfdff;
+            border: 1px solid #e9ecef; border-radius: var(--border-radius);
+        }
+        .nhanvien-actions h3 { margin-top:0; }
+
+        .placeholder-message {
+            text-align: center;
+            color: var(--secondary-color);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .mb-1 { margin-bottom: 0.25rem !important; }
+        .mb-2 { margin-bottom: 0.5rem !important; }
+        .mb-3 { margin-bottom: 1rem !important; }
+        .mt-1 { margin-top: 0.25rem !important; }
+        .mt-2 { margin-top: 0.5rem !important; }
+        .mt-3 { margin-top: 1rem !important; }
+
+        @media (max-width: 992px) { /* Adjust breakpoint for two panels side-by-side */
+             .container {
+                flex-direction: column; 
+            }
+        }
+        @media (max-width: 768px) {
+            .app-header h1 { font-size: 1.5rem; }
+            .main-content { padding: 1rem; }
+            .panel { padding: 1rem; min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1>Quản Lý Nhân Viên và Phòng Ban</h1>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="panel phongban-panel">
+                <h2>Quản Lý Phòng Ban</h2>
+                <button onclick="loadPhongBanList()" class="btn-primary mb-3">Tải/Làm Mới DS Phòng Ban</button>
+                
+                <div id="phongBanForm">
+                    <h3>Thêm/Sửa Phòng Ban</h3>
+                    <input type="number" id="pbIdCu" placeholder="ID Phòng Ban Cũ (để sửa)">
+                    <input type="number" id="pbId" placeholder="ID Phòng Ban (mới hoặc để sửa)">
+                    <input type="text" id="pbTen" placeholder="Tên Phòng Ban">
+                    <button onclick="themPhongBan()" class="btn-add">Thêm Phòng Ban</button>
+                    <button onclick="suaPhongBan()" class="btn-edit">Sửa Phòng Ban</button>
+                </div>
+
+                <table id="phongBanTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên Phòng Ban</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu phòng ban sẽ được chèn vào đây -->
+                        <!-- Rows will be clickable -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel nhanvien-panel">
+                <div id="nhanVienPanelTitle" class="panel-subtitle">Nhân Viên</div>
+                <button onclick="loadAllNhanVien()" class="btn-primary mb-2 mt-3">Xem Tất Cả Nhân Viên</button>
+                
+                <table id="nhanVienTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllNhanVien" onchange="toggleSelectAll(this)"></th>
+                            <th>ID</th>
+                            <th>Họ Tên</th>
+                            <th>Chức Vụ</th>
+                            <th>ID P.Ban</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="placeholder-message">Chọn một phòng ban để xem nhân viên, hoặc nhấn "Xem Tất Cả Nhân Viên".</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="nhanvien-actions">
+                    <h3>Chuyển Phòng Ban cho Nhân Viên đã chọn</h3>
+                    <select id="phongBanChuyenDen">
+                        <option value="">-- Chọn phòng ban mới --</option>
+                    </select>
+                    <button onclick="chuyenNhanVienPhongBan()" class="btn-transfer">Chuyển</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentSelectedPhongBan = { ten: null, id: null }; // State for selected department
+        const nhanVienPanelTitleEl = document.getElementById('nhanVienPanelTitle');
+        const nhanVienTableBody = document.getElementById('nhanVienTable').getElementsByTagName('tbody')[0];
+
+        function javaLog(message) {
+            if (window.javaAppNhanVien && typeof window.javaAppNhanVien.log === 'function') {
+                window.javaAppNhanVien.log(message);
+            } else {
+                console.log("(JS Fallback) " + message);
+            }
+        }
+        
+        function updateNhanVienPanelTitle(title) {
+            nhanVienPanelTitleEl.textContent = title;
+        }
+
+        function showNhanVienPlaceholder(message) {
+            nhanVienTableBody.innerHTML = `<tr><td colspan="6" class="placeholder-message">${message}</td></tr>`;
+            document.getElementById('selectAllNhanVien').checked = false;
+        }
+
+        async function loadPhongBanList() {
+            javaLog("JS: Requesting department list.");
+            try {
+                const jsonString = await window.javaAppNhanVien.layDanhSachPhongBan();
+                const phongBanList = JSON.parse(jsonString);
+                
+                const tableBody = document.getElementById('phongBanTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = ''; 
+                const chuyenSelect = document.getElementById('phongBanChuyenDen');
+                chuyenSelect.length = 1; // Clear existing options except the first one
+
+                if (phongBanList.length === 0) {
+                     tableBody.innerHTML = `<tr><td colspan="3" class="placeholder-message">Không có phòng ban nào.</td></tr>`;
+                } else {
+                    phongBanList.forEach(pb => {
+                        const row = tableBody.insertRow();
+                        row.insertCell().textContent = pb.idPhongBan;
+                        row.insertCell().textContent = pb.tenPhongBan;
+                        const actionsCell = row.insertCell();
+                        actionsCell.innerHTML = `<button onclick="event.stopPropagation(); deletePhongBan('${pb.tenPhongBan}')" class="btn-delete-inline">Xóa P.Ban</button>
+                                                 <button onclick="event.stopPropagation(); deleteAllNhanVienInPhongBan('${pb.tenPhongBan}')" class="btn-custom-action">Xóa hết NV</button>`;
+                        
+                        // Make the row itself clickable to select the department
+                        row.onclick = () => selectPhongBan(pb.tenPhongBan, pb.idPhongBan, row);
+                        
+                        // Add to transfer dropdown
+                        let optionChuyen = new Option(pb.tenPhongBan + ` (ID: ${pb.idPhongBan})`, pb.idPhongBan);
+                        chuyenSelect.add(optionChuyen);
+
+                        // If this department was previously selected, re-select it
+                        if (currentSelectedPhongBan.id === pb.idPhongBan) {
+                            row.classList.add('selected-row');
+                        }
+                    });
+                }
+            } catch (error) {
+                javaLog("JS Error loading departments: " + error);
+                alert("Lỗi tải danh sách phòng ban: " + error.message);
+            }
+        }
+
+        function selectPhongBan(tenPhongBan, idPhongBan, rowElement) {
+            javaLog(`JS: Selecting department: ${tenPhongBan} (ID: ${idPhongBan})`);
+            currentSelectedPhongBan.ten = tenPhongBan;
+            currentSelectedPhongBan.id = idPhongBan;
+
+            // Update title
+            updateNhanVienPanelTitle(`Nhân Viên - Phòng ${tenPhongBan}`);
+
+            // Highlight selected row
+            const allRows = document.getElementById('phongBanTable').getElementsByTagName('tbody')[0].rows;
+            for (let row of allRows) {
+                row.classList.remove('selected-row');
+            }
+            if (rowElement) {
+                rowElement.classList.add('selected-row');
+            }
+            
+            // Load employees for this department
+            loadNhanVienByPhongBanInternal(tenPhongBan);
+        }
+
+        async function loadNhanVienByPhongBanInternal(tenPhongBan) {
+            if (!tenPhongBan) {
+                showNhanVienPlaceholder("Không có phòng ban nào được chọn.");
+                return;
+            }
+            javaLog(`JS: Requesting employees for department: ${tenPhongBan}`);
+            showNhanVienPlaceholder("Đang tải nhân viên...");
+            try {
+                const jsonString = await window.javaAppNhanVien.layNhanVienTheoPhongBan(tenPhongBan);
+                populateNhanVienTable(jsonString);
+            } catch (error) {
+                javaLog(`JS Error loading employees for department ${tenPhongBan}: ` + error);
+                showNhanVienPlaceholder(`Lỗi tải nhân viên cho phòng ${tenPhongBan}.`);
+                alert(`Lỗi tải danh sách nhân viên cho phòng ban ${tenPhongBan}: ` + error.message);
+            }
+        }
+        
+        async function loadAllNhanVien() {
+            javaLog("JS: Requesting all employees.");
+            currentSelectedPhongBan = { ten: null, id: null }; // Reset selected department
+             // Unhighlight any selected row
+            const allRows = document.getElementById('phongBanTable').getElementsByTagName('tbody')[0].rows;
+            for (let row of allRows) {
+                row.classList.remove('selected-row');
+            }
+            updateNhanVienPanelTitle("Nhân Viên - Tất Cả");
+            showNhanVienPlaceholder("Đang tải tất cả nhân viên...");
+            try {
+                const jsonString = await window.javaAppNhanVien.layToanBoNhanVien();
+                populateNhanVienTable(jsonString);
+            } catch (error) {
+                javaLog("JS Error loading all employees: " + error);
+                showNhanVienPlaceholder("Lỗi tải danh sách tất cả nhân viên.");
+                alert("Lỗi tải danh sách nhân viên: " + error.message);
+            }
+        }
+
+        function populateNhanVienTable(nhanVienListJson) {
+            javaLog("JS: Populating employee table...");
+            const nhanVienList = JSON.parse(nhanVienListJson);
+            nhanVienTableBody.innerHTML = ''; // Clear existing rows or placeholder
+
+            if (nhanVienList.length === 0) {
+                let message = "Không có nhân viên nào để hiển thị.";
+                if (currentSelectedPhongBan.ten) {
+                    message = `Không có nhân viên nào trong phòng ${currentSelectedPhongBan.ten}.`;
+                }
+                showNhanVienPlaceholder(message);
+            } else {
+                nhanVienList.forEach(nv => {
+                    const row = nhanVienTableBody.insertRow();
+                    const selectCell = row.insertCell();
+                    selectCell.innerHTML = `<input type="checkbox" class="nhanvien-checkbox" value="${nv.idNhanVien}">`;
+                    row.insertCell().textContent = nv.idNhanVien;
+                    row.insertCell().textContent = nv.hoTen;
+                    row.insertCell().textContent = nv.chucVu || "N/A";
+                    row.insertCell().textContent = nv.idPhongBan;
+                    const actionsCell = row.insertCell();
+                    actionsCell.innerHTML = `<button onclick="deleteNhanVien(${nv.idNhanVien}, ${nv.idPhongBan})" class="btn-delete-inline">Xóa NV</button>`;
+                });
+            }
+            document.getElementById('selectAllNhanVien').checked = false;
+        }
+        
+        async function themPhongBan() {
+            const idInput = document.getElementById('pbId');
+            const tenInput = document.getElementById('pbTen');
+            const id = parseInt(idInput.value);
+            const ten = tenInput.value.trim();
+
+            if (isNaN(id) || !ten) {
+                alert("Vui lòng nhập ID (số) và Tên Phòng Ban hợp lệ."); return;
+            }
+            try {
+                const success = await window.javaAppNhanVien.themPhongBan(id, ten);
+                if (success) {
+                    alert("Thêm phòng ban thành công!");
+                    loadPhongBanList(); 
+                    idInput.value = ''; tenInput.value = '';
+                } else {
+                    alert("Thêm phòng ban thất bại. ID có thể đã tồn tại.");
+                }
+            } catch (error) {
+                javaLog("JS Error adding department: " + error); alert("Lỗi khi thêm phòng ban: " + error.message);
+            }
+        }
+        
+        async function suaPhongBan() {
+            const idCuInput = document.getElementById('pbIdCu');
+            const idMoiInput = document.getElementById('pbId');
+            const tenMoiInput = document.getElementById('pbTen');
+            const idCu = parseInt(idCuInput.value);
+            const idMoi = parseInt(idMoiInput.value);
+            const tenMoi = tenMoiInput.value.trim();
+
+            if (isNaN(idCu)) { alert("Vui lòng nhập ID Phòng Ban Cũ (số) để sửa."); return; }
+            if (isNaN(idMoi) || !tenMoi) { alert("Vui lòng nhập ID Phòng Ban Mới (số) và Tên Phòng Ban Mới hợp lệ."); return; }
+
+            try {
+                const success = await window.javaAppNhanVien.suaPhongBan(idCu, idMoi, tenMoi);
+                if (success) {
+                    alert("Sửa phòng ban thành công!");
+                    // If the currently selected department was the one edited, update its state
+                    if (currentSelectedPhongBan.id === idCu && idCu !== idMoi) {
+                        currentSelectedPhongBan.id = idMoi;
+                        currentSelectedPhongBan.ten = tenMoi; // Assuming name also changes if ID does, or just reload
+                        updateNhanVienPanelTitle(`Nhân Viên - Phòng ${tenMoi}`);
+                    } else if (currentSelectedPhongBan.id === idCu && currentSelectedPhongBan.ten !== tenMoi) {
+                        currentSelectedPhongBan.ten = tenMoi;
+                        updateNhanVienPanelTitle(`Nhân Viên - Phòng ${tenMoi}`);
+                    }
+                    loadPhongBanList(); 
+                    idCuInput.value = ''; idMoiInput.value = ''; tenMoiInput.value = '';
+                } else {
+                    alert("Sửa phòng ban thất bại.");
+                }
+            } catch (error) {
+                javaLog("JS Error editing department: " + error); alert("Lỗi khi sửa phòng ban: " + error.message);
+            }
+        }
+
+        async function deletePhongBan(tenPhongBan) {
+            if (!confirm(`Xóa phòng ban "${tenPhongBan}" sẽ xóa TẤT CẢ nhân viên trong đó. Bạn chắc chắn?`)) return;
+            
+            try {
+                javaLog(`JS: Attempting delete all employees in: ${tenPhongBan}`);
+                await window.javaAppNhanVien.xoaTatCaNhanVienTrongPhongBan(tenPhongBan); // Attempt even if it fails partially
+
+                javaLog(`JS: Attempting delete department: ${tenPhongBan}`);
+                const pbDeleted = await window.javaAppNhanVien.xoaPhongBan(tenPhongBan);
+                if (pbDeleted) {
+                    alert(`Phòng ban "${tenPhongBan}" và các nhân viên liên quan đã được xử lý xóa.`);
+                    if (currentSelectedPhongBan.ten === tenPhongBan) {
+                        currentSelectedPhongBan = { ten: null, id: null };
+                        updateNhanVienPanelTitle("Nhân Viên");
+                        showNhanVienPlaceholder("Phòng ban vừa chọn đã bị xóa. Chọn phòng ban khác hoặc xem tất cả.");
+                    }
+                    loadPhongBanList(); // Refresh department list
+                    // If not viewing all, and current dept was deleted, the placeholder is shown.
+                    // If viewing all, refresh all employees.
+                    if (!currentSelectedPhongBan.ten) {
+                         loadAllNhanVien(); // If previously viewing "All"
+                    }
+                } else {
+                    alert(`Xóa phòng ban "${tenPhongBan}" thất bại.`);
+                }
+            } catch (error) {
+                javaLog("JS Error deleting department: " + error); 
+                alert("Lỗi khi xóa phòng ban: " + error.message);
+            }
+        }
+
+        async function deleteAllNhanVienInPhongBan(tenPhongBan) {
+             if (!confirm(`Xóa TẤT CẢ nhân viên trong phòng ban "${tenPhongBan}"?`)) return;
+            try {
+                const success = await window.javaAppNhanVien.xoaTatCaNhanVienTrongPhongBan(tenPhongBan);
+                if (success) {
+                    alert(`Đã xử lý xóa tất cả nhân viên trong phòng ban "${tenPhongBan}".`);
+                    if (currentSelectedPhongBan.ten === tenPhongBan) {
+                        loadNhanVienByPhongBanInternal(tenPhongBan); // Refresh current view
+                    } else if (!currentSelectedPhongBan.ten) {
+                        loadAllNhanVien(); // If viewing all, refresh all
+                    }
+                } else {
+                    alert(`Xóa nhân viên trong phòng ban "${tenPhongBan}" thất bại/không có NV.`);
+                }
+            } catch (error) {
+                javaLog("JS Error deleting all employees in dept: " + error); alert("Lỗi xóa nhân viên: " + error.message);
+            }
+        }
+        
+        async function deleteNhanVien(idNhanVien, idPhongBanNV) { // idPhongBanNV is the employee's current department
+            if (!confirm(`Xóa nhân viên ID ${idNhanVien}?`)) return;
+            javaLog(`JS: Deleting employee ${idNhanVien} from dept ${idPhongBanNV}`);
+            try {
+                let success;
+                if (idPhongBanNV && idPhongBanNV > 0) {
+                     success = await window.javaAppNhanVien.xoaNhanVienTrongPhongBan(idNhanVien, idPhongBanNV);
+                } else { // Employee not in a department or idPhongBanNV is invalid
+                    success = await window.javaAppNhanVien.xoaNhanVien(idNhanVien); // Assumes this method exists for unassigned
+                }
+               
+                if (success) {
+                    alert("Xóa nhân viên thành công!");
+                    // Refresh current view
+                    if (currentSelectedPhongBan.id === idPhongBanNV && currentSelectedPhongBan.id !== null) { // If viewing the dept employee was in
+                        loadNhanVienByPhongBanInternal(currentSelectedPhongBan.ten);
+                    } else if (!currentSelectedPhongBan.ten) { // If viewing "All Employees"
+                        loadAllNhanVien();
+                    } else {
+                        // Viewing a different dept than the one employee was deleted from
+                        // Or employee was unassigned, and we are viewing a specific dept.
+                        // No visual change needed in the current employee list unless it was "All Employees".
+                        javaLog("Employee deleted from a different/no department than currently viewed. 'All Employees' view not active.");
+                    }
+                } else {
+                    alert("Xóa nhân viên thất bại.");
+                }
+            } catch (error) {
+                javaLog("JS Error deleting employee: " + error); alert("Lỗi khi xóa nhân viên: " + error.message);
+            }
+        }
+
+        function toggleSelectAll(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.nhanvien-checkbox');
+            checkboxes.forEach(checkbox => checkbox.checked = masterCheckbox.checked);
+        }
+
+        async function chuyenNhanVienPhongBan() {
+            const selectedCheckboxes = document.querySelectorAll('.nhanvien-checkbox:checked');
+            const danhSachIdNhanVien = Array.from(selectedCheckboxes).map(cb => parseInt(cb.value));
+
+            if (danhSachIdNhanVien.length === 0) { alert("Vui lòng chọn nhân viên để chuyển."); return; }
+
+            const idPhongBanMoi = parseInt(document.getElementById('phongBanChuyenDen').value);
+            if (isNaN(idPhongBanMoi) || idPhongBanMoi === "") { alert("Vui lòng chọn phòng ban mới."); return; }
+            
+            const jsonDanhSachIdNhanVien = JSON.stringify(danhSachIdNhanVien);
+            javaLog(`JS: Transferring employees ${jsonDanhSachIdNhanVien} to department ${idPhongBanMoi}`);
+
+            try {
+                const success = await window.javaAppNhanVien.chuyenPhongBan(jsonDanhSachIdNhanVien, idPhongBanMoi);
+                if (success) {
+                    alert("Chuyển phòng ban cho nhân viên thành công!");
+                    // Refresh current view
+                    if (currentSelectedPhongBan.ten) {
+                        loadNhanVienByPhongBanInternal(currentSelectedPhongBan.ten);
+                    } else {
+                        loadAllNhanVien();
+                    }
+                     document.getElementById('selectAllNhanVien').checked = false; 
+                } else {
+                    alert("Chuyển phòng ban thất bại.");
+                }
+            } catch (error) {
+                javaLog("JS Error transferring employees: " + error); alert("Lỗi khi chuyển phòng ban: " + error.message);
+            }
+        }
+
+        // Initial load
+        window.onload = () => {
+            function initializeApp() {
+                if (window.javaAppNhanVien && typeof window.javaAppNhanVien.log === 'function') {
+                    javaLog("JS: Bridge 'javaAppNhanVien' confirmed. Initializing.");
+                    updateNhanVienPanelTitle("Nhân Viên"); // Initial title
+                    showNhanVienPlaceholder("Chọn một phòng ban để xem nhân viên, hoặc nhấn \"Xem Tất Cả Nhân Viên\".");
+                    loadPhongBanList(); // Load departments for selection and for the transfer dropdown
+                    // Don't load all employees initially, wait for user action
+                } else {
+                    javaLog("JS Error: Bridge 'javaAppNhanVien' not fully available yet.");
+                    alert("Kết nối Java chưa sẵn sàng. Thử làm mới.");
+                }
+            }
+
+            if (window.javaAppNhanVien) { initializeApp(); } 
+            else {
+                javaLog("JS: Bridge not found on onload. Setting up retry.");
+                let attempts = 0; const maxAttempts = 5;
+                const intervalId = setInterval(() => {
+                    attempts++;
+                    if (window.javaAppNhanVien && typeof window.javaAppNhanVien.log === 'function') {
+                        clearInterval(intervalId);
+                        javaLog(`JS: Bridge found after ${attempts} attempt(s).`);
+                        initializeApp();
+                    } else if (attempts >= maxAttempts) {
+                        clearInterval(intervalId);
+                        javaLog(`JS: Bridge not found after ${maxAttempts} attempts.`);
+                        alert("Không thể kết nối với ứng dụng Java. Vui lòng thử làm mới trang.");
+                    }
+                }, 1000);
+            }
+        };
+    </script>
+</body>
+</html>

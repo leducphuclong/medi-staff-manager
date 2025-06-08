@@ -201,3 +201,22 @@ button.login-btn:active {
   }
   
 }
+
+#successMessageContainer {
+  margin-top: 20px; /* Tạo khoảng cách với phần tử phía trên nếu cần */
+}
+
+.success-text {
+  margin-bottom: 25px !important; /* Ghi đè margin mặc định của thẻ p */
+  font-size: 16px;
+  color: #a7f3d0; /* Màu xanh lá cây nhẹ, dễ nhìn trên nền tối */
+  line-height: 1.6;
+}
+
+.error-message {
+  color: #ff6b6b; /* Một màu đỏ nhẹ, dễ nhìn */
+  font-size: 14px;
+  margin-top: 8px; /* Tạo khoảng cách với ô input phía trên */
+  text-align: left; /* Căn lề trái cho thông báo lỗi */
+  font-weight: 500;
+}

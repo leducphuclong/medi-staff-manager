@@ -18,15 +18,27 @@
         <div class="input-group">
           <label for="email">Địa chỉ Email</label>
           <input type="email" id="email" name="email" placeholder="your.email@example.com" required />
+		  <p id="emailError" class="error-message" style="display: none;"></p>
         </div>
 
         <button type="submit" class="login-btn">Gửi yêu cầu đặt lại</button>
       </form>
+	  
+	  <div id="successMessageContainer" style="display: none;">
+	          <p class="success-text">
+	            Mật khẩu đã được gửi thành công về email của bạn, hãy đăng nhập lại bằng nút bên dưới.
+	          </p>
+	          <button class="login-btn" onclick="bridge.getDangNhapBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;">
+	            Đăng Nhập Lại
+	          </button>
+	        </div>
 
       <div class="forgot-password">
         <p>Nhớ mật khẩu rồi? <a href="#" onclick="bridge.getDangNhapBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;">Đăng nhập tại đây</a></p>
       </div>
     </div>
   </div>
+
+  <script src="./quenMatKhau.js"></script>
 </body>
 </html>

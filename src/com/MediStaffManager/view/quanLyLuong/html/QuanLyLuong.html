@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản Lý Lương Nhân Viên</title>
+  <link rel="stylesheet" href="../css/QuanLyLuong.css" />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+	/>
+   <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css"
+  />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="container">
+    <!-- Phần Controls (tách riêng) -->
+    <div class="controls">
+      <label for="thangNamFilter">Chọn tháng:</label>
+      <input type="month" id="thangNamFilter" /> <!-- type="month": YYYY-MM -->
+      <button onclick="loadLuongTheoThang()">
+		<i class="control-icon fas fa-eye"></i>
+		Xem</button>
+
+      <input
+        type="number"
+        id="searchValue"
+        placeholder="Tìm kiếm theo ID..."
+      />
+	  <select class="search-criteria" class="form-select">
+	      <option value="nv">ID Nhân Viên</option>
+	      <option value="cv">ID Chức Vụ</option>
+	  </select>
+	  
+      <button onclick="timKiemLuong()">
+		<i class="control-icon fas fa-search"></i>
+		Tìm Kiếm</button>
+
+      <button id="themButton" onclick="openModalForAdd()">
+		<i class="control-icon fas fa-plus"></i>
+		Thêm Mới</button>
+    </div>
+
+    <!-- Phần Table (tách riêng, có scroll pane) -->
+    <div class="table-wrapper">
+      <div class="table-container" style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+             
+              <th>ID Chức Vụ</th>
+              <th>ID Nhân Viên</th>
+              <th>Họ Tên</th>
+              <th>Tháng Năm</th>
+              <th>Lương Cơ Bản</th>
+              <th>Thưởng</th>
+              <th>Phụ Cấp</th>
+              <th>Tăng Ca</th>
+              <th>Tổng Lương</th>
+              <th>Hành Động</th>
+            </tr>
+          </thead>
+          <tbody id="luongTableBody">
+            <tr>
+              <td colspan="11" style="text-align: center;">
+                Đang tải dữ liệu…
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+ 
+
+  <!-- Modal for Add/Edit -->
+  <div id="luongModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2 id="modalTitle">Thêm/Sửa Lương</h2>
+      <form id="luongForm" class="form-section">
+        <input type="hidden" id="idLuong" />
+        <div class="form-grid">
+          <div>
+            <label for="idChucVu">ID Chức Vụ:</label>
+            <input type="number" id="idChucVu" required />
+          </div>
+          <div>
+            <label for="idNhanVien">ID Nhân Viên:</label>
+            <input type="number" id="idNhanVien" readonly />
+          </div>
+          <div>
+            <label for="thangNam">Tháng (YYYY-MM):</label>
+            <input type="month" id="thangNam" readonly />
+          </div>
+          <div>
+            <label for="luongThuNhap">Lương Cơ Bản:</label>
+            <input type="number" step="0.01" id="luongThuNhap" required />
+          </div>
+          <div>
+            <label for="thuong">Thưởng:</label>
+            <input type="number" step="0.01" id="thuong" placeholder="0" />
+          </div>
+          <div>
+            <label for="phuCap">Phụ Cấp:</label>
+            <input type="number" step="0.01" id="phuCap" placeholder="0" />
+          </div>
+          <div>
+            <label for="tangCa">Tăng Ca:</label>
+            <input type="number" step="0.01" id="tangCa" placeholder="0" />
+          </div>
+          <div>
+            <label for="tongLuong">Tổng Lương:</label>
+            <input type="number" step="0.01" id="tongLuong" readonly />
+          </div>
+        </div>
+        <button type="submit">Lưu Thay Đổi</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal for Confirm Delete -->
+  <div id="confirmModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span id="confirmMessage"></span>
+      <div confirmModal-button style="margin-top: 20px; text-align: center;">
+        <button id="btnConfirmOk" style="margin-right: 10px;">YES</button>
+        <button id="btnConfirmCancel">CANCEL</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+   <span style="color: #94a3b8; font-size: 14px;">
+     © MediStaff Manager. Phát triển bởi Nhóm PBL3.
+   </span>
+   </div>
+
+  <!-- Link to your JS -->
+  <script src="../js/QuanLyLuong.js"></script>
+</body>
+</html>
