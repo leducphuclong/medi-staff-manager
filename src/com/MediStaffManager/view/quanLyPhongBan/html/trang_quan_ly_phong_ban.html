@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Phòng Ban</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="./../css/style_chung.css"> 
+</head>
+<body>
+    <div class="page-container"> <!-- Replaces app-window; old main-header is removed -->
+        <header class="page-header">
+            <h1>Quản Lý Phòng Ban</h1>
+            <p>Nơi quản lý thông tin các phòng ban hiệu quả.</p>
+        </header>
+
+        <div class="search-container">
+            <div class="search-group">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm phòng ban..." />
+                <select id="searchType" class="form-control">
+                    <option value="ten">Tìm theo tên</option>
+                    <option value="id">Tìm theo ID</option>
+                </select>                    <button id="btnSearch" class="btn btn-search"><i class="fas fa-search"></i> Tìm Kiếm</button>
+                <button id="btnReset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Làm Mới</button>
+            </div>
+        </div>
+
+        <main class="content-area">
+            <!-- The old <h1 class="content-title">Quản lý phòng ban</h1> is removed -->
+			<!-- Khu vực thông báo -->
+			<div id="notificationArea" style="display: none;">
+			    <span id="notificationMessage"></span>
+			    <button onclick="this.parentElement.style.display='none';" title="Đóng">×</button>
+			</div>            <!-- Khu vực tìm kiếm -->
+            
+            
+            <div class="table-scroll-wrapper">
+                <div class="table-container">
+                    <table id="departmentTable"> 
+                        <thead>
+                            <tr>
+                                <th>ID phòng ban</th>
+                                <th>Tên phòng ban</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="3" style="text-align:center;">Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <button class="btn btn-primary" id="btnAddDepartment">Thêm</button>
+        </footer>
+    </div> <!-- END page-container -->
+
+    <!-- Modal Xác Nhận Tùy Chỉnh -->
+    <div id="customConfirmModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content confirm-modal"> <!-- Using confirm-modal class for consistent styling -->
+            <div class="modal-header">
+                <h3 id="customConfirmTitle">Xác nhận hành động</h3>
+                <!-- No 'X' close button for this confirm modal, user must choose OK/Cancel -->
+            </div>
+            <div class="modal-body">
+                <p id="customConfirmMessage">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+            </div>
+            <div class="modal-footer">
+                <div style="text-align: center; width: 100%;">
+                    <button class="btn btn-secondary" id="customConfirmCancel">Hủy</button>
+                    <button class="btn btn-danger" id="customConfirmOk">Đồng ý</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<div id="departmentModal" class="modal-overlay" style="display:none;">
+	  <div class="modal-content confirm-modal">
+	    <div class="modal-header">
+	        <h3>Sửa Phòng Ban</h3>
+	        <span class="close-button" id="closeDeptModalBtn">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="deptIdInput">ID Phòng Ban:</label>
+	            <input type="number" id="deptIdInput" min="1" class="form-control" />
+	        </div>
+	        <div class="form-group">
+	            <label for="deptNameInput">Tên Phòng Ban:</label>
+	            <input type="text" id="deptNameInput" class="form-control" />
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <div style="text-align: center; width: 100%;">
+	            <button class="btn btn-secondary" id="deptCancelBtn">Hủy</button>
+	            <button class="btn btn-primary" id="deptSaveBtn">Lưu</button>
+	        </div>
+	    </div>
+	  </div>	</div>
+
+    <!-- Removed duplicate customConfirmModal -->
+
+    <div id="addDepartmentModal" class="modal-overlay" style="display:none;">
+      <div class="modal-content confirm-modal">
+        <div class="modal-header">
+            <h3>Thêm Phòng Ban</h3>
+            <span class="close-button" id="closeAddDeptModalBtn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="addDeptIdInput">ID Phòng Ban:</label>
+                <input type="number" id="addDeptIdInput" min="1" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="addDeptNameInput">Tên Phòng Ban:</label>
+                <input type="text" id="addDeptNameInput" class="form-control" />
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div style="text-align: center; width: 100%;">
+                <button class="btn btn-secondary" id="addDeptCancelBtn">Hủy</button>
+                <button class="btn btn-primary" id="addDeptSaveBtn">Lưu</button>
+            </div>
+        </div>
+      </div>
+    </div>
+	
+	<!-- Modal Thông báo -->
+    <div id="notificationModal" class="modal-overlay" style="display: none;">
+      <div class="modal-content notification-modal">
+        <div class="modal-header">
+            <h3 id="notificationTitle">Thông báo</h3>
+            <span class="close-button" id="closeNotificationBtn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div id="notificationIcon" class="notification-icon">
+                <span></span>
+            </div>
+            <p id="notificationModalMessage"></p>
+        </div>
+        <div class="modal-footer">
+            <div style="text-align: center; width: 100%;">
+                <button class="btn btn-primary" id="notificationOkBtn">OK</button>
+            </div>
+        </div>
+      </div>
+    </div>
+		<script src="./../js/utils.js"></script>
+    <script src="./../js/ui_modal_utils.js"></script><!-- Thêm công cụ mới cho modal -->
+    <script src="./../js/ui_notifications.js"></script>
+    <script src="./../js/ui_confirm_modal.js"></script>
+    <script src="./../js/ui_checkbox_handler.js"></script>
+    <script src="./../js/phongBan.js"></script>
+    <script src="./../js/nhanVien.js"></script>
+    <script src="./../js/page_employee_detail.js"></script>
+    <script src="./../js/main.js"></script>
+</body>
+</html>

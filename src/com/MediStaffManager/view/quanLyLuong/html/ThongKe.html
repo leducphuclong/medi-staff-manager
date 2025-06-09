@@ -70,5 +70,11 @@
   
   <!-- Liên kết đến file JavaScript -->
   <script src="../js/ThongKe.js"></script>
+  <script>
+    console.log("📌 HTML script inline: ThongKe.html đã được load.");
+    window.initThongKe = function () {
+      console.log("✅ Hàm initThongKe đã được gọi từ HTML inline script!");
+    };
+  </script>
 </body>
 </html>

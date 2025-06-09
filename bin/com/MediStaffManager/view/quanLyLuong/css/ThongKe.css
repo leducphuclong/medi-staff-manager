@@ -5,11 +5,16 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+
 }
+
+body, button, input, select, textarea, table, th, td, h1, h2, h3, h4, h5, h6, p, span, label, div {
+  font-family: Arial, sans-serif;
+}
+
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f8ff; /* Xanh dương nhạt */
   color: #033e8c; /* Xanh đậm cho chữ */
   padding: 20px;
 }
