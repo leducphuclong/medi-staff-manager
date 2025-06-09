@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Nhân Viên - MediStaff</title>
-    <!-- Ba dòng link và script đã bị xóa -->
+    <!-- Google Fonts - Inter (Font cũ) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Basic Reset */
         * {
@@ -12,318 +15,302 @@
             padding: 0;
             box-sizing: border-box;
         }
-
+ 
+        html {
+            height: 100%;
+        }
+ 
         body {
-            font-family: 'Inter', sans-serif; /* Sẽ fallback về sans-serif nếu Inter không có */
-            background-color: #f1f5f9; /* gray-100 */
-            color: #1e293b; /* gray-800 */
+            font-family: 'Inter', sans-serif; /* QUAY LẠI FONT INTER */
+            color: #1e293b; /* gray-800 - Màu chữ chính như cũ */
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
+            background-color: #f1f5f9; /* gray-100 - Màu nền như cũ */
+            
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
-
+ 
         .container {
-            max-width: 1280px;
+            max-width: 1320px; 
+            width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
+            
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; 
+            overflow: hidden;
         }
-
+ 
         header {
-            margin-bottom: 30px;
+            padding-top: 12px;
+            margin-bottom: 25px; /* Giữ nguyên hoặc điều chỉnh nhẹ */
             text-align: center;
+            flex-shrink: 0;
         }
-
         header h1 {
-            font-size: 2.25rem; /* Tương đương text-3xl/4xl */
+            font-size: 2.25rem; /* Font size như cũ */
             font-weight: 700;
-            color: #1d4ed8; /* primary-darker */
+            color: #1d4ed8; /* Màu xanh đậm như cũ */
+            margin-bottom: 0.25rem;
         }
-
         header p {
-            color: #64748b; /* gray-500 */
+            color: #4b5563; /* Màu xám như cũ */
             margin-top: 5px;
-            font-size: 1.125rem; /* text-lg */
+            font-size: 1.125rem;
+            font-weight: 400;
         }
-
-        /* Notification Area */
+ 
+        /* Notification Area - Giữ style màu và hiệu ứng mờ */
         .notification {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            transform: translateY(-100%);
+            transition: opacity 0.3s ease-in-out, visibility 0s 0.3s; /* Chỉ opacity và visibility */
+            opacity: 0;
+            visibility: hidden;
             position: fixed;
             top: 1.5rem;
             left: 50%;
+            transform: translateX(-50%); /* Chỉ cần translate X để căn giữa */
             z-index: 1050;
             min-width: 320px;
             max-width: 500px;
             padding: 1rem;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-xl */
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
             border-left-width: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
         .notification.show {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            visibility: visible;
+            transition-delay: 0s, 0s; 
         }
-        /* Notification types - bạn có thể thêm màu cụ thể ở JS như cũ */
+        .notification.hiding { /* Class này không cần thiết nếu chỉ làm hiệu ứng mờ */
+             opacity: 0;
+             visibility: hidden;
+             transition: opacity 0.3s ease-in, visibility 0s 0.3s;
+        }
+        .notification-icon { font-size: 1.25rem; line-height: 1; }
+        .notification-message { flex: 1; font-weight: 500;}
+        /* Màu notification như cũ */
         .notification-success { background-color: #f0fdf4; color: #166534; border-color: #4ade80; }
         .notification-error   { background-color: #fef2f2; color: #991b1b; border-color: #f87171; }
         .notification-warning { background-color: #fffbeb; color: #92400e; border-color: #facc15; }
         .notification-info    { background-color: #eff6ff; color: #1e40af; border-color: #60a5fa; }
-
-
+ 
         .controls {
             background-color: white;
             padding: 20px;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-md */
-            margin-bottom: 30px;
+            border-radius: 0.5rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
             display: flex;
-            flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+            flex-wrap: wrap;
             align-items: center;
-            gap: 1rem;
+            gap: 1rem; /* Giữ gap này */
+            flex-shrink: 0;
         }
-        .controls > div:first-child { /* Search input container */
-            flex-grow: 1;
+        .controls > .input-search-container { flex-grow: 1; position: relative; }
+        .controls .input-icon {
+            position: absolute; left: 0.875rem; top: 50%;
+            transform: translateY(-50%); color: #9ca3af; 
+            pointer-events: none; font-size: 0.9rem;
         }
-        @media (min-width: 768px) { /* md breakpoint */
-            .controls {
-                flex-wrap: nowrap;
-            }
+        .controls input[type="text"],
+        .controls select {
+            padding-left: 2.75rem;
         }
-
-
-        /* Form elements styling */
+ 
         .form-input, .form-select {
             width: 100%;
-            padding: 0.625rem 0.75rem;
-            font-size: 0.9375rem;
-            border: 1px solid #cbd5e1; /* gray-300 */
-            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.625rem 0.875rem; 
+            font-size: 0.9375rem; /* Font size như cũ */
+            border: 1px solid #cbd5e1; /* Màu border như cũ */
+            border-radius: 0.375rem; /* Bo góc như cũ */
             transition: border-color 0.2s, box-shadow 0.2s;
-            color: #1e293b; /* gray-800 */
+            color: #1e293b; 
+            height: 2.75rem; 
+            background-color: white;
         }
-        .form-input::placeholder { color: #94a3b8; } /* gray-400 */
+        .form-input::placeholder { color: #94a3b8; }
         .form-input:focus, .form-select:focus {
             outline: none;
-            border-color: #3b82f6; /* primary-DEFAULT */
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
         }
         .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            appearance: none; -webkit-appearance: none; -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7280'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.25em;
-            padding-right: 2.5rem;
+            background-position: right 0.875rem center;
+            background-size: 1.125em;
+            padding-right: 3rem !important;
         }
-
-        /* Buttons */
+        .controls select { min-width: 200px; } /* Giữ min-width này */
+ 
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            font-size: 0.9375rem;
-            font-weight: 500;
-            border-radius: 0.375rem; /* rounded-md */
-            transition: background-color 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            border: 1px solid transparent;
-            white-space: nowrap; /* Tránh nút bị xuống dòng chữ */
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.625rem;
+            padding: 0 1.25rem; /* Padding như cũ */
+            font-size: 0.9375rem; font-weight: 500; 
+            border-radius: 0.375rem; /* Bo góc như cũ */
+            transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s ease-out;
+            cursor: pointer; border: 1px solid transparent; white-space: nowrap; height: 2.75rem;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); /* Shadow nhẹ hơn */
         }
-        .btn:focus {
-            outline: none;
+        .btn:hover { transform: translateY(-1px); /* Giữ hiệu ứng hover nhẹ */ }
+        .btn:active { transform: translateY(0px); }
+        .btn:focus-visible {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
-        .btn-primary { background-color: #3b82f6; color: white; }
-        .btn-primary:hover { background-color: #2563eb; }
-        .btn-success { background-color: #22c55e; color: white; }
-        .btn-success:hover { background-color: #16a34a; }
-        .btn-danger { background-color: #ef4444; color: white; }
-        .btn-danger:hover { background-color: #dc2626; }
-        .btn-secondary { background-color: #64748b; color: white; }
-        .btn-secondary:hover { background-color: #475569; }
-
-        /* Modal */
+        /* Màu nút như cũ */
+        .btn-primary { background-color: #3b82f6; color: white; } 
+        .btn-primary:hover { background-color: #2563eb; } 
+        .btn-success { background-color: #22c55e; color: white; } 
+        .btn-success:hover { background-color: #16a34a; } 
+        .btn-danger { background-color: #ef4444; color: white; } 
+        .btn-danger:hover { background-color: #dc2626; } 
+        .btn-secondary { background-color: #64748b; color: white; } 
+        .btn-secondary:hover { background-color: #475569; } 
+ 
+        /* Modal Styling - Chỉ hiệu ứng mờ */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(15, 23, 42, 0.6); /* gray-900 opacity 60% */
-            display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(30, 41, 59, 0.6); 
+            display: none; /* Bắt đầu ẩn hoàn toàn */
+            align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0; 
+            transition: opacity 0.25s ease-out; /* Chỉ transition opacity */
         }
-        .modal-overlay.show {
-            display: flex;
-            opacity: 1;
+        .modal-overlay.show { 
+            display: flex; /* Hiển thị khi có class 'show' */
+            opacity: 1; 
         }
+ 
         .modal-content {
-            background-color: white;
-            padding: 1.5rem 2rem;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-            width: 90%;
-            max-width: 48rem; /* max-w-3xl */
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: scale(0.95) translateY(10px);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
+            background-color: white; padding: 1.5rem 2rem; /* Padding như cũ */
+            border-radius: 0.75rem; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); 
+            width: 90%; max-width: 48rem; /* max-width như cũ */
+            max-height: 90vh; overflow-y: auto;
+            /* Bỏ transform khỏi đây để không có hiệu ứng trượt/scale */
+            opacity: 1; /* Modal content luôn hiện khi overlay hiện */
         }
-        .modal-overlay.show .modal-content {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-        }
+        /* .modal-overlay.show .modal-content không cần style riêng cho transform/opacity nữa */
+ 
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e2e8f0; /* gray-200 */
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 1rem; border-bottom: 1px solid #e5e7eb; 
             margin-bottom: 1.5rem;
         }
-        .modal-title {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600;
-            color: #1e293b; /* gray-800 */
-        }
+        .modal-title { font-size: 1.25rem; font-weight: 600; color: #1f2937; } 
         .modal-close-btn {
-            color: #64748b; /* gray-500 */
-            background: transparent;
-            border: none;
-            font-size: 1.5rem;
-            line-height: 1;
-            padding: 0.25rem;
-            cursor: pointer;
-            transition: color 0.2s;
+            color: #6b7280; background: transparent; border: none; font-size: 1.5rem; /* Size như cũ */
+            line-height: 1; padding: 0.25rem; cursor: pointer; transition: color 0.2s;
         }
-        .modal-close-btn:hover { color: #1e293b; } /* gray-800 */
-
-        .modal-form-grid {
-            display: grid;
-            grid-template-columns: 1fr; /* Default 1 column */
-            gap: 1.25rem 1.5rem; /* gap-y-5 gap-x-6 */
+        .modal-close-btn:hover { color: #1f2937; /* Bỏ hiệu ứng xoay */ } 
+ 
+        .modal-form-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem 1.5rem; } 
+        @media (min-width: 768px) {
+            .modal-form-grid { grid-template-columns: 1fr 1fr; }
+            .modal-form-grid .col-span-2 { grid-column: span 2 / span 2; }
         }
-        @media (min-width: 768px) { /* md breakpoint */
-            .modal-form-grid {
-                grid-template-columns: 1fr 1fr; /* 2 columns on md screens */
-            }
-            .modal-form-grid .col-span-2 { /* For elements spanning 2 columns */
-                grid-column: span 2 / span 2;
-            }
+        .form-group { position: relative; }
+        .form-group .input-icon {
+            position: absolute; left: 0.875rem; top: calc(50% + 13px); 
+            transform: translateY(-50%); color: #9ca3af; pointer-events: none; font-size: 0.9rem;
         }
-
+        .form-group input, .form-group select { padding-left: 2.75rem; }
         .form-label {
-            display: block;
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 500;
-            color: #334155; /* gray-700 */
-            margin-bottom: 0.375rem;
+            display: block; font-size: 0.875rem; font-weight: 500;
+            color: #374151; margin-bottom: 0.375rem;
         }
-        .form-label .required-star { color: #ef4444; } /* red-500 */
-        input[readonly].form-input {
-             background-color: #f1f5f9; /* gray-100 */
-             cursor: not-allowed;
-        }
-        .modal-actions {
-            margin-top: 2rem;
-            display: flex;
-            flex-direction: column; /* Stack on small screens */
-            gap: 0.75rem; /* gap-3 */
-            justify-content: flex-end;
-        }
-         @media (min-width: 640px) { /* sm breakpoint */
-            .modal-actions {
-                flex-direction: row; /* Row on sm screens and up */
-            }
+        .form-label .required-star { color: #ef4444; }
+        input[readonly].form-input { background-color: #f3f4f6; cursor: not-allowed; border-color: #e5e7eb; } 
+        .modal-actions { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; } 
+        @media (min-width: 640px) {
+            .modal-actions { flex-direction: row; justify-content: flex-end; }
         }
         .btn-delete-in-modal.hidden { display: none; }
-
-
-        /* Table */
+ 
+        /* Table Area */
         .table-wrapper {
             background-color: white;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* shadow-md */
-            overflow: hidden; /* For rounded corners with table */
+            border-radius: 0.75rem; 
+            box-shadow: 0 4px 12px -1px rgba(0,0,0,0.07), 0 2px 8px -1px rgba(0,0,0,0.04);
+            flex-grow: 1; display: flex; flex-direction: column;
+            overflow: hidden; min-height: 250px; 
         }
         .table-container {
-            max-height: calc(100vh - 280px); /* Adjusted slightly */
-            overflow-y: auto;
+            flex-grow: 1; overflow-y: auto; position: relative;
+            /* TĂNG CHIỀU CAO BẢNG: max-height được điều chỉnh ở đây nếu cần, 
+               nhưng flex-grow sẽ tự động điều chỉnh là chính */
+            /* Ví dụ: max-height: calc(100vh - 280px); */ /* Điều chỉnh 280px cho phù hợp với header, controls, footer */
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
-
-        .employee-table {
-            width: 100%;
-            min-width: 1000px;
-            border-collapse: collapse; /* Important for borders */
-        }
+        .custom-scrollbar::-webkit-scrollbar { width: 10px; height: 10px; } 
+        .custom-scrollbar::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        
+        .employee-table { width: 100%; min-width: 1000px; border-collapse: collapse; } /* Giữ min-width này hoặc điều chỉnh */
         .employee-table th {
-            padding: 0.875rem 1rem;
-            font-weight: 600;
-            font-size: 0.8125rem; /* text-xs */
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background-color: #EFF6FF; /* blue-50 */
-            color: #1E40AF;       /* blue-800 */
+            padding: 0.875rem 1rem; font-weight: 600; font-size: 0.8125rem; 
+            text-transform: uppercase; letter-spacing: 0.05em;
+            background-color: #eef2ff; /* Màu header bảng như cũ */
+            color: #3730a3; 
             text-align: left;
-            border-bottom: 2px solid #BFDBFE; /* blue-300 */
+            border-bottom: 2px solid #c7d2fe; 
+            position: sticky; top: 0; z-index: 10;
+            vertical-align: middle; 
+            white-space: nowrap; 
         }
         .employee-table td {
-            padding: 0.875rem 1rem;
-            font-size: 0.875rem; /* text-sm */
-            color: #334155; /* gray-700 */
-            border-bottom: 1px solid #e2e8f0; /* gray-200 */
+            padding: 0.875rem 1rem; font-size: 0.875rem; /* Font size td như cũ */
+            color: #334155; /* Màu chữ td như cũ */
+            border-bottom: 1px solid #e2e8f0; 
+            vertical-align: middle; 
         }
         .employee-table tbody tr:last-child td { border-bottom: none; }
-        .employee-table tbody tr:hover { background-color: #f8fafc; } /* gray-50 */
-
-        .action-buttons-cell {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            justify-content: flex-start;
+        .employee-table tbody tr:hover { background-color: #f8fafc; } 
+        
+        .action-buttons-cell { display: flex; align-items: center; gap: 0.625rem; } 
+        .action-btn { 
+            padding: 0.375rem 0.75rem; font-size: 0.8125rem; height: auto;
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); 
         }
-        .action-btn {
-            padding: 0.375rem 0.625rem;
-            font-size: 0.8125rem; /* text-xs */
-        }
-
-        /* Footer */
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px -1px rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06); }
+        .action-btn:active { transform: translateY(0px); }
+ 
+ 
         footer {
-            text-align: center;
-            color: #64748b; /* gray-500 */
-            margin-top: 30px;
-            font-size: 0.875rem; /* text-sm */
+            text-align: center; color: #64748b; margin-top: 25px;
+            padding-bottom: 15px; font-size: 0.875rem; flex-shrink: 0;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800"> <!-- Class này sẽ không còn tác dụng, body style từ CSS trên -->
-    <div class="container"> <!-- Class này sẽ được style từ CSS trên -->
+<body>
+    <div class="container">
         <header>
             <h1>Quản Lý Nhân Viên</h1>
             <p>Nền tảng quản lý nhân sự hiệu quả</p>
         </header>
-
-        <!-- Notification Area -->
-        <div id="notifications" class="notification"></div> <!-- Class .notification đã được style -->
-
+ 
+        <div id="notifications" class="notification">
+            <!-- JS chèn nội dung -->
+        </div>
+ 
         <div class="controls">
-            <div style="flex-grow: 1;"> <!-- Search input container -->
-                <input type="text" id="searchKeyword" placeholder="Tìm theo họ tên, CCCD, SĐT, Email..." class="form-input">
+            <div class="input-search-container">
+                <i class="fas fa-search input-icon"></i>
+                <input type="text" id="searchKeyword" placeholder="Tìm theo họ tên, CCCD..." class="form-input">
             </div>
-            <div style="min-width: 224px;"> <!-- Select container, sm:w-52 md:w-56 -->
+            <div>
                 <select id="searchCriteria" class="form-select">
                     <option value="hoTen">Theo Họ Tên</option>
                     <option value="cccd">Theo CCCD</option>
@@ -332,42 +319,45 @@
                 </select>
             </div>
             <button class="btn btn-primary" onclick="searchEmployees()">
-                 Tìm Kiếm <!-- Icon đã bị xóa -->
+                <i class="fas fa-search"></i> Tìm Kiếm
             </button>
             <button class="btn btn-success" onclick="showAddForm()">
-                 Thêm Mới <!-- Icon đã bị xóa -->
+                <i class="fas fa-user-plus"></i> Thêm Mới
             </button>
         </div>
-
-        <!-- Employee Form Modal -->
-        <div id="employeeFormModal" class="modal-overlay"> <!-- Class .modal-overlay đã được style -->
-            <div class="modal-content custom-scrollbar"> <!-- Class .modal-content và .custom-scrollbar đã được style -->
-                <div class="modal-header"> <!-- Class .modal-header đã được style -->
-                    <h2 id="formTitle" class="modal-title">Thêm Nhân Viên Mới</h2> <!-- Class .modal-title đã được style -->
-                    <button class="modal-close-btn" onclick="hideFormModal()" aria-label="Đóng modal">
-                        × <!-- Thay icon bằng ký tự X -->
+ 
+        <div id="employeeFormModal" class="modal-overlay">
+            <div class="modal-content custom-scrollbar">
+                <div class="modal-header">
+                    <h2 id="formTitle" class="modal-title">Thêm Nhân Viên Mới</h2>
+                    <button class="modal-close-btn" onclick="hideFormModal()" aria-label="Đóng form">
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
-
-                <div class="modal-form-grid"> <!-- Class .modal-form-grid đã được style -->
+                <div class="modal-form-grid">
                     <div class="form-group">
                         <label for="hoTen" class="form-label">Họ Tên <span class="required-star">*</span></label>
-                         <input type="text" id="hoTen" required class="form-input">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="hoTen" required class="form-input">
                     </div>
                     <div class="form-group">
                         <label for="cccd" class="form-label">CCCD <span class="required-star">*</span></label>
+                        <i class="fas fa-id-card input-icon"></i>
                         <input type="text" id="cccd" required maxlength="12" class="form-input">
                     </div>
                     <div class="form-group">
                         <label for="sdt" class="form-label">SĐT <span class="required-star">*</span></label>
+                        <i class="fas fa-phone input-icon"></i>
                         <input type="text" id="sdt" required maxlength="11" class="form-input">
                     </div>
                     <div class="form-group">
                         <label for="email" class="form-label">Email</label>
+                        <i class="fas fa-envelope input-icon"></i>
                         <input type="email" id="email" class="form-input">
                     </div>
                     <div class="form-group">
                         <label for="gioiTinh" class="form-label">Giới Tính <span class="required-star">*</span></label>
+                        <i class="fas fa-venus-mars input-icon"></i>
                         <select id="gioiTinh" class="form-select">
                             <option value="Nam">Nam</option>
                             <option value="Nữ">Nữ</option>
@@ -376,39 +366,42 @@
                     </div>
                     <div class="form-group">
                         <label for="ngaySinh" class="form-label">Ngày Sinh <span class="required-star">*</span></label>
+                        <i class="fas fa-calendar-alt input-icon"></i>
                         <input type="date" id="ngaySinh" required class="form-input">
                     </div>
                     <div class="form-group">
                         <label for="tenChucVu" class="form-label">Chức Vụ <span class="required-star">*</span></label>
+                        <i class="fas fa-briefcase input-icon"></i>
                         <select id="tenChucVu" required class="form-select" onchange="updateHeSoLuongFromChucVu()"></select>
                     </div>
                     <div class="form-group">
                         <label for="heSoLuong" class="form-label">Hệ Số Lương</label>
+                        <i class="fas fa-calculator input-icon"></i>
                         <input type="number" id="heSoLuong" step="0.01" min="0" class="form-input" readonly>
                     </div>
-                    <div class="form-group col-span-2"> <!-- class col-span-2 để CSS target -->
+                    <div class="form-group col-span-2">
                         <label for="tenPhongBan" class="form-label">Phòng Ban <span class="required-star">*</span></label>
+                        <i class="fas fa-building input-icon"></i>
                         <select id="tenPhongBan" required class="form-select"></select>
                     </div>
                 </div>
-                <div class="modal-actions"> <!-- class .modal-actions để style -->
+                <div class="modal-actions">
                     <button id="deleteButtonInModal" class="btn btn-danger btn-delete-in-modal hidden" onclick="confirmDeleteEmployeeFromModal()">
-                         Xóa
+                        <i class="fas fa-trash-alt"></i> Xóa
                     </button>
                     <button class="btn btn-secondary" onclick="hideFormModal()">
-                         Hủy
+                        <i class="fas fa-ban"></i> Hủy
                     </button>
                     <button id="saveButton" class="btn btn-success" onclick="saveEmployee()">
-                         Lưu
+                        <i class="fas fa-save"></i> Lưu
                     </button>
                 </div>
             </div>
         </div>
-
-
-        <div class="table-wrapper"> <!-- class .table-wrapper để style -->
-            <div class="table-container custom-scrollbar"> <!-- class .table-container và .custom-scrollbar đã được style -->
-                <table id="employeeTable" class="employee-table"> <!-- class .employee-table đã được style -->
+ 
+        <div class="table-wrapper">
+            <div class="table-container custom-scrollbar">
+                <table id="employeeTable" class="employee-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -430,76 +423,105 @@
                 </table>
             </div>
         </div>
-        <footer>
+         <footer class="text-center text-slate-500 mt-8 py-4 text-sm">
             © <span id="currentYear"></span> MediStaff Manager. Phát triển bởi Nhóm PBL3.
         </footer>
     </div>
-
+ 
     <script>
+        // JavaScript giữ nguyên, không thay đổi logic, chỉ cần đảm bảo class và style cho modal/notification khớp
         document.getElementById('currentYear').textContent = new Date().getFullYear();
         let currentEditId = null;
-        const employeeFormModal = document.getElementById('employeeFormModal');
-
+        const employeeFormModal = document.getElementById('employeeFormModal'); 
+        const notificationDiv = document.getElementById('notifications');
+ 
         document.addEventListener('DOMContentLoaded', function() {
-            initializeNhanVienPageAfterJavaBridgeInjection();
+             if (typeof window.nhanVienBridge !== 'undefined') {
+                initializeNhanVienPageAfterJavaBridgeInjection();
+             } else {
+                 console.warn("HTML: nhanVienBridge not found on DOMContentLoaded. Waiting for explicit call.");
+             }
         });
-
-
+        
         function initializeNhanVienPageAfterJavaBridgeInjection() {
-            if (window.nhanVienBridge) {
-                 console.log("HTML: Java bridge 'nhanVienBridge' is ready. Initializing page.");
+            if (typeof window.nhanVienBridge !== 'undefined' && window.nhanVienBridge) {
+                console.log("HTML: Java bridge 'nhanVienBridge' is ready. Initializing page.");
                 loadInitialData();
                 loadDropdownData();
             } else {
-                console.warn("HTML: nhanVienBridge not ready yet. Waiting for injection.");
+                console.error("HTML: initializeNhanVienPageAfterJavaBridgeInjection called, but nhanVienBridge is still not available.");
             }
         }
-
+ 
         function getBridge() {
-            if (window.nhanVienBridge) {
+            if (typeof window.nhanVienBridge !== 'undefined' && window.nhanVienBridge) {
                 return window.nhanVienBridge;
             } else {
                 console.error("Fatal: nhanVienBridge is not available.");
-                showNotification("error", "Lỗi kết nối hệ thống. Vui lòng tải lại trang hoặc liên hệ quản trị viên.");
+                showNotification("error", "Lỗi kết nối hệ thống. Vui lòng tải lại trang.");
                 return null;
             }
         }
-
-        function loadInitialData() {
+ 
+        function loadInitialData() { 
             const bridge = getBridge();
             if (!bridge) return;
             try {
                 const employeesJson = bridge.getAllEmployees();
-                const employees = JSON.parse(employeesJson);
+                const employees = employeesJson ? JSON.parse(employeesJson) : [];
                 renderTable(employees);
             } catch (e) {
                 console.error("Error loading initial data:", e);
-                showNotification("error", "Không thể tải danh sách nhân viên. " + (e.message || "Đã xảy ra lỗi."));
+                showNotification("error", "Không thể tải danh sách nhân viên. " + (e.message || ""));
             }
         }
-
-        function loadDropdownData() {
-            const bridge = getBridge();
+        function loadDropdownData() { 
+             const bridge = getBridge();
             if (!bridge) return;
             try {
                 const chucVuSelect = document.getElementById('tenChucVu');
                 const chucVuJson = bridge.getAllTenChucVu();
-                const chucVuList = JSON.parse(chucVuJson);
                 chucVuSelect.innerHTML = '<option value="">-- Chọn chức vụ --</option>';
-                chucVuList.forEach(cv => chucVuSelect.add(new Option(cv, cv)));
-
+                if (chucVuJson) {
+                    const chucVuList = JSON.parse(chucVuJson);
+                    chucVuList.forEach(cv => chucVuSelect.add(new Option(cv, cv)));
+                }
+ 
                 const phongBanSelect = document.getElementById('tenPhongBan');
                 const phongBanJson = bridge.getAllTenPhongBan();
-                const phongBanList = JSON.parse(phongBanJson);
                 phongBanSelect.innerHTML = '<option value="">-- Chọn phòng ban --</option>';
-                phongBanList.forEach(pb => phongBanSelect.add(new Option(pb, pb)));
+                if (phongBanJson) {
+                    const phongBanList = JSON.parse(phongBanJson);
+                    phongBanList.forEach(pb => phongBanSelect.add(new Option(pb, pb)));
+                }
             } catch (e) {
                 console.error("Error loading dropdown data:", e);
-                showNotification("error", "Không thể tải dữ liệu Chức Vụ/Phòng Ban. " + (e.message || "Đã xảy ra lỗi."));
+                showNotification("error", "Không thể tải dữ liệu Chức Vụ/Phòng Ban.");
             }
         }
-
-        function renderTable(employees) {
+        function updateHeSoLuongFromChucVu() { 
+             const bridge = getBridge();
+            if (!bridge) return;
+            const tenChucVu = document.getElementById('tenChucVu').value;
+            const heSoLuongInput = document.getElementById('heSoLuong');
+            if (tenChucVu) {
+                try {
+                    const hslJson = bridge.getHeSoLuongByTenChucVu(tenChucVu);
+                    if (hslJson) {
+                        const hslString = JSON.parse(hslJson);
+                        heSoLuongInput.value = (hslString !== null && hslString !== "") ? Number(hslString).toFixed(2) : '';
+                    } else {
+                        heSoLuongInput.value = '';
+                    }
+                } catch (e) {
+                    console.error("Error fetching HSL for " + tenChucVu + ":", e);
+                    heSoLuongInput.value = '';
+                }
+            } else {
+                heSoLuongInput.value = '';
+            }
+        }
+        function renderTable(employees) { 
             const tbody = document.getElementById('employeeTable').querySelector('tbody');
             tbody.innerHTML = '';
             if (!employees || employees.length === 0) {
@@ -508,56 +530,65 @@
             }
             employees.forEach(emp => {
                 const row = tbody.insertRow();
-                row.insertCell().textContent = emp.idNhanVien ?? 'N/A';
-                row.insertCell().textContent = emp.hoTen || '-';
-                row.insertCell().textContent = emp.cccd || '-';
-                row.insertCell().textContent = emp.sdt || '-';
-                row.insertCell().textContent = emp.email || '-';
-                row.insertCell().textContent = emp.gioiTinh || '-';
-                row.insertCell().textContent = emp.ngaySinh ? new Date(emp.ngaySinh).toLocaleDateString('vi-VN') : '-';
-                row.insertCell().textContent = emp.tenChucVu || '-';
-                row.insertCell().textContent = emp.tenPhongBan || '-';
-                row.insertCell().textContent = (emp.heSoLuong !== undefined && emp.heSoLuong !== null) ? Number(emp.heSoLuong).toFixed(2) : '-';
-
+                
+                const addCell = (text) => {
+                    const cell = row.insertCell();
+                    cell.textContent = text;
+                    return cell;
+                };
+ 
+                addCell(emp.idNhanVien ?? 'N/A');
+                addCell(emp.hoTen || '-');
+                addCell(emp.cccd || '-');
+                addCell(emp.sdt || '-');
+                addCell(emp.email || '-');
+                addCell(emp.gioiTinh || '-');
+                addCell(emp.ngaySinh ? new Date(emp.ngaySinh).toLocaleDateString('vi-VN') : '-');
+                addCell(emp.tenChucVu || '-');
+                addCell(emp.tenPhongBan || '-');
+                addCell((emp.heSoLuong !== undefined && emp.heSoLuong !== null) ? Number(emp.heSoLuong).toFixed(2) : '-');
+ 
                 const actionsCell = row.insertCell();
-                actionsCell.className = 'action-buttons-cell'; // Class để style
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'action-buttons-cell';
+ 
                 const editButton = document.createElement('button');
-                editButton.textContent = 'Sửa'; // Text thay vì icon
+                editButton.innerHTML = '<i class="fas fa-edit"></i> Sửa';
                 editButton.title = "Sửa thông tin";
-                editButton.className = 'btn btn-primary action-btn'; // Dùng class btn chung và action-btn cho size
+                editButton.className = 'btn btn-primary action-btn';
                 editButton.onclick = () => showEditForm(emp);
-                actionsCell.appendChild(editButton);
-
+                buttonContainer.appendChild(editButton);
+ 
                 const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Xóa'; // Text thay vì icon
+                deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i> Xóa';
                 deleteButton.title = "Xóa nhân viên";
                 deleteButton.className = 'btn btn-danger action-btn';
                 deleteButton.onclick = () => confirmDeleteEmployeeFromRow(emp.idNhanVien, emp.hoTen);
-                actionsCell.appendChild(deleteButton);
+                buttonContainer.appendChild(deleteButton);
+                
+                actionsCell.appendChild(buttonContainer);
             });
         }
-
-        function searchEmployees() {
+        function searchEmployees() { 
             const bridge = getBridge();
             if (!bridge) return;
-
             let keyword = document.getElementById('searchKeyword').value.trim();
             const criteria = document.getElementById('searchCriteria').value;
             try {
                 const employeesJson = bridge.searchEmployees(keyword, criteria);
-                const employees = JSON.parse(employeesJson);
+                const employees = employeesJson ? JSON.parse(employeesJson) : [];
                 renderTable(employees);
                 if (employees.length === 0 && keyword) {
                     showNotification("info", "Không tìm thấy nhân viên nào phù hợp.");
                 }
             } catch (e) {
                 console.error("Error searching employees:", e);
-                showNotification("error", "Lỗi khi tìm kiếm nhân viên. " + (e.message || ""));
+                showNotification("error", "Lỗi khi tìm kiếm: " + (e.message || ""));
             }
         }
-
-        function clearForm() {
-            document.getElementById('hoTen').value = '';
+        function clearForm() { 
+             document.getElementById('hoTen').value = '';
             document.getElementById('cccd').value = '';
             document.getElementById('sdt').value = '';
             document.getElementById('email').value = '';
@@ -568,71 +599,57 @@
             document.getElementById('tenPhongBan').value = '';
             currentEditId = null;
         }
-
-        function showAddForm() {
+        function showAddForm() { 
             clearForm();
             document.getElementById('formTitle').textContent = 'Thêm Nhân Viên Mới';
-            document.getElementById('saveButton').textContent = 'Thêm Mới';
+            document.getElementById('saveButton').innerHTML = '<i class="fas fa-save"></i> Thêm Mới';
             document.getElementById('deleteButtonInModal').classList.add('hidden');
+            
             employeeFormModal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Nên thêm class vào body thay vì style trực tiếp
+            document.body.style.overflow = 'hidden';
             document.getElementById('hoTen').focus();
             updateHeSoLuongFromChucVu();
         }
-
-        function showEditForm(employee) {
+        function showEditForm(employee) { 
             clearForm();
             document.getElementById('formTitle').textContent = `Chỉnh Sửa: ${employee.hoTen || 'Nhân Viên'}`;
             currentEditId = employee.idNhanVien;
-
             document.getElementById('hoTen').value = employee.hoTen || '';
             document.getElementById('cccd').value = employee.cccd || '';
             document.getElementById('sdt').value = employee.sdt || '';
             document.getElementById('email').value = employee.email || '';
             document.getElementById('gioiTinh').value = employee.gioiTinh || 'Nam';
-            document.getElementById('ngaySinh').value = employee.ngaySinh || '';
+            
+            let ngaySinhFormatted = '';
+            if (employee.ngaySinh) {
+                if (employee.ngaySinh.includes('/')) { 
+                    const parts = employee.ngaySinh.split('/');
+                    if (parts.length === 3) {
+                        ngaySinhFormatted = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    }
+                } else { 
+                    ngaySinhFormatted = employee.ngaySinh;
+                }
+            }
+            document.getElementById('ngaySinh').value = ngaySinhFormatted;
+            
             document.getElementById('tenChucVu').value = employee.tenChucVu || '';
-            document.getElementById('heSoLuong').value = (employee.heSoLuong !== undefined && employee.heSoLuong !== null) ? Number(employee.heSoLuong).toFixed(2) : '';
+            updateHeSoLuongFromChucVu(); 
             document.getElementById('tenPhongBan').value = employee.tenPhongBan || '';
-
-            document.getElementById('saveButton').textContent = 'Cập Nhật';
+ 
+            document.getElementById('saveButton').innerHTML = '<i class="fas fa-save"></i> Cập Nhật';
             document.getElementById('deleteButtonInModal').classList.remove('hidden');
+            
             employeeFormModal.classList.add('show');
             document.body.style.overflow = 'hidden';
             document.getElementById('hoTen').focus();
         }
-
-        function hideFormModal() {
+        function hideFormModal() { 
             employeeFormModal.classList.remove('show');
             document.body.style.overflow = '';
-            clearForm();
+            clearForm(); 
         }
-
-        function updateHeSoLuongFromChucVu() {
-            const bridge = getBridge();
-            if (!bridge) return;
-            const tenChucVu = document.getElementById('tenChucVu').value;
-            const heSoLuongInput = document.getElementById('heSoLuong');
-
-            if (tenChucVu) {
-                try {
-                    const hslJson = bridge.getHeSoLuongByTenChucVu(tenChucVu);
-                    const hslString = JSON.parse(hslJson);
-                    if (hslString !== null) {
-                        heSoLuongInput.value = Number(hslString).toFixed(2);
-                    } else {
-                        heSoLuongInput.value = '';
-                    }
-                } catch (e) {
-                    console.error("Error fetching HSL by TenChucVu:", e);
-                    heSoLuongInput.value = '';
-                }
-            } else {
-                heSoLuongInput.value = '';
-            }
-        }
-
-        function validateFormData(data) {
+        function validateFormData(data) { 
             const errors = [];
             if (!data.hoTen) errors.push("Họ tên không được để trống.");
             if (!data.cccd || !/^\d{12}$/.test(data.cccd)) errors.push("CCCD phải là 12 chữ số.");
@@ -649,183 +666,145 @@
             }
             if (!data.tenChucVu) errors.push("Vui lòng chọn chức vụ.");
             if (!data.tenPhongBan) errors.push("Vui lòng chọn phòng ban.");
-
-            if (errors.length > 0) {
-                return errors.join('<br>');
-            }
+ 
+            if (errors.length > 0) return errors.join('<br>');
             return null;
         }
-
-        function saveEmployee() {
+        function saveEmployee() { 
             const bridge = getBridge();
             if (!bridge) return;
-
             const employeeData = {
                 idNhanVien: currentEditId,
                 hoTen: document.getElementById('hoTen').value.trim(),
                 cccd: document.getElementById('cccd').value.trim(),
                 sdt: document.getElementById('sdt').value.trim(),
-                email: document.getElementById('email').value.trim() || null,
+                email: document.getElementById('email').value.trim() || null, 
                 gioiTinh: document.getElementById('gioiTinh').value,
                 ngaySinh: document.getElementById('ngaySinh').value,
                 tenChucVu: document.getElementById('tenChucVu').value,
                 heSoLuong: document.getElementById('heSoLuong').value ? parseFloat(document.getElementById('heSoLuong').value) : null,
                 tenPhongBan: document.getElementById('tenPhongBan').value
             };
-
+ 
             const validationError = validateFormData(employeeData);
             if (validationError) {
                 showNotification("warning", validationError);
                 return;
             }
-
             let resultMessage;
             const employeeJson = JSON.stringify(employeeData);
-
-            if (currentEditId) {
-                resultMessage = bridge.updateEmployee(employeeJson);
-            } else {
-                resultMessage = bridge.addEmployee(employeeJson);
-            }
-
-            console.log("Java Request JSON:", employeeJson);
-            console.log("Java Response:", resultMessage);
-
-            if (resultMessage && typeof resultMessage === 'string') {
-                if (resultMessage.toLowerCase().startsWith("success:")) {
-                    showNotification("success", resultMessage.substring("Success: ".length).trim());
-                    loadInitialData();
-                    hideFormModal();
-                } else if (resultMessage.toLowerCase().startsWith("error:")) {
-                    showNotification("error", resultMessage.substring("Error: ".length).trim());
+            try {
+                if (currentEditId) {
+                    resultMessage = bridge.updateEmployee(employeeJson);
                 } else {
-                    showNotification("info", resultMessage);
+                    resultMessage = bridge.addEmployee(employeeJson);
                 }
-            } else {
-                showNotification("error", "Không nhận được phản hồi hợp lệ từ hệ thống.");
+                console.log("Java Request:", employeeJson, "Java Response:", resultMessage);
+                if (resultMessage && typeof resultMessage === 'string') {
+                    if (resultMessage.toLowerCase().startsWith("success:")) {
+                        showNotification("success", resultMessage.substring("Success:".length).trim());
+                        loadInitialData();
+                        hideFormModal();
+                    } else if (resultMessage.toLowerCase().startsWith("error:")) {
+                        showNotification("error", resultMessage.substring("Error:".length).trim());
+                    } else { showNotification("info", resultMessage); }
+                } else { showNotification("error", "Không nhận được phản hồi hợp lệ."); }
+            } catch(e) {
+                console.error("Error saving employee:", e);
+                showNotification("error", "Lỗi khi lưu: " + (e.message || ""));
             }
         }
-
-        function confirmDeleteEmployeeFromRow(employeeId, employeeName) {
-            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${employeeName}" (ID: ${employeeId})? Hành động này không thể hoàn tác.`)) {
+        function confirmDeleteEmployeeFromRow(employeeId, employeeName) { 
+            if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${employeeName || 'N/A'}" (ID: ${employeeId})?`)) {
                 deleteEmployeeById(employeeId);
             }
         }
-
-        function confirmDeleteEmployeeFromModal() {
-            if (!currentEditId) {
-                showNotification("warning", "Không có nhân viên nào được chọn để xóa.");
+        function confirmDeleteEmployeeFromModal() { 
+             if (!currentEditId) {
+                showNotification("warning", "Không có nhân viên nào đang được chọn để xóa.");
                 return;
-            }
+            };
             const hoTen = document.getElementById('hoTen').value || "Nhân viên này";
-            if (confirm(`Bạn có chắc chắn muốn xóa "${hoTen}" (ID: ${currentEditId})? Hành động này không thể hoàn tác.`)) {
+            if (confirm(`Bạn có chắc chắn muốn xóa "${hoTen}" (ID: ${currentEditId})?`)) {
                 deleteEmployeeById(currentEditId);
             }
         }
-
-        function deleteEmployeeById(employeeId) {
-            const bridge = getBridge();
+        function deleteEmployeeById(employeeId) { 
+             const bridge = getBridge();
             if (!bridge) return;
             try {
-                const resultMessage = bridge.deleteEmployee(employeeId);
+                const resultMessage = bridge.deleteEmployee(String(employeeId));
                 console.log("Java Delete Response:", resultMessage);
-                if (resultMessage && typeof resultMessage === 'string') {
+                 if (resultMessage && typeof resultMessage === 'string') {
                     if (resultMessage.toLowerCase().startsWith("success:")) {
-                        showNotification("success", resultMessage.substring("Success: ".length).trim());
+                        showNotification("success", resultMessage.substring("Success:".length).trim());
                         loadInitialData();
-                        if (currentEditId === employeeId) {
-                            hideFormModal();
-                        }
+                        if (currentEditId === employeeId) hideFormModal();
                     } else if (resultMessage.toLowerCase().startsWith("error:")) {
-                        showNotification("error", resultMessage.substring("Error: ".length).trim());
-                    } else {
-                        showNotification("info", resultMessage);
-                    }
-                } else {
-                    showNotification("error", "Không nhận được phản hồi hợp lệ khi xóa.");
-                }
+                        showNotification("error", resultMessage.substring("Error:".length).trim());
+                    } else { showNotification("info", resultMessage); }
+                } else { showNotification("error", "Không nhận được phản hồi hợp lệ khi xóa."); }
             } catch (e) {
                 console.error("Error deleting employee:", e);
-                showNotification("error", "Lỗi khi thực hiện thao tác xóa. " + (e.message || "Vui lòng thử lại."));
+                showNotification("error", "Lỗi khi xóa: " + (e.message || ""));
             }
         }
-
+ 
         let notificationTimeout;
         function showNotification(type, message) {
-            const notificationDiv = document.getElementById('notifications');
             if (notificationTimeout) clearTimeout(notificationTimeout);
-
-            let baseClass = 'notification'; // Base class from CSS
+            
             let typeClass = '';
-            // Trong CSS tôi đã định nghĩa các class notification-success, -error, etc.
-            // Bạn có thể set class cho notificationDiv ở đây.
-            // Hoặc, nếu bạn muốn giữ cách làm cũ với style trực tiếp thì bỏ qua phần này.
-            // Hiện tại, showNotification của bạn đang tự set bg, color, border.
-            // Để dùng class CSS đã định nghĩa:
+            let iconClass = '';
             switch(type) {
-                case 'success': typeClass = 'notification-success'; break;
-                case 'error':   typeClass = 'notification-error';   break;
-                case 'warning': typeClass = 'notification-warning'; break;
-                default:        typeClass = 'notification-info';
+                case 'success': typeClass = 'notification-success'; iconClass = 'fas fa-check-circle'; break;
+                case 'error':   typeClass = 'notification-error';   iconClass = 'fas fa-times-circle'; break;
+                case 'warning': typeClass = 'notification-warning'; iconClass = 'fas fa-exclamation-triangle'; break;
+                default:        typeClass = 'notification-info';    iconClass = 'fas fa-info-circle';
             }
-            // Để đơn giản, tôi giữ lại logic style trực tiếp của bạn, nhưng bạn có thể đổi sang dùng class
-            let bgColor, textColor, borderColor; //, iconClass; // Icon đã bỏ
-            switch(type) {
-                case 'success':
-                    bgColor = '#f0fdf4'; textColor = '#166534'; borderColor = '#4ade80';// iconClass = 'fa-check-circle';
-                    break;
-                case 'error':
-                    bgColor = '#fef2f2'; textColor = '#991b1b'; borderColor = '#f87171'; //iconClass = 'fa-times-circle';
-                    break;
-                case 'warning':
-                    bgColor = '#fffbeb'; textColor = '#92400e'; borderColor = '#facc15'; //iconClass = 'fa-exclamation-triangle';
-                    break;
-                default: // info
-                    bgColor = '#eff6ff'; textColor = '#1e40af'; borderColor = '#60a5fa'; //iconClass = 'fa-info-circle';
-            }
-
-            // notificationDiv.innerHTML = `<div style="display: flex; align-items: center;"><i class="fas ${iconClass}" style="margin-right: 0.75rem; font-size: 1.25rem;"></i><div style="flex: 1;">${message}</div></div>`;
-            notificationDiv.innerHTML = `<div style="flex: 1;">${message}</div>`; // Bỏ icon
-            notificationDiv.className = `notification`; // Chỉ class notification
-            // Áp dụng style trực tiếp
-            notificationDiv.style.backgroundColor = bgColor;
-            notificationDiv.style.color = textColor;
-            notificationDiv.style.borderColor = borderColor;
-
-
-            notificationDiv.style.transform = 'translateX(-50%) translateY(-100%)';
-            notificationDiv.style.opacity = '0';
+            
+            notificationDiv.innerHTML = `<span class="notification-icon"><i class="${iconClass}"></i></span>
+                                         <span class="notification-message">${message}</span>`;
+            notificationDiv.className = `notification ${typeClass}`; // Gán lại class cơ sở và class type
+            
+            notificationDiv.classList.remove('hiding'); 
+            void notificationDiv.offsetWidth; 
             notificationDiv.classList.add('show');
-            void notificationDiv.offsetWidth;
-            notificationDiv.style.transform = 'translateX(-50%) translateY(0)';
-            notificationDiv.style.opacity = '1';
-
+ 
             const duration = (type === 'error' || type === 'warning') ? 7000 : 5000;
             notificationTimeout = setTimeout(() => {
-                notificationDiv.style.opacity = '0';
-                notificationDiv.style.transform = 'translateX(-50%) translateY(-100%)';
+                notificationDiv.classList.add('hiding'); 
+                // Không cần xóa class 'show' ngay, CSS transition cho visibility khi 'hiding' được thêm sẽ làm việc đó
+                // Sau một khoảng thời gian bằng transition, có thể reset hoàn toàn nếu muốn
+                setTimeout(() => {
+                    if(notificationDiv.classList.contains('hiding')) {
+                       notificationDiv.classList.remove('show', 'hiding');
+                       // Reset lại style ban đầu để chuẩn bị cho lần hiển thị sau
+                       notificationDiv.style.opacity = '0'; 
+                       notificationDiv.style.visibility = 'hidden';
+                       // Nếu có transform trong trạng thái ẩn ban đầu, reset cả nó
+                       // notificationDiv.style.transform = 'translateX(-50%) translateY(-100%)';
+                    }
+                }, 300); // Phải khớp với thời gian transition của opacity/transform khi ẩn
             }, duration);
         }
-
-
-        document.getElementById('searchKeyword').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
+ 
+        document.getElementById('searchKeyword').addEventListener('keypress', function(event) { 
+             if (event.key === 'Enter') {
                 event.preventDefault();
                 searchEmployees();
             }
         });
-
-        employeeFormModal.addEventListener('click', (event) => {
-            if (event.target === employeeFormModal) {
+        employeeFormModal.addEventListener('click', (event) => { 
+            if (event.target === employeeFormModal && employeeFormModal.classList.contains('show')) {
                 hideFormModal();
             }
         });
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keydown', (event) => { 
             if (event.key === 'Escape' && employeeFormModal.classList.contains('show')) {
                 hideFormModal();
             }
         });
-
     </script>
 </body>
 </html>
