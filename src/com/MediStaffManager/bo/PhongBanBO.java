@@ -1,6 +1,6 @@
 package com.MediStaffManager.bo;
 
-import com.MediStaffManager.dao.phongBanDAO;
+import com.MediStaffManager.dao.PhongBanDAO;
 import com.MediStaffManager.bean.NhanVienBEAN;
 import com.MediStaffManager.dao.NhanVienDAO2;
 
@@ -8,10 +8,10 @@ import java.util.List;
 
 public class PhongBanBO {
 	private NhanVienDAO2 nhanVienDAO;
-    private phongBanDAO PhongBanDAO;
+    private PhongBanDAO PhongBanDAO;
 
     public PhongBanBO() {
-        this.PhongBanDAO = new phongBanDAO();
+        this.PhongBanDAO = new PhongBanDAO();
         this.nhanVienDAO = new NhanVienDAO2();
     }
     

@@ -3,13 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // =========================================================================
     // KHAI BÁO CÁC BIẾN TOÀN CỤC VÀ ELEMENT THAM CHIẾU
-    // Đây là bước quan trọng bị thiếu trong code gốc, gây ra lỗi ReferenceError.
     // =========================================================================
     let currentEditId = null; // Biến lưu ID của nhân viên đang được chỉnh sửa
+    let employeeIdToDelete = null; // Biến lưu ID của nhân viên sắp bị xóa
     const employeeFormModal = document.getElementById('employeeFormModal'); // Tham chiếu đến modal form
     const notificationDiv = document.getElementById('notifications'); // Tham chiếu đến khu vực thông báo
     const searchKeywordInput = document.getElementById('searchKeyword'); // Tham chiếu đến ô tìm kiếm
 
+    // === CÁC BIẾN CHO MODAL XÁC NHẬN XÓA (MỚI) ===
+    const deleteConfirmModal = document.getElementById('deleteConfirmModal');
+    const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
     // =========================================================================
     // KHỞI TẠO TRANG - Giữ nguyên cơ chế chờ Java Bridge
@@ -126,16 +130,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = tbody.insertRow();
             const formatDate = (dateString) => {
                 if (!dateString) return '-';
-                // Giả sử dateString có thể là yyyy-MM-dd hoặc dd/MM/yyyy từ Java
                 const date = new Date(dateString);
-                if (isNaN(date.getTime())) { // Nếu không phải định dạng chuẩn, thử parse dd/MM/yyyy
+                if (isNaN(date.getTime())) { 
                     const parts = dateString.split('/');
                     if (parts.length === 3) {
-                       // new Date(year, monthIndex, day)
                        const isoDate = new Date(parts[2], parts[1] - 1, parts[0]);
                        return isoDate.toLocaleDateString('vi-VN');
                     }
-                    return dateString; // Trả về chuỗi gốc nếu không parse được
+                    return dateString;
                 }
                 return date.toLocaleDateString('vi-VN');
             };
@@ -158,7 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button title="Xóa nhân viên" class="btn btn-danger action-btn"><i class="fas fa-trash-alt"></i> Xóa</button>
                 </div>`;
             actionsCell.querySelector('.btn-primary').onclick = () => showEditForm(emp);
-            actionsCell.querySelector('.btn-danger').onclick = () => confirmDeleteEmployeeFromRow(emp.idNhanVien, emp.hoTen);
+            // THAY ĐỔI: Gọi hàm hiển thị modal xác nhận thay vì confirm()
+            actionsCell.querySelector('.btn-danger').onclick = () => showDeleteConfirmation(emp.idNhanVien, emp.hoTen);
         });
     }
 
@@ -209,22 +212,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('formTitle').textContent = `Chỉnh Sửa: ${employee.hoTen || 'Nhân Viên'}`;
         currentEditId = employee.idNhanVien;
 
-        // Điền dữ liệu vào form
         document.getElementById('hoTen').value = employee.hoTen || '';
         document.getElementById('cccd').value = employee.cccd || '';
         document.getElementById('sdt').value = employee.sdt || '';
         document.getElementById('email').value = employee.email || '';
         document.getElementById('gioiTinh').value = employee.gioiTinh || 'Nam';
 
-        // Xử lý định dạng ngày tháng cho input type="date" (yyyy-MM-dd)
         let ngaySinhFormatted = '';
         if (employee.ngaySinh) {
             const date = new Date(employee.ngaySinh);
              if (!isNaN(date.getTime())) {
-                // Hỗ trợ cả `yyyy-MM-dd` và `MM/dd/yyyy`
                  ngaySinhFormatted = date.toISOString().split('T')[0];
             } else {
-                 // Thử parse định dạng `dd/MM/yyyy`
                 const parts = employee.ngaySinh.split('/');
                 if (parts.length === 3) {
                     ngaySinhFormatted = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
@@ -234,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('ngaySinh').value = ngaySinhFormatted;
         
         document.getElementById('tenChucVu').value = employee.tenChucVu || '';
-        updateHeSoLuongFromChucVu(); // Cập nhật HSL sau khi set chức vụ
+        updateHeSoLuongFromChucVu(); 
         document.getElementById('tenPhongBan').value = employee.tenPhongBan || '';
 
         document.getElementById('saveButton').innerHTML = '<i class="fas fa-save"></i> Cập Nhật';
@@ -323,34 +322,75 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    function confirmDeleteEmployeeFromRow(employeeId, employeeName) {
-        if (confirm(`Bạn có chắc chắn muốn xóa nhân viên "${employeeName || 'N/A'}" (ID: ${employeeId})?`)) {
-            deleteEmployeeById(employeeId);
-        }
+
+    // =========================================================================
+    // == LOGIC XÓA MỚI VỚI MODAL XÁC NHẬN ==
+    // =========================================================================
+
+    /**
+     * Hiển thị modal xác nhận xóa.
+     * @param {number|string} employeeId - ID của nhân viên cần xóa.
+     * @param {string} employeeName - Tên của nhân viên để hiển thị trong thông báo.
+     */
+    function showDeleteConfirmation(employeeId, employeeName) {
+        employeeIdToDelete = employeeId;
+        deleteConfirmMessage.innerHTML = `Bạn có chắc chắn muốn xóa nhân viên <br><strong>"${employeeName || 'N/A'}" (ID: ${employeeId})</strong>?`;
+        deleteConfirmModal.classList.add('show');
+        document.body.style.overflow = 'hidden';
     }
 
+    /**
+     * Ẩn modal xác nhận xóa.
+     */
+    function hideDeleteConfirmation() {
+        deleteConfirmModal.classList.remove('show');
+        if (!employeeFormModal.classList.contains('show')) {
+            document.body.style.overflow = '';
+        }
+        employeeIdToDelete = null; // Reset ID sau khi đóng
+    }
+
+    // Gán hàm vào window để HTML có thể gọi
+    window.hideDeleteConfirmation = hideDeleteConfirmation;
+    
+    // Xử lý khi nhấn nút "Xác nhận xóa" trên modal
+    confirmDeleteBtn.addEventListener('click', () => {
+        if (employeeIdToDelete) {
+            deleteEmployeeById(employeeIdToDelete);
+        }
+    });
+
+    // Hàm này được gọi bởi nút Xóa trong form sửa
     window.confirmDeleteEmployeeFromModal = function() {
-         if (!currentEditId) {
+        if (!currentEditId) {
             showNotification("warning", "Không có nhân viên nào đang được chọn để xóa.");
             return;
         };
         const hoTen = document.getElementById('hoTen').value || "Nhân viên này";
-        if (confirm(`Bạn có chắc chắn muốn xóa "${hoTen}" (ID: ${currentEditId})?`)) {
-            deleteEmployeeById(currentEditId);
-        }
+        // Thay vì dùng confirm(), gọi hàm hiển thị modal xác nhận
+        showDeleteConfirmation(currentEditId, hoTen);
     }
-
+    
+    // Hàm thực hiện việc gọi Java Bridge để xóa
     function deleteEmployeeById(employeeId) {
         const bridge = getBridge();
         if (!bridge) return;
         try {
-            const resultMessage = bridge.deleteEmployee(String(employeeId));
+            // Luôn đảm bảo truyền String cho Java Bridge
+            const resultMessage = bridge.deleteEmployee(String(employeeId)); 
+            
+            // Ẩn modal xác nhận sau khi có kết quả
+            hideDeleteConfirmation(); 
+
             console.log("Java Delete Response:", resultMessage);
              if (resultMessage && typeof resultMessage === 'string') {
                 if (resultMessage.toLowerCase().startsWith("success:")) {
                     showNotification("success", resultMessage.substring("Success:".length).trim());
-                    loadInitialData();
-                    if (currentEditId === employeeId) hideFormModal();
+                    loadInitialData(); // Tải lại dữ liệu
+                    // Nếu nhân viên đang bị xóa cũng là người đang được sửa, đóng form sửa
+                    if (currentEditId === employeeId) {
+                        hideFormModal();
+                    }
                 } else if (resultMessage.toLowerCase().startsWith("error:")) {
                     showNotification("error", resultMessage.substring("Error:".length).trim());
                 } else {
@@ -362,6 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) {
             console.error("Lỗi khi xóa nhân viên:", e);
             showNotification("error", "Lỗi khi xóa: " + (e.message || ""));
+            hideDeleteConfirmation(); // Đóng modal cả khi có lỗi
         }
     }
 
@@ -373,21 +414,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function showNotification(type, message) {
         if (notificationTimeout) clearTimeout(notificationTimeout);
         
-        const typeClasses = {
-            success: 'notification-success',
-            error: 'notification-error',
-            warning: 'notification-warning',
-            info: 'notification-info'
-        };
-        const iconClasses = {
-            success: 'fa-check-circle',
-            error: 'fa-times-circle',
-            warning: 'fa-exclamation-triangle',
-            info: 'fa-info-circle'
-        };
+        const typeClasses = { success: 'notification-success', error: 'notification-error', warning: 'notification-warning', info: 'notification-info' };
+        const iconClasses = { success: 'fa-check-circle', error: 'fa-times-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
         
-        notificationDiv.innerHTML = `<span class="notification-icon"><i class="fas ${iconClasses[type] || 'fa-info-circle'}"></i></span>
-                                     <span class="notification-message">${message}</span>`;
+        notificationDiv.innerHTML = `<span class="notification-icon"><i class="fas ${iconClasses[type] || 'fa-info-circle'}"></i></span> <span class="notification-message">${message}</span>`;
         notificationDiv.className = `notification show ${typeClasses[type] || 'notification-info'}`;
         
         const duration = (type === 'error' || type === 'warning') ? 7000 : 5000;
@@ -397,7 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Gán các hàm vào window để HTML có thể gọi qua `onclick="..."`
-    // Điều này cần thiết vì code được gói trong 'DOMContentLoaded'
     window.showAddForm = showAddForm;
     window.hideFormModal = hideFormModal;
     window.saveEmployee = saveEmployee;
@@ -413,17 +442,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Đóng modal khi click vào vùng overlay bên ngoài
     employeeFormModal.addEventListener('click', (event) => {
-        // Đóng modal khi click vào vùng overlay bên ngoài
-        if (event.target === employeeFormModal) {
-            hideFormModal();
-        }
+        if (event.target === employeeFormModal) hideFormModal();
+    });
+    deleteConfirmModal.addEventListener('click', (event) => {
+        if (event.target === deleteConfirmModal) hideDeleteConfirmation();
     });
 
+    // Đóng modal khi nhấn phím Escape
     document.addEventListener('keydown', (event) => {
-        // Đóng modal khi nhấn phím Escape
-        if (event.key === 'Escape' && employeeFormModal.classList.contains('show')) {
-            hideFormModal();
+        if (event.key === 'Escape') {
+            if (employeeFormModal.classList.contains('show')) {
+                hideFormModal();
+            }
+            if (deleteConfirmModal.classList.contains('show')) {
+                hideDeleteConfirmation();
+            }
         }
     });
 

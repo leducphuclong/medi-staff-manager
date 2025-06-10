@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import com.MediStaffManager.bean.LuongNhanVien;
+import com.MediStaffManager.bean.LuongNhanVienBEAN;
 import com.MediStaffManager.bean.ThongKeResult;
 import com.MediStaffManager.controller.LuongNhanVienController;
 

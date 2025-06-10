@@ -1,5 +1,6 @@
 package com.MediStaffManager.dao;
 
+import com.MediStaffManager.bean.PhongBanBEAN;
 import com.MediStaffManager.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,10 +9,10 @@ import java.sql.ResultSet; // Specifically import ResultSet
 import java.util.ArrayList;
 import java.util.List;
 
-public class phongBanDAO {
+public class PhongBanDAO {
     private Connection connection;
 
-    public phongBanDAO() {
+    public PhongBanDAO() {
         this.connection = DBConnection.connect();
     }
 
@@ -118,6 +119,26 @@ public class phongBanDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public List<PhongBanBEAN> layTatCaPhongBan() {
+        List<PhongBanBEAN> danhSachPhongBan = new ArrayList<>();
+        String sql = "SELECT IDPhongBan, TenPhongBan FROM phong_ban ORDER BY TenPhongBan";
+
+        try (Connection conn = DBConnection.connect();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                PhongBanBEAN pb = new PhongBanBEAN();
+                pb.setIdPhongBan(rs.getInt("IDPhongBan"));
+                pb.setTenPhongBan(rs.getString("TenPhongBan"));
+                danhSachPhongBan.add(pb);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return danhSachPhongBan;
     }
     
     public List<Object[]> layDanhSachPhongBan() {
