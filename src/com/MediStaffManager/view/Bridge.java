@@ -2,6 +2,7 @@ package com.MediStaffManager.view;
 
 import java.sql.Connection;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.MediStaffManager.utils.DBConnection;
 import com.MediStaffManager.utils.SwingWindowUtil;
@@ -11,6 +12,7 @@ import com.MediStaffManager.view.quanLyLuong.QuanLyLuongBridge;
 import com.MediStaffManager.view.quanLyLuong.ThongKeLuongBridge;
 import com.MediStaffManager.view.quanLyNhanVien.QuanLyNhanVienBridge;
 import com.MediStaffManager.view.quanLyPhongBan.QuanLyPhongBanBridge;
+import com.MediStaffManager.view.quanLyTaiKhoan.QuanLyTaiKhoanBridge;
 import com.MediStaffManager.view.quenMatKhau.QuenMatKhauBridge;
 import com.MediStaffManager.view.trangChu.KeToanBridge;
 import com.MediStaffManager.view.trangChu.QuanLyNhanSuBridge;
@@ -28,6 +30,7 @@ public class Bridge {
     private QuanLyPhongBanBridge phongBanBridge;
     private QuanLyLuongBridge quanLyLuongBridge;
     private ThongKeLuongBridge thongKeLuongBridge;
+    private QuanLyTaiKhoanBridge quanLyTaiKhoanBridge;
     private KeToanBridge keToanBridge;
     
     private Connection conn;
@@ -40,7 +43,7 @@ public class Bridge {
         this.conn = DBConnection.connect();
         initializeBridges();
     }
-
+    
     private void initializeBridges() {
         setDangNhapBridge();
         setQuenMatKhauBridge();
@@ -50,6 +53,7 @@ public class Bridge {
         setKeToanBridge();
         setQuanLyLuongBridge();
         setThongKeLuongBridge();
+        setQuanLyTaiKhoanBridge();
     }
 
     public WebEngine getWebEngine() {
@@ -174,6 +178,16 @@ public class Bridge {
 	public void setThongKeLuongBridge() {
 		if (this.thongKeLuongBridge == null) {
             this.thongKeLuongBridge = new ThongKeLuongBridge(getWebEngine());
+        }
+	}
+
+	public QuanLyTaiKhoanBridge getQuanLyTaiKhoanBridge() {
+		return quanLyTaiKhoanBridge;
+	}
+
+	public void setQuanLyTaiKhoanBridge() {
+		if (this.quanLyTaiKhoanBridge == null) {
+            this.quanLyTaiKhoanBridge = new QuanLyTaiKhoanBridge(getWebEngine());
         }
 	}
 

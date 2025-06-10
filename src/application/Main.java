@@ -39,6 +39,7 @@ public class Main extends Application {
         
 //        bridge.getQuanLyNhanSuBridge().taiTrang(primaryStage, webView);
         bridge.getDangNhapBridge().taiTrang(primaryStage, webView);
+//        bridge.getQuanLyTaiKhoanBridge().taiTrang(primaryStage, webView);
 //        bridge.getQuanLyNhanVienBridge().taiTrang(primaryStage, webView);
 //        bridge.getQuanLyPhongBanBridge().taiTrang(primaryStage, webView);
 //        bridge.showLich(primaryStage);
@@ -61,3 +62,4 @@ public class Main extends Application {
         launch(args);
     }
 }
+

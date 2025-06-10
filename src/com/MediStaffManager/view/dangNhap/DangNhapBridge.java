@@ -1,129 +1,140 @@
 package com.MediStaffManager.view.dangNhap;
 
+import com.MediStaffManager.utils.DBConnection;
+import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import netscape.javascript.JSObject;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.MediStaffManager.utils.DBConnection;
+// Giả định bạn có các lớp Bridge và view khác
+import com.MediStaffManager.view.trangChu.KeToanBridge;
+import com.MediStaffManager.view.trangChu.QuanLyNhanSuBridge;
 
 public class DangNhapBridge {
-	private WebEngine webEngine;
-	final String basePath = "./src/com/MediStaffManager/view/";
-	private Connection conn;
 
-	public DangNhapBridge(WebEngine webEngine) {
-		this.webEngine = webEngine;
-		this.conn = DBConnection.connect();
-	}
+    // Các biến này sẽ được khởi tạo khi taiTrang được gọi
+    private Stage primaryStage;
+    private WebView webView;
+    
+    private final WebEngine webEngine;
+    private final Connection conn;
+    private final Gson gson;
 
-	public void taiTrang(Stage primaryStage, WebView webView) {
-		final String basePath = "./src/com/MediStaffManager/view/dangNhap/";
-		final String fileName = "dangNhap.html";
-		String filePath = basePath + fileName;
-		File htmlFile = new File(filePath);
+    // Giữ nguyên constructor gốc
+    public DangNhapBridge(WebEngine webEngine) {
+        this.webEngine = webEngine;
+        this.conn = DBConnection.connect();
+        this.gson = new Gson();
+    }
 
-		if (htmlFile.exists() && htmlFile.isFile()) {
-			String url = htmlFile.toURI().toString();
-			webView.getEngine().load(url);
-		} else {
-			webView.getEngine().loadContent(
-					"<html><body><h1>Lỗi khởi tạo</h1><p>Không thể tìm thấy Trang Đăng Nhập</p></body></html>");
-		}
+    /**
+     * Giữ nguyên phương thức taiTrang như yêu cầu.
+     * Phương thức này sẽ được gọi từ lớp Application chính để thiết lập màn hình đăng nhập.
+     * Nó cũng có nhiệm vụ quan trọng là lưu lại Stage và WebView để sử dụng sau này.
+     */
+    public void taiTrang(Stage primaryStage, WebView webView) {
+        // Lưu lại Stage và WebView để phương thức dangNhap() có thể sử dụng
+        this.primaryStage = primaryStage;
+        this.webView = webView;
 
-		StackPane root = new StackPane();
-		root.getChildren().add(webView);
+        final String basePath = "./src/com/MediStaffManager/view/dangNhap/";
+        final String fileName = "dangNhap.html";
+        File htmlFile = new File(basePath + fileName);
 
-		Scene scene = new Scene(root, 1900, 1000);
-		primaryStage.setTitle("Medi Staff Manager - Đăng Nhập");
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
-	
-	public boolean authDangNhap(String rawPassword, String encodedPassword) {
-		try {
-		    Class.forName("org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder");
-		    // If the class is found, proceed with your code
-		    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		    if (passwordEncoder.matches(rawPassword, encodedPassword)) {
-		        return true;
-		    } else {
-		    	return false;
-		    }
-		} catch (ClassNotFoundException e) {
-		    e.printStackTrace(); 
-		}
-		return false;
-	}
+        if (htmlFile.exists() && htmlFile.isFile()) {
+            this.webEngine.load(htmlFile.toURI().toString());
+        } else {
+            this.webEngine.loadContent("<html><body><h1>Lỗi khởi tạo</h1><p>Không thể tìm thấy Trang Đăng Nhập</p></body></html>");
+        }
 
-	public boolean dangNhap(String username, String password) throws SQLException {
-	    String query = "SELECT MatKhau FROM tai_khoan WHERE TenDangNhap = ?";
+        StackPane root = new StackPane(this.webView);
+        Scene scene = new Scene(root, 1400, 800);
+        this.primaryStage.setTitle("Medi Staff Manager - Đăng Nhập");
+        this.primaryStage.setScene(scene);
+        this.primaryStage.show();
+    }
 
-	    try (PreparedStatement statement = conn.prepareStatement(query)) {
-	        statement.setString(1, username);
-	        
-	        try (ResultSet resultSet = statement.executeQuery()) {
-	            if (resultSet.next()) {
-	                String storedPassword = resultSet.getString("MatKhau");
-	                return authDangNhap(password, storedPassword);
-	            }
-	        }
-	    }
-	    return false;
-	}
-	
-	public String getVaiTroByUsername(String username) throws SQLException {
-	    String query = "SELECT VaiTro FROM tai_khoan WHERE TenDangNhap = ?";
+    private boolean authDangNhap(String rawPassword, String encodedPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
 
-	    try (PreparedStatement statement = conn.prepareStatement(query)) {
-	        statement.setString(1, username);
+    /**
+     * Xử lý toàn bộ quá trình đăng nhập.
+     * Phương thức này được gọi từ JavaScript và không cần tham số Stage/WebView
+     * vì nó sử dụng các biến instance đã được lưu bởi phương thức taiTrang().
+     * @return true nếu xác thực thành công, false nếu thất bại.
+     */
+    public boolean dangNhap(String username, String password) {
+        // Kiểm tra xem taiTrang đã được gọi và khởi tạo primaryStage/webView chưa
+        if (this.primaryStage == null || this.webView == null) {
+            System.err.println("Lỗi nghiêm trọng: Cần gọi taiTrang() trước khi thực hiện đăng nhập.");
+            return false;
+        }
 
-	        try (ResultSet resultSet = statement.executeQuery()) {
-	            if (resultSet.next()) {
-	                return resultSet.getString("VaiTro");
-	            }
-	        }
-	    }
-	    return null;
-	}
-	
-	 public static void main(String[] args) {
-	        Scanner scanner = new Scanner(System.in);
+        String query = "SELECT MatKhau, VaiTro FROM tai_khoan WHERE TenDangNhap = ?";
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String storedPassword = resultSet.getString("MatKhau");
+                    String vaiTro = resultSet.getString("VaiTro");
 
-	        // Get username and password from the user
-	        System.out.print("Nhập tên đăng nhập: ");
-	        String username = scanner.nextLine();
+                    if (authDangNhap(password, storedPassword)) {
+                        System.out.println("Đăng nhập thành công với vai trò: " + vaiTro);
+                        Platform.runLater(() -> dieuHuongTheoVaiTro(vaiTro));
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        System.out.println("Đăng nhập thất bại cho người dùng: " + username);
+        return false;
+    }
 
-	        System.out.print("Nhập mật khẩu: ");
-	        String password = scanner.nextLine();
+    /**
+     * Điều hướng dựa trên vai trò, sử dụng Stage và WebView đã được lưu.
+     */
+    private void dieuHuongTheoVaiTro(String vaiTro) {
+        if (vaiTro == null) {
+            System.err.println("Lỗi: Vai trò không được xác định.");
+            return;
+        }
+        // Lưu ý quan trọng: bạn cần đảm bảo các lớp Bridge khác có constructor phù hợp
+        // và phương thức taiTrang nhận đúng tham số (Stage, WebView).
+        switch (vaiTro) {
+            case "Quản lý Nhân sự":
+                // Giả sử QuanLyNhanSuBridge có constructor nhận WebEngine
+                new QuanLyNhanSuBridge(this.webEngine).taiTrang(this.primaryStage, this.webView);
+                break;
+            case "Kế toán":
+                // Giả sử KeToanBridge có constructor nhận WebEngine
+                new KeToanBridge(this.webEngine).taiTrang(this.primaryStage, this.webView);
+                break;
+            default:
+                System.err.println("Cảnh báo: Không có trang nào được định nghĩa cho vai trò '" + vaiTro + "'");
+                this.webEngine.loadContent("<html><body><h1>Lỗi Phân Quyền</h1><p>Vai trò của bạn không được hỗ trợ.</p></body></html>");
+                break;
+        }
+    }
 
-	        // Create DangNhapBridge instance and test login
-	        DangNhapBridge dangNhapBridge = new DangNhapBridge(null);  // Pass null for WebEngine since we don't need it in this test
-
-	        try {
-	            if (dangNhapBridge.dangNhap(username, password)) {
-	                System.out.println("Đăng nhập thành công!");
-	            } else {
-	                System.out.println("Sai tên đăng nhập hoặc mật khẩu!");
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-
-	        scanner.close();
-	    }
+    public static void main(String[] args) {
+        // main method không thể hoạt động đúng trong thiết lập này vì nó phụ thuộc vào
+        // một ứng dụng JavaFX đang chạy để cung cấp Stage và WebView.
+        System.out.println("Phương thức main chỉ để kiểm tra logic, không thể kiểm tra UI.");
+    }
 }

@@ -1,469 +1,259 @@
-/* ====== QuanLyLuong.css ====== */
 
-/* Reset cơ bản */
+/* ---- Page Header ---- */
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: var(--text-light);
+}
+
+:root {
+  --primary-blue: #2563eb;
+  --primary-green: #22c55e;
+  --primary-red: #ef4444;
+  --light-blue-bg: #e0f2fe; /* Background cho table header */
+  --light-gray-bg: #f8fafc; /* Background cho body */
+  --border-color: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-light: #475569;
+  --white: #ffffff;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --border-radius: 8px;
+}
+
+/* --- Thiết lập lại và Font chữ --- */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-
-}
-body, button, input, select, textarea, table, th, td, h1, h2, h3, h4, h5, h6, p, span, label, div {
-  font-family: Arial, sans-serif;
 }
 
-
-/* Body */
 body {
-  font-family: Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f5f7fa;
-  color: #333;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--light-gray-bg);
+  color: var(--text-dark);
   line-height: 1.6;
 }
 
-/* Container chung */
-.container {
-  max-width: 900px;
-  width: 90%;
-  margin: 40px auto;
-  padding: 20px 30px;
+#container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
 }
 
-/* ===== Controls (khu vực tìm kiếm, lọc, thêm) ===== */
-/* ===== Controls (khu vực tìm kiếm, lọc, thêm) ===== */
+/* --- Khu vực điều khiển (Tìm kiếm, Thêm mới) --- */
 .controls {
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 20px;
-  padding: 14px 16px;
-  background-color: #fff; /* Sửa #ffff thành #fff chuẩn */
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  gap: 10px; /* Khoảng cách giữa các phần tử */
+  gap: 15px;
 }
 
 .controls label {
   font-weight: 500;
-  color: #555;
-  height: 40px;
-  display: flex;
-  align-items: center;
+  color: var(--text-light);
 }
 
-#thangNamFilter {
-  padding: 12px 16px;
-  font-size: 16px;
-  height: 40px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: #F0F8FF; /* Sửa #ffff thành #fff chuẩn */
-}
-.flatpickr-calendar {
-  font-family: 'Segoe UI', sans-serif;
-  border-radius: 8px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}
-
-.flatpickr-monthSelect-month {
-  padding: 10px 0;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
-  background-color: yellow;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.flatpickr-monthSelect-month:hover {
-  background-color: #dbeafe;
-}
-
-.flatpickr-monthSelect-month.selected {
-  background-color: #3b82f6;
-  color: white;
-}
-
-
-/* Input có chiều cao đồng đều */
 .controls input[type="month"],
-.controls input[type="number"] {
-  flex: 1;
-  padding: 8px 12px;
+.controls input[type="number"],
+.controls .search-criteria {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
   font-size: 14px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.controls input:focus,
+.controls .search-criteria:focus {
   outline: none;
-  transition: border-color 0.2s;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-/* Hiệu ứng khi focus */
-.controls input[type="month"]:focus,
-.controls input[type="number"]:focus {
-  border-color: #3b82f6;
-}
-
-/* Button đồng đều chiều cao với input */
 .controls button {
-  height: 40px;
-  padding: 0 16px;
-  font-size: 14px;
+  padding: 10px 18px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--white);
   cursor: pointer;
-  transition: background-color 0.2s;
   display: flex;
   align-items: center;
-}
-.controls .control-icon{
-	margin-right: 5px; /* Khoảng cách giữa icon và text */
-}
-/* Nút Tìm */
-.controls button:nth-of-type(2) {
-  background-color: #3b82f6;
-  color: #fff;
-  margin-left: auto;
-}
-.controls button:nth-of-type(2):hover {
-  background-color: #2563eb;
+  gap: 8px;
+  transition: filter 0.2s;
 }
 
-.search-criteria {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 12px;
-  height: 40px;                         /* cùng chiều cao */
-  background: #F0F8FF;                  /* nền nhẹ */
-   border: 1px solid #ccc;        /* viền trắng tinh */
-  border-radius: 6px;                   /* bo góc 6px */
-  color: #374151;                       /* màu chữ */
-}
-.search-criteria :hover {
-  border: #3b82f6
+.controls button:hover {
+  filter: brightness(0.9);
 }
 
-.search-criteria select {
-  border: none;                         /* bỏ viền mặc định */
-  background: transparent;              /* trong suốt để hiện nền .search-criteria */
-  font-size: 14px;
-  color: #374151;
-  outline: none;
-  appearance: none;                     /* bỏ mũi tên mặc định trên một số browser */
-  padding: 0;                           /* đã đệm ở .search-criteria */
-  margin: 0;
-  height: 100%;                         /* đầy đủ chiều cao container */
-  cursor: pointer;
+/* Các nút màu xanh dương */
+.controls button:nth-of-type(1), /* Nút Xem */
+.controls button:nth-of-type(2) { /* Nút Tìm kiếm */
+  background-color: var(--primary-blue);
 }
 
-
-
-
-/*Nút xem tất cả */
-.controls button:nth-of-type(1){
-   background:#FF8C00;
-   color: #fff;
-   margin-left: auto;
-
-}
-.controls button:nth-of-type(1):hover {
-	background-color: #FFA500;
-}
-   
-
-/* Nút Thêm Mới */
+/* Nút Thêm Mới màu xanh lá */
 #themButton {
-  background-color: #32CD32;
-  color: #fff;
-  margin-left: auto;
-}
-
-#themButton:hover {
-  background-color: #059669;
-}
-
-/* Đảm bảo nút cuối nằm bên phải khi wrap */
-.controls > *:last-child {
-  margin-left: auto;
+  background-color: var(--primary-green);
+  margin-left: auto; /* Đẩy nút Thêm Mới sang phải */
 }
 
 
-/* ======= Bảng dữ liệu ======= */
-.controls,
+/* --- Bảng dữ liệu --- */
+.table-wrapper {
+  background-color: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  overflow: hidden; /* Giúp bo góc cho table bên trong */
+}
+
 .table-container {
-  width: 90%;
-  box-sizing: border-box;
-  margin: 40px auto; /* căn giữa */
+  overflow-x: auto;
 }
-.table-container {
-  max-height: 500px;           /* Giới hạn chiều cao */
-  overflow-y: auto;            /* Scroll dọc chỉ hiện khi cần */
-  overflow-x: scroll;          /* Luôn hiện thanh scroll ngang */
-  padding-bottom: 8px;         /* Để không che mất hàng cuối khi scroll ngang */
- 
-}
+
 table {
-	width: 100%;
-    border-collapse: collapse; /* Gộp viền lại – không còn khe trắng giữa các cột */
-	background-color: #fff; /* Sửa #ffff thành #fff chuẩn */
-	border-radius: 10px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-	table-layout: auto; 
-}
-tbody td, thead th {
-  text-align: center;
-  vertical-align: middle; /* Canh giữa theo chiều dọc nếu cần */
+  width: 100%;
+  border-collapse: collapse;
 }
 
-
-thead {
-	background-color: #EEF2FF;
+thead tr {
+  background-color: var(--light-blue-bg);
 }
 
-thead th {
-white-space: normal;    /* Cho phép xuống hàng */
-text-align: center;     /* Giữ căn giữa nếu cần */
-  padding: 12px;
-  text-align: center;
-  font-weight: 700;
-  color: #2848B2;
-  font-size: 12px;
-  border-bottom: 2px solid #e5e7eb;
-  position: sticky	;
-  top: 0;
-  background-color: #EFF6FF; /* Hiển thị cố định header khi cuộn */
-  z-index: 1;
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  white-space: nowrap; /* Ngăn text xuống dòng */
+}
+
+th {
+  font-weight: bold;
+  color: var(--primary-blue);
   text-transform: uppercase;
-  font-weight: 700;
-  border-bottom: 2px solid #a5d8ff; /* Màu xanh dương nhạt */
-  border-right: none !important;
+  font-size: 12px;
+  letter-spacing: 0.5px;
 }
- 
+
 tbody tr {
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:last-of-type {
+  border-bottom: none;
 }
 
 tbody tr:hover {
-  background-color: #B0E0E6;
+    background-color: #f9fafb; /* Màu nền khi hover */
 }
 
-tbody td {
-	border-bottom: 2px solid #e5e7eb;
-  padding: 12px;
-  font-size: 14px;
-  color: #374151;
+td {
+    color: var(--text-light);
+    font-size: 14px;
 }
 
-/* Hành động */
-tbody td:last-child {
-  text-align: center;
-}
-/* Cột 1, 2, 3 thu nhỏ */
-tbody td:nth-child(1),
-thead th:nth-child(1){
-	white-space: normal;    /* Cho phép xuống hàng */
-		text-align: center;     /* Giữ căn giữa nếu cần */
-  width: 100px;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-/* Cột 1, 2, 3 thu nhỏ */
-tbody td:nth-child(2),
-thead th:nth-child(2){
-	white-space: normal;    /* Cho phép xuống hàng */
-		text-align: center;     /* Giữ căn giữa nếu cần */
-  width: 115px;
-  max-width: 115px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Cột 4 dài ra */
-tbody td:nth-child(3),
-thead th:nth-child(3) {
-  width: 140px;
-}
-
-
-
-/* Scrollbar tùy chỉnh khi bảng vượt quá chiều rộng */
-table::-webkit-scrollbar {
-  height: 8px;
-}
-
-table::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-table::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-table::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* ======= Modal chung ======= */
-.modal {
-  display: none; /* Ẩn mặc định */
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent */
-  padding-top: 60px;
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 5% auto;
-  border-radius: 8px;
-  width: 500px;
-  max-width: 90%;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  position: relative;
-  padding: 20px 30px;
-}
-.edit-btn,
-.delete-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+/* --- Nút hành động trong bảng (Sửa, Xóa) --- */
+td button {
+  padding: 6px 12px;
+  margin-right: 5px;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 500;
+  border-radius: 5px;
+  color: var(--white);
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  color: #fff;
+  font-size: 13px;
+  transition: opacity 0.2s;
 }
-#Button-HanhDong{
-	display: flex;
-    justify-content: center;
-    gap: 10px;
+td button:hover {
+  opacity: 0.85;
 }
 
-/* Nút Sửa - màu xanh */
 .edit-btn {
-  background-color: #2a74dd; /* Màu xanh giống ảnh */
+  background-color: var(--primary-blue);
 }
 
-.edit-btn:hover {
-  background-color: #1f5cb8;
-}
-
-/* Nút Xóa - màu đỏ */
 .delete-btn {
-  background-color: #e74c3c; /* Màu đỏ giống ảnh */
-}
-.delete-btn:hover {
-  background-color: #c0392b;
+  background-color: var(--primary-red);
 }
 
-/* Icon trong nút */
-.edit-btn i,
-.delete-btn i {
-  font-size: 16px;
-}
 
-/* Nút đóng modal */
-.close-btn {
-  color: red;
-  float: right;
-  font-size: 30px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.close-btn:hover {
-  color: #111827;
-}
-
-.footer {
-  position: absolute;
-  bottom: 20px;
-  width: calc(100% - 60px);
-  text-align: center;
-}
-
-/* ======= Tiêu đề Modal ======= */
-.modal-content h2 {
-  margin-bottom: 20px;
-  font-size: 20px;
-  color: #1f2937;
-  text-align: center;
-  font-weight: 700;
-}
-
-/* ======= Form trong Modal ======= */
-/* ========== Overlay + Center Modal ========== */
-#luongModal {
-  display: none;
-}
-
+/* --- Modal (Cửa sổ Pop-up) --- */
 .modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: none; /* Mặc định ẩn */
   position: fixed;
   z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); /* Mờ nền */
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
 }
 
-/* ========== Modal Box ========== */
 .modal-content {
-	background-color: #7FFFD4; /* Màu nền nhẹ */
-  padding: 24px 32px;
-  border-radius: 12px;
-  max-width: 600px;
-  width: 100%;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  font-family: 'Roboto', sans-serif;
+  background-color: var(--white);
+  margin: auto;
+  padding: 25px 30px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 700px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
+  animation: fadeIn 0.3s;
 }
 
-/* ========== Close Button ========== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+
 .close-btn {
+  color: #aaa;
   position: absolute;
-  top: 16px;
+  top: 10px;
   right: 20px;
-  font-size: 30px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+  color: var(--text-dark);
+  text-decoration: none;
   cursor: pointer;
-  color: red;
-  transition: color 0.2s;
 }
 
-.close-btn:hover {
-  color: #ff5f5f;
-}
-
-/* ========== Title ========== */
 #modalTitle {
-  text-align: center;
-  margin-bottom: 24px;
-  font-size: 20px;
-  color: #2848B2;
+  margin-bottom: 20px;
+  color: var(--text-dark);
 }
 
-/* ========== Form Grid ========== */
+/* --- Form trong Modal --- */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 25px;
 }
 
 .form-grid div {
@@ -472,84 +262,71 @@ table::-webkit-scrollbar-thumb:hover {
 }
 
 .form-grid label {
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text-light);
 }
 
-/* ========== Input Fields ========== */
 .form-grid input {
-  padding: 10px 12px;
-  border: 1px solid #d1d5db;
+  padding: 10px;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-grid input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  outline: none;
+.form-grid input:read-only {
+    background-color: #e9ecef;
+    cursor: not-allowed;
 }
 
-/* ========== Submit Button ========== */
-form button[type="submit"] {
-  width: 100%;
-  background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Gradient cam */
+#luongForm button[type="submit"] {
+  background-color: var(--primary-blue);
+  color: var(--white);
+  padding: 12px 25px;
   border: none;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: transform 0.2s, opacity 0.2s;
-}
-
-form button[type="submit"]:hover {
-  transform: scale(1.03);
-  opacity: 0.95;
-}
-
-
-
-/* ======= Modal Confirm Delete ======= */
-#confirmModal .modal-content {
-  width: 350px;
-  padding: 20px 25px;
-  text-align: center;
-}
-
-#confirmModal #confirmMessage {
   font-size: 16px;
-  color: #1f2937;
-}
-
-#confirmModal #btnConfirmOk,
-#confirmModal #btnConfirmCancel {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  cursor: pointer;
+  font-weight: 500;
   transition: background-color 0.2s;
 }
 
-#confirmModal #btnConfirmOk {
-  background-color: #3b82f6;
-  color: #fff;
-  margin-right: 10px;
+#luongForm button[type="submit"]:hover {
+  background-color: #1d4ed8;
 }
 
-#confirmModal #btnConfirmOk:hover {
-  background-color: #2563eb;
+/* --- Modal xác nhận xóa --- */
+#confirmModal .modal-content {
+    max-width: 400px;
+    text-align: center;
+}
+#confirmMessage {
+    font-size: 18px;
+    margin-bottom: 20px;
+    display: block;
 }
 
-#confirmModal #btnConfirmCancel {
-  background-color: #ef4444;
-  color: #fff;
+#btnConfirmOk, #btnConfirmCancel {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+#btnConfirmOk {
+    background-color: var(--primary-red);
+    color: var(--white);
+    margin-right: 10px;
+}
+#btnConfirmCancel {
+    background-color: #ccc;
+    color: var(--text-dark);
 }
 
-#confirmModal #btnConfirmCancel:hover {
-  background-color: #dc2626;
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+  color: #94a3b8;
+  font-size: 14px;
 }

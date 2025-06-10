@@ -67,7 +67,7 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2.5rem;
         }
 
@@ -155,8 +155,8 @@
             <h1>Bảng điều khiển</h1>
             <p>Chào mừng bạn đến với hệ thống Quản lý Nhân sự</p>
         </header>
-
         <main class="card-grid">
+			<!--bridge.getQuanLyNhanVienBridge().taiTrang(primaryStage, webView);-->
             <a href="#quan-ly-nhan-vien" onclick="bridge.getQuanLyNhanVienBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;" class="card">
                 <div class="card-icon">
                     <i class="fas fa-users"></i>
@@ -170,11 +170,19 @@
                 <h2>Quản lý Phòng ban</h2>
             </a>
 
-            <a href="#quan-ly-lich-lam-viec" onclick="bridge.showLich(bridge.getPrimaryStage()); return false;" class="card">
+			
+			<a href="#quan-ly-lich-lam-viec" onclick="bridge.showLich(bridge.getPrimaryStage()); return false;" class="card">
                 <div class="card-icon">
                     <i class="fas fa-calendar-alt"></i>
                 </div>
                 <h2>Quản lý Lịch làm việc</h2>
+            </a>
+						
+			<a href="#quan-ly-tai-khoan" onclick="bridge.getQuanLyTaiKhoanBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;" class="card">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h2>Quản lý Tài khoản</h2>
             </a>
         </main>
     </div>

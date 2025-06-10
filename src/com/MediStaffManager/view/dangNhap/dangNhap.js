@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (dangNhapBridge.dangNhap(username, password)) {
 						bridge.log("Dang Nhap THanh COng");
 						vaiTro = dangNhapBridge.getVaiTroByUsername(username);
-						if (vaiTro == "QuanLyNhanSu")
+						if (vaiTro == "Quản lý Nhân Sự")
 							bridge.getQuanLyNhanSuBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView());
 						else
 							bridge.getKeToanBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView());

@@ -14,8 +14,8 @@ import com.MediStaffManager.view.lichthang.panels.WestPanelLichThangComponents.A
 
 public class TrangChinhLichThang {
     static final String WINDOW_TITLE   = "Lịch Tháng";
-    public static final int    PARENT_WIDTH   = 1900;
-	public static final int PARENT_HEIGHT = 1000;
+    public static final int    PARENT_WIDTH   = 1400;
+	public static final int PARENT_HEIGHT = 800;
     static final int    WEST_WIDTH     = 350,  WEST_HEIGHT   = 900;
     static final int    NORTH_HEIGHT   = 80;
     

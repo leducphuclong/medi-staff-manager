@@ -38,7 +38,7 @@ public class test {
                 statement.setString(1, username);
                 statement.setString(2, hashedPassword); // Lưu mật khẩu đã mã hóa
                 statement.setString(3, email);  // Lưu email
-                statement.setString(4, "user");  // Lưu vai trò (có thể thay đổi tùy vào yêu cầu)
+                statement.setString(4, "QuanLyNhanSu");  // Lưu vai trò (có thể thay đổi tùy vào yêu cầu)
 
                 int result = statement.executeUpdate();
                 if (result > 0) {

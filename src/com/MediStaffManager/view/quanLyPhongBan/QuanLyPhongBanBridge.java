@@ -45,7 +45,7 @@ public class QuanLyPhongBanBridge {
         StackPane root = new StackPane();
         root.getChildren().add(webView);
 
-        Scene scene = new Scene(root, 1900, 1000);
+        Scene scene = new Scene(root, 1400, 800);
         primaryStage.setTitle("Medi Staff Manager - Quản Lý Phòng Ban");
         primaryStage.setScene(scene);
         primaryStage.show();
