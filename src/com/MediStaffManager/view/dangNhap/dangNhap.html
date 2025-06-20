@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chào mừng đến với Medi Staff Manager</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="overlay">
+    <div class="login-container" role="main" aria-label="Form đăng nhập">
+      <span class="icon">⚕️</span>
+      <h1>Chào mừng bạn đến với <br/> Medi Staff Manager</h1>
+      <p>Quản lý lịch làm việc và tính lương <br/> cho nhân viên y tế một cách hiệu quả.</p>
+      <form id="loginForm" action="#">
+		
+        <div class="input-group">
+          <label for="username">Tên đăng nhập</label>
+          <input type="text" id="username" name="username" placeholder="Nhập tên đăng nhập" required autocomplete="username" />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Mật khẩu</label>
+          <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required autocomplete="current-password" />
+        </div>
+		
+		<div id="error-message" class="error-message"></div> 
+		
+        <button type="submit" class="login-btn">Đăng nhập</button>
+      </form>
+
+      <div class="forgot-password">
+        <a href="#" onclick="bridge.getQuenMatKhauBridge().taiTrang(bridge.getPrimaryStage(), bridge.getWebView()); return false;">Quên mật khẩu?</a>
+      </div>
+    </div>
+  </div>
+  <script src="./dangNhap.js"></script>
+ 
+</body>
+</html>
