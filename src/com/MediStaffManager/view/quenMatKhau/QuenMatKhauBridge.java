@@ -10,32 +10,102 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import com.MediStaffManager.utils.DBConnection;
 
 public class QuenMatKhauBridge {
     private WebEngine webEngine;
     final String basePath = "./src/com/MediStaffManager/view/";
+    private Connection conn;
 
     public QuenMatKhauBridge(WebEngine webEngine) {
         this.webEngine = webEngine;
+        this.conn = DBConnection.connect();
     }
+    
+    public String getPasswordByEmail(String email) throws SQLException {
+        String query = "SELECT MatKhau FROM tai_khoan WHERE email = ?";  
 
-    public void chuyenDenTrangDangNhap() {
-        Platform.runLater(() -> {
-            System.out.println("Chuẩn bị chuyển đến trang Đăng Nhập");
-            try {
-                File htmlFile = new File(basePath + "dangNhap/dangNhap.html");
-                if (htmlFile.exists()) {
-                    URL url = htmlFile.toURI().toURL();
-                    webEngine.load(url.toExternalForm());
-                } else {
-                    System.out.println("Không tìm thấy trang Đăng Nhập");
-                    webEngine.loadContent("<html><body><h1>Error</h1><p> Không tìm thấy Trang Đăng Nhập</p></body></html>");
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, email);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("MatKhau");  
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-                webEngine.loadContent("<html><body><h1>Lỗi</h1><p>URL bị sai cú pháp cho Trang Đăng Nhập</p></body></html>");
+            }
+        }
+        return null;  
+    }
+    
+    public void sendEmail(String to, String subject, String messageContent) {
+        String from = "MediStaffManager"; // Replace with your email address
+        String host = "smtp.gmail.com"; // Gmail SMTP server
+
+        final String username = "leducphuclong@gmail.com"; // Replace with your email
+        final String appPassword = "ayew szdc aztf gnmt"; // Replace with your App Password
+
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "587");
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true"); // Use TLS
+
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(username, appPassword); // Use App Password
             }
         });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+
+            message.setFrom(new InternetAddress(from));
+
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+            message.setSubject(subject);
+
+            message.setText(messageContent);
+
+            Transport.send(message);
+            System.out.println("Message sent successfully...");
+
+        } catch (MessagingException mex) {
+            mex.printStackTrace();
+        }
+    }
+    
+    public boolean sendPasswordByEmail(String email) {
+        try {
+            String password = getPasswordByEmail(email);
+            if (password != null) {
+                String subject = "Mật khẩu của bạn";
+                String messageContent = "Mật khẩu của bạn là: " + password;
+
+                sendEmail(email, subject, messageContent); 
+                return true;
+            } else {
+                System.out.println("Không tìm thấy tài khoản với email này.");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		return false;
     }
     
     public void taiTrang(Stage primaryStage, WebView webView) {
@@ -54,7 +124,7 @@ public class QuenMatKhauBridge {
         StackPane root = new StackPane();
         root.getChildren().add(webView);
 
-        Scene scene = new Scene(root, 1900, 1000);
+        Scene scene = new Scene(root, 1400, 800);
         primaryStage.setTitle("Medi Staff Manager - Quên Mật Khẩu");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -63,4 +133,12 @@ public class QuenMatKhauBridge {
     public void hello() {
         System.out.println("hello");
     }
+
+	public Connection getConn() {
+		return conn;
+	}
+
+	public void setConn(Connection conn) {
+		this.conn = conn;
+	}
 }

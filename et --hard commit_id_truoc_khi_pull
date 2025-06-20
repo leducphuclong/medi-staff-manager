@@ -1,8 +1,0 @@
-[33m431ff43[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mThanhPhuong-xemXoaNhanVienTrongPhongBan[m[33m)[m Lưu thay đổi tạm thời trước khi pull
-[33mc0d8f2e[m[33m ([m[1;31morigin/ThanhPhuong-xemXoaNhanVienTrongPhongBan[m[33m)[m 90% chức năng
-[33m30a276c[m Done for department
-[33m4697929[m feat: thêm chức năng xem phòng ban
-[33mc9d0f14[m feat: Thêm chức năng tạo, sửa phòng ban
-[33mb3978a5[m font-end Xem và xóa tất cả nhân viên trong phòng ban
-[33m004dd10[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/dev[m[33m, [m[1;31morigin/PhucLong-dangNhapVaTrangChu[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/DinhHoi-Quanlynhanvien[m[33m, [m[1;32mmaster[m[33m)[m Khoi tao structure
-[33m419428c[m Initial commit: Add MediStaffManager project files

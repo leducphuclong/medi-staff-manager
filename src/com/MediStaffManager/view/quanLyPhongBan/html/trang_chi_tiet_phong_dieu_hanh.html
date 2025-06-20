@@ -3,150 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Phòng Ban</title> <!-- Title can be updated by JS -->
+    <title>Chi Tiết Phòng Ban</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-	<link rel="stylesheet" href="./../css/style_chung.css"> 
-	</head>
+    <link rel="stylesheet" href="./../css/style_chung.css">
+</head>
 <body>
-    <div class="page-container"> <!-- Changed from app-window to page-container -->
+    <div class="page-container">
         <header class="page-header">
-            <h1 class="department-title">Loading...</h1> <!-- Will be updated by JS -->
-            <p>Nơi quản lý thông tin các phòng ban hiệu quả.</p>
+            <!-- Sửa ở đây: Tiêu đề sẽ được JS cập nhật -->
+            <h1>Loading...</h1>
+            <p>Quản lý nhân viên trong phòng ban.</p>
         </header>
 
         <main class="content-area">
-            <!-- Removed old content-title heading as it's now in the header -->
-
-            <div class="table-container" id="employeeDetailTableContainer">                <table id="employeeDetailTable"> <!-- Ensure this ID -->
+            <div class="table-container">
+                <table id="employeeDetailTable">
                     <thead>
                         <tr>
-                            <th style="width: 120px; text-align:center;"><input type="checkbox" id="select-all"> Chọn tất cả</th>
-                            <th>ID NV</th>
-                            <th>Tên Nhân Viên</th>
-                            <th>SĐT</th>
-                            <th>Email</th>
-                            <th>Chức Vụ</th>
+                            <th style="width: 5%; text-align: center;">
+                                <input type="checkbox" id="select-all-employees" title="Chọn tất cả">
+                                <label for="select-all-employees" style="cursor: pointer; padding-left: 5px;">CHỌN TẤT CẢ</label>
+                            </th>
+                            <th style="width: 10%;">ID NV</th>
+                            <th style="width: 25%;">TÊN NHÂN VIÊN</th>
+                            <th style="width: 15%;">SĐT</th>
+                            <th style="width: 25%;">EMAIL</th>
+                            <th style="width: 20%;">CHỨC VỤ</th>
                         </tr>
-                    </thead>                    <tbody>                        <!-- JavaScript will populate this -->
-                        <tr><td colspan="7" style="text-align:center;">Đang tải dữ liệu nhân viên...</td></tr>
+                    </thead>
+                    <tbody>
+                        <!-- JavaScript sẽ điền dữ liệu vào đây -->
+                        <tr><td colspan="6" style="text-align:center;">Đang tải dữ liệu...</td></tr>
                     </tbody>
-                </table>            </div>
+                </table>
+            </div>
         </main>
 
         <footer class="app-footer">
-            <button class="btn btn-danger" id="btnDeleteSelectedEmployees">Xóa</button>
-            <button class="btn btn-primary" id="btn-transfer-department">Chuyển phòng ban</button>
+            <!-- Sửa ở đây: Thêm ID cho các nút để JS có thể bắt sự kiện -->
+            <button class="btn btn-danger" id="btnDeleteSelected">Xóa</button>
+            <button class="btn btn-primary" id="btnTransferSelected">Chuyển phòng ban</button>
         </footer>
-    </div> <!-- END page-container -->
+    </div>
 
-    <!-- Custom Confirm Modal -->
+    <!-- Modal Xác Nhận Xóa/Chuyển -->
     <div id="customConfirmModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
+        <div class="modal-content confirm-modal">
             <div class="modal-header">
                 <h3 id="customConfirmTitle">Xác nhận</h3>
-                <span class="close-button" id="closeCustomConfirmModalButton">×</span>
             </div>
             <div class="modal-body">
-                <p id="customConfirmMessage">Bạn có chắc chắn?</p>
+                <p id="customConfirmMessage"></p>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" id="customConfirmCancel">Hủy</button>
-                <button class="btn btn-primary" id="customConfirmOk">Đồng ý</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Custom Warning Modal (no longer used, replaced by unified notification system)
-    <!--
-    <div id="customWarningModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="customWarningTitle">Cảnh báo</h3>
-                <span class="close-button close-warning-button">×</span>
-            </div>
-            <div class="modal-body">
-                <p id="customWarningMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="customWarningOk">Đồng ý</button>
-            </div>
-        </div>
-    </div>
-    -->
-
-    <!-- Modal Chuyển phòng ban -->
-    <div id="transferModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Chọn phòng ban mới</h3>
-                <span class="close-button" id="closeModal">×</span>
-            </div>
-            <div class="modal-body">
-                <div class="confirmation-section">
-                    <span class="question-icon">?</span>
-                    <p>Confirmation</p>
+                <div style="text-align: center; width: 100%;">
+                    <button class="btn btn-secondary" id="customConfirmCancel">Hủy</button>
+                    <button class="btn btn-danger" id="customConfirmOk">Đồng ý</button>
                 </div>
-                <select id="department-select">
-                    <option value="" disabled selected>-- Đang tải phòng ban --</option>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Thông báo (Success, Error, Warning) -->
+    <div id="notificationModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content notification-modal">
+            <div class="modal-header">
+                <h3 id="notificationTitle">Thông báo</h3>
+                <span class="close-button" id="closeNotificationBtn">×</span>
+            </div>
+            <div class="modal-body">
+                <div id="notificationIcon" class="notification-icon"><span></span></div>
+                <p id="notificationModalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                 <div style="text-align: center; width: 100%;">
+                    <button class="btn btn-primary" id="notificationOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal chọn phòng ban để chuyển -->
+    <div id="transferEmployeeModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content confirm-modal">
+            <div class="modal-header">
+                <h3>Chọn phòng ban để chuyển</h3>
+            </div>
+            <div class="modal-body">
+                <p>Vui lòng chọn phòng ban mới cho các nhân viên đã chọn:</p>
+                <select id="transfer-department-select" class="form-control" style="width: 100%; margin-top: 10px;">
+                    <option value="">-- Chọn phòng ban --</option>
                 </select>
             </div>
             <div class="modal-footer">
-                 <button class="btn btn-secondary" id="btn-cancel-transfer-action">Hủy</button>
-                 <button id="btn-confirm-transfer-action" class="btn btn-primary">Xác nhận chuyển</button>
+                <div style="text-align: center; width: 100%;">
+                    <button class="btn btn-secondary" id="btn-cancel-transfer">Hủy</button>
+                    <button class="btn btn-primary" id="btn-confirm-transfer">Xác nhận</button>
+                </div>
             </div>
         </div>
     </div>
 
-	<script src="./../js/phongBan.js"></script>
-     <script src="./../js/ui_modal_utils.js"></script><!-- Thêm công cụ mới cho modal -->
-<script src="./../js/nhanVien.js"></script>
-     <script src="./../js/main.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded and parsed for trang_chi_tiet_phong_dieu_hanh.html");
-    quanLyPhongBanBridge.log("DOM fully loaded and parsed for trang_chi_tiet_phong_dieu_hanh.html");
-
-    // Check for custom confirm modal elements
-    const customConfirmModal = document.getElementById('customConfirmModal');
-    const customConfirmMessage = document.getElementById('customConfirmMessage');
-    const customConfirmTitle = document.getElementById('customConfirmTitle');
-    const customConfirmOk = document.getElementById('customConfirmOk');
-    const customConfirmCancel = document.getElementById('customConfirmCancel');
-    const closeCustomConfirmModalButton = document.getElementById('closeCustomConfirmModalButton');
-
-    if (!customConfirmModal || !customConfirmMessage || !customConfirmTitle || !customConfirmOk || !customConfirmCancel || !closeCustomConfirmModalButton) {
-        console.error("CRITICAL HTML ERROR (trang_chi_tiet_phong_dieu_hanh.html): One or more custom confirm modal elements are MISSING.");
-        quanLyPhongBanBridge.log("CRITICAL HTML ERROR (trang_chi_tiet_phong_dieu_hanh.html): One or more custom confirm modal elements are MISSING.");
-    } else {
-        console.log("Custom confirm modal elements found successfully in trang_chi_tiet_phong_dieu_hanh.html.");
-        quanLyPhongBanBridge.log("Custom confirm modal elements found successfully in trang_chi_tiet_phong_dieu_hanh.html.");
-    }
-
-    // Check for transfer modal elements
-    const transferModal = document.getElementById('transferModal');
-    const departmentSelect = document.getElementById('department-select');
-    const btnConfirmTransferAction = document.getElementById('btn-confirm-transfer-action');
-    const btnCancelTransferAction = document.getElementById('btn-cancel-transfer-action'); 
-    const closeTransferModalButton = document.getElementById('closeModal'); 
-
-    if (!transferModal || !departmentSelect || !btnConfirmTransferAction || !btnCancelTransferAction || !closeTransferModalButton) {
-        console.error("CRITICAL HTML ERROR (trang_chi_tiet_phong_dieu_hanh.html): One or more transfer modal elements are MISSING.");
-        quanLyPhongBanBridge.log("CRITICAL HTML ERROR (trang_chi_tiet_phong_dieu_hanh.html): One or more transfer modal elements are MISSING.");
-    } else {
-        console.log("Transfer modal elements (including btn-cancel-transfer-action and closeModal) found successfully in trang_chi_tiet_phong_dieu_hanh.html.");
-        quanLyPhongBanBridge.log("Transfer modal elements (including btn-cancel-transfer-action and closeModal) found successfully in trang_chi_tiet_phong_dieu_hanh.html.");
-    }
-    
-    if (typeof initializeEmployeePage === 'function') {
-        console.log("Calling initializeEmployeePage() from trang_chi_tiet_phong_dieu_hanh.html...");
-        quanLyPhongBanBridge.log("Calling initializeEmployeePage() from trang_chi_tiet_phong_dieu_hanh.html...");
-        initializeEmployeePage();
-    } else {
-        console.error("CRITICAL JS ERROR (trang_chi_tiet_phong_dieu_hanh.html): initializeEmployeePage() function not found!");
-        quanLyPhongBanBridge.log("CRITICAL JS ERROR (trang_chi_tiet_phong_dieu_hanh.html): initializeEmployeePage() function not found!");
-    }
-});
-</script>
+    <!-- Quan trọng: Load các file JS ở cuối trang -->
+    <script src="./../js/phongBan.js"></script>
+    <script src="./../js/nhanVien.js"></script>
+    <script src="./../js/main.js"></script>
 </body>
 </html>

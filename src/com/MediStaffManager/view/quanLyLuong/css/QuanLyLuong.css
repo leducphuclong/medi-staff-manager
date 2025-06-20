@@ -1,0 +1,317 @@
+/* === BIẾN MÀU VÀ THIẾT LẬP CHUNG === */
+:root {
+    --primary-color: #0d6efd;
+    --primary-hover: #0b5ed7;
+    --success-color: #198754;
+    --success-hover: #157347;
+    --danger-color: #dc3545;
+    --danger-hover: #bb2d3b;
+    --light-blue-bg: #e7f1ff;
+    --header-text-color: #004085;
+    --body-bg-color: #f8f9fa;
+    --white-color: #ffffff;
+    --text-color: #212529;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background-color: var(--body-bg-color);
+    color: var(--text-color);
+    font-size: 15px;
+}
+
+/* === BỐ CỤC CHÍNH === */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header.main-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header.main-header h1 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+header.main-header p {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+/* === KHU VỰC ĐIỀU KHIỂN (CONTROLS) === */
+.controls-wrapper {
+    background-color: var(--white-color);
+    padding: 20px 25px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Cập nhật cho nhóm tìm kiếm */
+.control-group.search-group {
+    margin-left: auto; /* Đẩy nhóm tìm kiếm sang bên cạnh nút Xem */
+}
+
+#searchInput {
+    width: 200px;
+}
+
+.control-group label {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.control-group input,
+.control-group select {
+    height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+#themButton {
+    margin-left: 20px; 
+}
+
+/* === NÚT BẤM (BUTTONS) === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--white-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.btn:hover {
+    transform: translateY(-1px);
+}
+.btn:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-primary { background-color: var(--primary-color); }
+.btn-primary:hover { background-color: var(--primary-hover); }
+
+.btn-success { background-color: var(--success-color); }
+.btn-success:hover { background-color: var(--success-hover); }
+
+.btn-danger { background-color: var(--danger-color); }
+.btn-danger:hover { background-color: var(--danger-hover); }
+
+.btn-cancel {
+    background-color: #6c757d;
+}
+.btn-cancel:hover {
+    background-color: #5a6268;
+}
+
+/* Nút nhỏ hơn cho bảng */
+.btn-sm {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 14px;
+    gap: 6px;
+}
+
+/* === BẢNG DỮ LIỆU === */
+.table-wrapper {
+    background: var(--white-color);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    overflow-x: auto;
+    margin-top: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead th {
+    background-color: var(--light-blue-bg);
+    color: var(--header-text-color);
+    padding: 16px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+tbody tr:last-of-type {
+    border-bottom: none;
+}
+tbody tr:hover {
+    background-color: #f5f5f5;
+}
+tbody td {
+    padding: 14px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* === FOOTER === */
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: var(--text-muted);
+}
+
+/* === MODAL & NOTIFICATION === */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-content {
+    background-color: #fff;
+    padding: 25px 35px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+    width: 90%;
+    max-width: 650px;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.modal-header h2 {
+    font-size: 22px;
+    color: var(--primary-color);
+}
+.close-btn {
+    font-size: 30px;
+    color: #aaa;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+.close-btn:hover {
+    color: #333;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.form-item {
+    display: flex;
+    flex-direction: column;
+}
+.form-item label {
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+.form-item input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+.form-item input[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+/* Notification */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.notification {
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s ease-in-out;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+}
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+.notification-success { background-color: var(--success-color); }
+.notification-error { background-color: var(--danger-color); }
+.notification-warning { background-color: #ffc107; color: var(--text-color); }
+.notification-info { background-color: #0dcaf0; color: var(--text-color); }

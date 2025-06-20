@@ -14,17 +14,6 @@
             <p>Nơi quản lý thông tin các phòng ban hiệu quả.</p>
         </header>
 
-        <div class="search-container">
-            <div class="search-group">
-                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm phòng ban..." />
-                <select id="searchType" class="form-control">
-                    <option value="ten">Tìm theo tên</option>
-                    <option value="id">Tìm theo ID</option>
-                </select>                    <button id="btnSearch" class="btn btn-search"><i class="fas fa-search"></i> Tìm Kiếm</button>
-                <button id="btnReset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Làm Mới</button>
-            </div>
-        </div>
-
         <main class="content-area">
             <!-- The old <h1 class="content-title">Quản lý phòng ban</h1> is removed -->
 			<!-- Khu vực thông báo -->
@@ -32,23 +21,31 @@
 			    <span id="notificationMessage"></span>
 			    <button onclick="this.parentElement.style.display='none';" title="Đóng">×</button>
 			</div>            <!-- Khu vực tìm kiếm -->
-            
-            
-            <div class="table-scroll-wrapper">
-                <div class="table-container">
-                    <table id="departmentTable"> 
-                        <thead>
-                            <tr>
-                                <th>ID phòng ban</th>
-                                <th>Tên phòng ban</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="3" style="text-align:center;">Đang tải dữ liệu...</td></tr>
-                        </tbody>
-                    </table>
+            <div class="search-container">
+                <div class="search-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm phòng ban..." />
+                    <select id="searchType" class="form-control">
+                        <option value="ten">Tìm theo tên</option>
+                        <option value="id">Tìm theo ID</option>
+                    </select>                    <button id="btnSearch" class="btn btn-search"><i class="fas fa-search"></i> Tìm Kiếm</button>
+                    <button id="btnReset" class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Làm Mới</button>
                 </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="departmentTable"> 
+                    <thead>
+                        <tr>
+                            <th>ID phòng ban</th>
+                            <th>Tên phòng ban</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JavaScript will populate this -->
+                        <tr><td colspan="3" style="text-align:center;">Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </main>
 
@@ -147,14 +144,8 @@
         </div>
       </div>
     </div>
-		<script src="./../js/utils.js"></script>
-    <script src="./../js/ui_modal_utils.js"></script><!-- Thêm công cụ mới cho modal -->
-    <script src="./../js/ui_notifications.js"></script>
-    <script src="./../js/ui_confirm_modal.js"></script>
-    <script src="./../js/ui_checkbox_handler.js"></script>
     <script src="./../js/phongBan.js"></script>
     <script src="./../js/nhanVien.js"></script>
-    <script src="./../js/page_employee_detail.js"></script>
     <script src="./../js/main.js"></script>
 </body>
 </html>

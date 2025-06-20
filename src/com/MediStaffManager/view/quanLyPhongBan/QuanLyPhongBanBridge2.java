@@ -1,7 +1,7 @@
 package com.MediStaffManager.view.quanLyPhongBan; // Assuming this view is in a 'nhanVien' subpackage
 
 import com.MediStaffManager.controller.NhanVienController;
-import com.MediStaffManager.bean.NhanVien; // Ensure NhanVien can be serialized if needed, or convert to JSON
+import com.MediStaffManager.bean.NhanVienBEAN; // Ensure NhanVien can be serialized if needed, or convert to JSON
 
 import java.util.List;
 import java.util.ArrayList; // For parsing JSON array from JS if needed
@@ -30,7 +30,7 @@ public class QuanLyPhongBanBridge2 {
      * @return A JSON string representing a list of NhanVien objects, or List<NhanVien> directly (less robust).
      */
     public String layToanBoNhanVien() {
-        List<NhanVien> danhSach = nhanVienController.layToanBoNhanVien();
+        List<NhanVienBEAN> danhSach = nhanVienController.layToanBoNhanVien();
         // For direct return (simpler, but JS handling might be complex):
         // return danhSach; 
         // For JSON return (recommended - uncomment Gson lines and add Gson library):
@@ -118,7 +118,7 @@ public class QuanLyPhongBanBridge2 {
     
     public String layNhanVienTheoPhongBan(String tenPhongBan) {
         System.out.println("Bridge: layNhanVienTheoPhongBan called for phongBan=" + tenPhongBan);
-        List<NhanVien> danhSach = nhanVienController.layNhanVienTheoPhongBan(tenPhongBan);
+        List<NhanVienBEAN> danhSach = nhanVienController.layNhanVienTheoPhongBan(tenPhongBan);
         return convertNhanVienListToJson(danhSach);
         // With Gson:
         // return gson.toJson(danhSach);
@@ -146,13 +146,13 @@ public class QuanLyPhongBanBridge2 {
 
     // Helper method to convert List<NhanVien> to JSON manually (basic example)
     // For production, use a proper JSON library like Gson or Jackson.
-    private String convertNhanVienListToJson(List<NhanVien> nhanViens) {
+    private String convertNhanVienListToJson(List<NhanVienBEAN> nhanViens) {
         if (nhanViens == null || nhanViens.isEmpty()) {
             return "[]";
         }
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < nhanViens.size(); i++) {
-            NhanVien nv = nhanViens.get(i);
+            NhanVienBEAN nv = nhanViens.get(i);
             // Assuming NhanVien has getIdNhanVien(), getHoTen(), getChucVu(), getIdPhongBan()
             // Adjust fields as per your NhanVien bean
             sb.append("{");

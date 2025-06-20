@@ -1,49 +1,93 @@
 package com.MediStaffManager.view.quanLyPhongBan;
 
-import com.MediStaffManager.controller.NhanVienController;
-import com.MediStaffManager.bean.NhanVien;
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+import com.google.gson.Gson;
 
-import java.io.File; // For constructing file paths
+import java.io.File;
 import java.net.URL;
-import javafx.application.Platform;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import com.MediStaffManager.bean.Employee;
+import com.MediStaffManager.bean.NhanVienBEAN;
+import com.MediStaffManager.controller.NhanVienController;
 
 public class QuanLyPhongBanBridge {
-	private NhanVienController nhanVienController;
-	private QuanLyPhongBanView mainView;
-	final String htmlFileBasePath = "src/com/MediStaffManager/view/quanLyPhongBan/";
+    private WebEngine webEngine;
+    private Gson gson;
+    private NhanVienController nhanVienController;
+    final String htmlFileBasePath = "src/com/MediStaffManager/view/quanLyPhongBan/";
 
-	public QuanLyPhongBanBridge(NhanVienController controller, QuanLyPhongBanView view) {
-		this.nhanVienController = controller;
-		this.mainView = view;
-		
+    public QuanLyPhongBanBridge(WebEngine webEngine) {
+        this.webEngine = webEngine;
+        this.nhanVienController = new NhanVienController();
+        this.gson = new Gson();
+    }
+    
+    public void taiTrang(Stage primaryStage, WebView webView) {
+    	final String basePath = "./src/com/MediStaffManager/view/quanLyPhongBan/html/";
+        final String fileName = "trang_quan_ly_phong_ban.html";
+        String filePath = basePath + fileName;
+        File htmlFile = new File(filePath);
 
-	}
+        if (htmlFile.exists() && htmlFile.isFile()) {
+            String url = htmlFile.toURI().toString();
+            webView.getEngine().load(url);
+        } else {
+        	webView.getEngine().loadContent("<html><body><h1>Lỗi khởi tạo</h1><p>Không thể tìm thấy Quản Lý Phòng Ban</p></body></html>");
+        }
+        
+        StackPane root = new StackPane();
+        root.getChildren().add(webView);
 
-	public void loadPage(String pageFileName) {
-		String filePath = pageFileName;
-		File htmlFile = new File(filePath);
-		System.out.println("Bridge: Attempting to load file: " + htmlFile.getAbsolutePath());
+        Scene scene = new Scene(root, 1400, 800);
+        primaryStage.setTitle("Medi Staff Manager - Quản Lý Phòng Ban");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    
+    public String getAllEmployees() {
+    	System.out.println("da goi!");
+        List<Employee> employees = nhanVienController.getAllEmployees();
+        return gson.toJson(employees);
+    }
+    
+    public String addEmployee(String employeeJson) {
+        return nhanVienController.addEmployee(employeeJson);
+    }
 
-		if (htmlFile.exists() && htmlFile.isFile()) {
-			try {
-				URL fileUrl = htmlFile.toURI().toURL();
-				String urlToLoad = fileUrl.toExternalForm();
-				Platform.runLater(() -> mainView.getWebEngine().load(urlToLoad));
-				System.out.println("Bridge: Loading page from file system: " + urlToLoad);
-			} catch (Exception e) {
-				System.err.println("Bridge: Error loading page: " + e.getMessage());
-				e.printStackTrace();
-			}
-		} else {
-			System.err.println("Bridge: FATAL - HTML không tìm thấy tại đường dẫn : " + htmlFile.getAbsolutePath());
-			System.err.println("Bridge: đường dẫn hiện tại : " + new File(".").getAbsolutePath());
-		}
-	}
+    public String updateEmployee(String employeeJson) {
+        return nhanVienController.updateEmployee(employeeJson);
+    }
+
+    public String deleteEmployee(int idNhanVien) {
+        return nhanVienController.deleteEmployee(idNhanVien);
+    }
+
+    public String searchEmployees(String keyword, String criteria) {
+        List<Employee> employees = nhanVienController.searchEmployees(keyword, criteria);
+        return gson.toJson(employees);
+    }
+
+    public String getAllTenChucVu() {
+        List<String> chucVuList = nhanVienController.getAllTenChucVu();
+        return gson.toJson(chucVuList);
+    }
+
+    public String getAllTenPhongBan() {
+        List<String> phongBanList = nhanVienController.getAllTenPhongBan();
+        return gson.toJson(phongBanList);
+    }
+
+    public String getHeSoLuongByTenChucVu(String tenChucVu) {
+        return nhanVienController.getHeSoLuongByTenChucVu(tenChucVu);
+    }
+
 
 	public void log(String message) {
 		System.out.println("Console Log: " + message);
@@ -64,12 +108,12 @@ public class QuanLyPhongBanBridge {
 
 	public String layNhanVienTheoIdPhongBan(int idPhongBan) {
 		System.out.println("Dang lay nahnvien theo id phong bannnnnnnnnnnnnnnnnnnnnnn");
-		List<NhanVien> danhSach = nhanVienController.layNhanVienTheoIdPhongBan(idPhongBan);
+		List<NhanVienBEAN> danhSach = nhanVienController.layNhanVienTheoIdPhongBan(idPhongBan);
 		StringBuilder jsonBuilder = new StringBuilder("[");
 
 		if (danhSach != null && !danhSach.isEmpty()) {
 			for (int i = 0; i < danhSach.size(); i++) {
-				NhanVien nv = danhSach.get(i);
+				NhanVienBEAN nv = danhSach.get(i);
 				if (nv != null) {
 					jsonBuilder.append("{").append("\"idNhanVien\":").append(nv.getIdNhanVien()).append(",")
 							.append("\"cccd\":\"").append(escapeJson(nv.getCccd())).append("\",").append("\"hoTen\":\"")
@@ -101,7 +145,28 @@ public class QuanLyPhongBanBridge {
 		return nhanVienController.themPhongBan(idPhongBan, tenPhongBan);
 	}
 	
-	public void navigateToDepartmentDetail(int idPhongBan, String tenPhongBan) {
+	public void loadPage(String pageFileName, WebView webView) {
+		String filePath = pageFileName;
+		File htmlFile = new File(filePath);
+		System.out.println("Bridge: Attempting to load file: " + htmlFile.getAbsolutePath());
+
+		if (htmlFile.exists() && htmlFile.isFile()) {
+			try {
+				URL fileUrl = htmlFile.toURI().toURL();
+				String urlToLoad = fileUrl.toExternalForm();
+				Platform.runLater(() -> webView.getEngine().load(urlToLoad));
+				System.out.println("Bridge: Loading page from file system: " + urlToLoad);
+			} catch (Exception e) {
+				System.err.println("Bridge: Error loading page: " + e.getMessage());
+				e.printStackTrace();
+			}
+		} else {
+			System.err.println("Bridge: FATAL - HTML không tìm thấy tại đường dẫn : " + htmlFile.getAbsolutePath());
+			System.err.println("Bridge: đường dẫn hiện tại : " + new File(".").getAbsolutePath());
+		}
+	}
+	
+	public void navigateToDepartmentDetail(int idPhongBan, String tenPhongBan, WebView webView) {
 		System.out.println("JavaBridge: Navigating to department detail for ID: " + idPhongBan);
 		Platform.runLater(() -> {
 			String basePageFileName = "html/trang_chi_tiet_phong_dieu_hanh.html";
@@ -116,17 +181,17 @@ public class QuanLyPhongBanBridge {
 					String finalUrl = baseUrlString + "?idPhongBan=" + idPhongBan + "&tenPhongBan=" + tenPhongBan;
 
 					System.out.println("JavaBridge: Loading detail page with full URL: " + finalUrl);
-					mainView.getWebEngine().load(finalUrl);
+					webView.getEngine().load(finalUrl);
 				} else {
 					System.err.println("JavaBridge: CRITICAL - Base file '" + basePageFileName + "' not found at: "
 							+ baseHtmlFile.getAbsolutePath());
-					loadPage(baseFilePath);
+					loadPage(baseFilePath, webView);
 				}
 			} catch (Exception e) {
 				System.err
 						.println("Error in navigateToDepartmentDetail constructing URL or loading: " + e.getMessage());
 				e.printStackTrace();
-				loadPage(htmlFileBasePath + basePageFileName);
+				loadPage(htmlFileBasePath + basePageFileName, webView);
 			}
 		});
 	}
@@ -242,6 +307,8 @@ public class QuanLyPhongBanBridge {
         jsonBuilder.append("]");
         return jsonBuilder.toString();
     }
-
-	
+    
+    public void hello() {
+        System.out.println("hello");
+    }
 }

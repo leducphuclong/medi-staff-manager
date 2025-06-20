@@ -199,3 +199,13 @@ button.login-btn:active {
     font-size: 16px;
   }
 }
+
+.error-message {
+  color: #ff7675; /* Màu đỏ cho dễ nhận biết lỗi */
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px; /* Tạo khoảng cách với nút Đăng nhập */
+  text-align: center;
+  min-height: 1.2em; /* Giữ chiều cao để layout không bị giật khi hiện/ẩn */
+  display: none; /* Quan trọng: Mặc định ẩn thông báo này đi */
+}

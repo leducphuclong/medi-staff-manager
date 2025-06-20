@@ -1,21 +1,21 @@
 package com.MediStaffManager.bo;
 
-import com.MediStaffManager.dao.NhanVienDAO;
-import com.MediStaffManager.bo.phongBanBO;
-import com.MediStaffManager.bean.NhanVien;  // Using NhanVien bean
+import com.MediStaffManager.dao.NhanVienDAO2;
+import com.MediStaffManager.bo.PhongBanBO;
+import com.MediStaffManager.bean.NhanVienBEAN;  // Using NhanVien bean
 import java.util.List;
 
 public class NhanVienBO {
 
-    private NhanVienDAO employeeDAO;
+    private NhanVienDAO2 employeeDAO;
 
     // Constructor: initializes the DAO
     public NhanVienBO() {
-        this.employeeDAO = new NhanVienDAO();  // Initializes the DAO to interact with DB
+        this.employeeDAO = new NhanVienDAO2();  // Initializes the DAO to interact with DB
     }
 
     // Method to retrieve all employees from the DAO
-    public List<NhanVien> layToanBoNhanVien() {
+    public List<NhanVienBEAN> layToanBoNhanVien() {
         return employeeDAO.layToanBoNhanVien();  // Calls the DAO to get employee data
     }
     public boolean xoaNhieuNhanVien(List<Integer> ids) {
@@ -30,7 +30,7 @@ public class NhanVienBO {
         return employeeDAO.xoaNhanVienTrongPhongBan(idNhanVien, idPhongBan);
     }
     
-    public List<NhanVien> layNhanVienTheoPhongBan(String tenPhongBan) {
+    public List<NhanVienBEAN> layNhanVienTheoPhongBan(String tenPhongBan) {
     	return employeeDAO.layNhanVienTheoPhongBan(tenPhongBan);
     }
     
@@ -42,7 +42,7 @@ public class NhanVienBO {
         return employeeDAO.chuyenPhongBan(danhSachIdNhanVien, idPhongBanMoi);
     }
     
-    public List<NhanVien> layNhanVienTheoIdPhongBan(int idPhongBan) {
+    public List<NhanVienBEAN> layNhanVienTheoIdPhongBan(int idPhongBan) {
         return employeeDAO.layNhanVienTheoIdPhongBan(idPhongBan);
     }
 

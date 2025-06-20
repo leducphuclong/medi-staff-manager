@@ -1,0 +1,190 @@
+/* ThongKe.css */
+
+/* ---- Biến màu và Font ---- */
+:root {
+  --primary-blue: #033e8c;
+  --light-blue: #eef6fc;
+  --text-dark: #03407c;
+  --text-light: #5a7b9d;
+  --border-color: #a8cce8;
+  --accent-orange: #FF8C00;
+  --accent-orange-hover: #FFA500;
+  --header-bg: #fffacd;
+}
+
+/* ---- Reset và Body ---- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: var(--text-dark);
+  background-color: #f4f7fa;
+  padding: 20px;
+}
+
+/* ---- Page Header ---- */
+.page-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 8px;
+}
+
+.page-header p {
+  font-size: 16px;
+  color: var(--text-light);
+}
+
+/* ---- Container và Form ---- */
+#container {
+  max-width: 900px;
+  margin: 0 auto 20px auto;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.form-group select {
+  flex-grow: 1; /* Cho phép select co giãn */
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
+  height: 44px;
+}
+
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+}
+
+.button-see {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-orange);
+  color: #ffffff;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  height: 44px;
+  padding: 0 20px;
+  white-space: nowrap;
+}
+
+.button-see:hover:not(:disabled) {
+  background-color: var(--accent-orange-hover);
+  transform: translateY(-1px);
+}
+
+.button-see:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* ---- Vùng kết quả (Bảng và Biểu đồ) ---- */
+#resultContainer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.result-title {
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden; /* Giúp bo góc cho bảng */
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: center;
+  border-bottom: 1px solid #e2eaf1;
+}
+
+th {
+  background-color: var(--header-bg);
+  color: #000000;
+  font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9fbfd;
+}
+
+tbody tr:hover {
+  background-color: var(--light-blue);
+}
+
+/* ---- Layout cho các biểu đồ ---- */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin: 30px auto 0 auto;
+  max-width: 1200px;
+}
+
+.chart-wrapper {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-wrapper canvas {
+  width: 100% !important;
+  height: 380px !important;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr; /* Chuyển thành 1 cột */
+  }
+}
+
+@media (max-width: 600px) {
+  .form-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MediStaff Manager - Trang Quản Lý Lương</title>
+    <link rel="stylesheet" href="../css/QuanLyLuong.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+</head>
+<body>
+
+<div id="notification-container"></div>
+
+<div class="container">
+    <header class="main-header">
+        <h1>Quản Lý Lương của nhân viên</h1>
+        <p>Xem chi tiết chi phí lương các nhân viên</p>
+    </header>
+
+    <div class="controls-wrapper">
+        <div class="control-group">
+            <label for="thangNamFilter">Chọn tháng:</label>
+            <input type="month" id="thangNamFilter"/>
+        </div>
+        
+        <!-- THÊM MỚI: BỘ LỌC PHÒNG BAN -->
+        <div class="control-group">
+            <label for="phongBanFilter">Phòng ban:</label>
+            <select id="phongBanFilter">
+                <option value="0">Tất cả phòng ban</option>
+                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+            </select>
+        </div>
+        
+        <div class="control-group">
+             <button onclick="window.loadData()" class="btn btn-primary"><i class="fas fa-eye"></i> Xem</button>
+        </div>
+        
+        <div class="control-group search-group">
+            <input type="text" id="searchInput" placeholder="Nhập họ tên hoặc ID..."/>
+            <button onclick="window.filterTable()" class="btn btn-primary"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <button id="themButton" onclick="window.showNotification('Chức năng này chưa được cài đặt', 'info')" class="btn btn-success"><i class="fas fa-plus"></i> Thêm Mới</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID NV</th>
+                    <th>Họ Tên</th>
+                    <th>Chức Vụ</th>
+                    <th>Tháng Năm</th>
+                    <th>Lương Cơ Bản</th>
+                    <th>Thưởng</th>
+                    <th>Phụ Cấp</th>
+                    <th>Tăng Ca</th>
+                    <th>Tổng Lương</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="luongTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    <p>© MediStaff Manager. Phát triển bởi Nhóm PBL3.</p>
+</footer>
+
+<!-- Add/Edit Salary Modal -->
+<div id="luongModal" class="modal">
+    <div class="modal-content">
+        <form id="luongForm">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button type="button" class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            
+            <input type="hidden" id="idLuong"/><input type="hidden" id="idNhanVien"/><input type="hidden" id="idChucVu"/>
+            <input type="hidden" id="heSoLuong"/><input type="hidden" id="luongCoBanChuan"/>
+
+            <div class="form-grid">
+                <div class="form-item"><label>Họ Tên</label><input type="text" id="modalHoTen" readonly/></div>
+                <div class="form-item"><label>Chức Vụ</label><input type="text" id="modalTenChucVu" readonly/></div>
+                <div class="form-item"><label>Lương Cơ Bản (tính toán)</label><input type="text" id="modalLuongCoBan" readonly/></div>
+                <div class="form-item"><label for="thuong">Thưởng (VND)</label><input type="number" step="1000" id="thuong" placeholder="0"/></div>
+                <div class="form-item"><label for="phuCap">Phụ Cấp (VND)</label><input type="number" step="1000" id="phuCap" placeholder="0"/></div>
+                <div class="form-item"><label for="tangCa">Tăng Ca (VND)</label><input type="number" step="1000" id="tangCa" placeholder="0"/></div>
+            </div>
+            
+            <div class="form-item">
+                <label>Tổng Lương Thực Lĩnh (VND)</label>
+                <input type="text" id="tongLuong" readonly style="font-weight: bold; font-size: 1.2em; text-align: center;" />
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel" onclick="closeModal()">Hủy</button>
+                <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content" style="max-width: 450px; text-align: center;">
+        <div class="modal-header">
+            <h2 id="confirmTitle">Xác nhận hành động</h2>
+            <button type="button" class="close-btn" id="confirmCloseBtn">×</button>
+        </div>
+        <div class="modal-body" style="padding: 20px 0;">
+            <p id="confirmMessage" style="font-size: 18px;"></p>
+        </div>
+        <div class="modal-footer" style="justify-content: center;">
+            <button type="button" class="btn btn-cancel" id="confirmCancelBtn">Hủy</button>
+            <button type="button" class="btn btn-danger" id="confirmOkBtn">Xác Nhận Xóa</button>
+        </div>
+    </div>
+</div>
+
+<script src="../js/QuanLyLuong.js"></script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package com.MediStaffManager.view.trangChu;
 
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
@@ -13,7 +12,6 @@ import java.net.URL;
 
 public class QuanLyNhanSuBridge {
 	private WebEngine webEngine;
-	final String basePath = "./src/com/MediStaffManager/view/";
 
 	public QuanLyNhanSuBridge(WebEngine webEngine) {
 		this.webEngine = webEngine;
@@ -36,7 +34,7 @@ public class QuanLyNhanSuBridge {
 		StackPane root = new StackPane();
 		root.getChildren().add(webView);
 
-		Scene scene = new Scene(root, 1900, 1000);
+		Scene scene = new Scene(root, 1400, 800);
 		primaryStage.setTitle("Medi Staff Manager - Trang Chủ Quản Lý Nhân Sự");
 		primaryStage.setScene(scene);
 		primaryStage.show();
