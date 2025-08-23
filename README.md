@@ -1,5 +1,14 @@
 # Medi Staff Manager – Medical HR Management System
 
+## 👥 Contributors
+
+* [@leducphuclong](https://github.com/leducphuclong) – Project Lead, Backend & Architecture
+* [@phunolg](https://github.com/phunolg) – UI/UX Design, JavaFX Frontend
+* [@TuaLearnCode](https://github.com/TuaLearnCode) – Database Design & Integration
+* [@hoi936](https://github.com/hoi936) – Report, Testing & Chart.js Visualization
+
+---
+
 ## 📘 Introduction
 
 **Medi Staff Manager** is a comprehensive desktop application developed with Java and JavaFX to manage human resources, payroll, and work schedules in medical facilities. It provides secure, efficient, and user-friendly tools to streamline HR operations and statistical reporting.
