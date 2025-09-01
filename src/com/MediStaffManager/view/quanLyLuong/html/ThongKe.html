@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thống Kê Lương</title>
+<<<<<<< HEAD
   <!-- CSS Dependencies -->
   <link rel="stylesheet" href="../css/ThongKe.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -79,3 +80,79 @@
   <script src="../js/ThongKe.js" defer></script>
 </body>
 </html>
+=======
+  <!-- Liên kết đến file CSS -->
+  <link rel="stylesheet" href="../css/ThongKe.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Chart.js (CDN) -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+<div id = container>
+	  <!-- 1. Lựa chọn loại thống kê: Tháng, Quý, Năm -->
+	  <div class="form-group">
+	    <label for="typeSelect">Thống kê theo:</label>
+	    <select id="typeSelect">
+	      <option value="" disabled selected>Hãy chọn thời gian --</option>
+	      <option value="thang">Tháng</option>
+	      <option value="quy">Quý</option>
+	      <option value="nam">Năm</option>
+	    </select>
+			<!-- 5. Nút “Làm Mới Thống Kê” -->
+		<button class="button-see" onclick="loadThongKe()">
+			 Xem
+		</button>
+	  </div>
+
+	  <!-- 2. Input chi tiết khi type = "thang" -->
+	  <div class="form-group" id="group-thang" style="display:none;">
+	    <label for="thangNamInput">Chọn tháng:</label>
+	    <input type="month" id="thangNamInput" />
+	  </div>
+
+	  <!-- 3. Input khi type = "quy" -->
+	  <div class="form-group" id="group-quy" style="display:none;">
+	    <label for="namQuyInput">Chọn năm:</label>
+	    <input type="number" id="namQuyInput" min="2000" max="2100" placeholder="Ví dụ: 2025" />
+	    <label for="quySelect">Chọn quý:</label>
+	    <select id="quySelect">
+	      <option value="" disabled selected>--- Chọn quý ---</option>
+	      <option value="1">Quý 1</option>
+	      <option value="2">Quý 2</option>
+	      <option value="3">Quý 3</option>
+	      <option value="4">Quý 4</option>
+	    </select>
+	  </div>
+
+	  <!-- 4. Input khi type = "nam" -->
+	  <div class="form-group" id="group-nam" style="display:none;">
+	    <label for="namInput">Chọn năm:</label>
+	    <input type="number" id="namInput" min="2000" max="2100" placeholder="Ví dụ: 2025" />
+	  </div>
+
+</div>
+
+  <!-- 6. Kết quả (JS sẽ chèn nội dung vào đây) -->
+  <div id="resultContainer"></div>
+
+  <!-- 7. Canvas cho biểu đồ -->
+  <div id="chartContainerWrapper" style="margin-top: 24px; display: none;">
+    <canvas id="chartContainer"></canvas>
+  </div>
+  
+  <!-- Liên kết đến file JavaScript -->
+  <script src="../js/ThongKe.js"></script>
+  <script>
+    console.log("📌 HTML script inline: ThongKe.html đã được load.");
+    window.initThongKe = function () {
+      console.log("✅ Hàm initThongKe đã được gọi từ HTML inline script!");
+    };
+  </script>
+</body>
+</html>
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe

@@ -103,12 +103,20 @@ body, button, input, select, textarea {
     border-bottom: 1px solid #dee2e6;
 }
 
+<<<<<<< HEAD
 /* ---- Khu vực nội dung chính ---- */
 .content-area {
     padding: 20px;
     flex-grow: 1;
     overflow-y: auto; /* Cho phép cuộn nội dung chính nếu cần */
     background-color: #ffffff; /* Nền trắng cho nội dung */
+=======
+.content-area {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 }
 
 .content-title {
@@ -121,6 +129,7 @@ body, button, input, select, textarea {
     border-bottom: 1px solid #dee2e6;
 }
 
+<<<<<<< HEAD
 /* ---- Bảng ---- */
 .table-container {
     overflow-x: hidden; /* Changed from auto to hidden to prevent horizontal scrolling */
@@ -133,6 +142,20 @@ body, button, input, select, textarea {
 table {
     width: 100%;
     border-collapse: collapse;
+=======
+.table-container {
+    max-height: 500px;    
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    overflow: visible;
+}
+
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 }
 
 th, td {
@@ -150,6 +173,7 @@ th, td {
 th {
     padding: 0.875rem 1rem;
     font-weight: 600;
+<<<<<<< HEAD
     font-size: 0.8125rem; /* text-xs */
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -158,6 +182,16 @@ th {
     text-align: left;
     white-space: nowrap; /* Ngăn tiêu đề xuống dòng */
     border-bottom: 2px solid #BFDBFE; /* blue-300 */
+=======
+    font-size: 0.8125rem; 
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: #EFF6FF; 
+    color: #1E40AF;     
+    text-align: left;
+    white-space: nowrap; 
+    border-bottom: 2px solid #BFDBFE;
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 }
 
 thead th:first-child,
@@ -177,6 +211,7 @@ input[type="checkbox"] {
 tbody tr:hover {
     background-color: #e9ecef;
 }
+<<<<<<< HEAD
 tbody tr.selected-row { /* Khi một hàng được chọn (ví dụ: Phòng Điều Hành) */
     background-color: #007bff; /* Màu xanh dương */
     color: white;
@@ -186,6 +221,17 @@ tbody tr.selected-row td {
 }
 tbody tr.selected-row:hover {
     background-color: #0056b3; /* Màu xanh đậm hơn khi hover hàng được chọn */
+=======
+tbody tr.selected-row { 
+    background-color: #007bff; 
+    color: white;
+}
+tbody tr.selected-row td {
+    color: white;
+}
+tbody tr.selected-row:hover {
+    background-color: #0056b3; 
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 }
 
 
@@ -223,6 +269,7 @@ tbody tr.selected-row:hover {
 .btn-danger {
     background-color: #dc3545;
     color: white;
+<<<<<<< HEAD
     border-color: #dc3545;
     border-radius: 8px;
     width: 36px;
@@ -235,12 +282,25 @@ tbody tr.selected-row:hover {
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+=======
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px; 
+}
+
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .btn-danger:hover {
     background-color: #c82333;
     border-color: #bd2130;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+<<<<<<< HEAD
 .btn-edit { /* Nút Sửa */
     background-color: #007bff;
     color: white;
@@ -255,6 +315,21 @@ tbody tr.selected-row:hover {
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+=======
+.btn-edit {
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 0 3px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .btn-edit:hover {
     background-color: #0056b3;
     transform: translateY(-2px);
@@ -860,12 +935,19 @@ tbody tr.selected-row:hover {
     opacity: 1;
 }
 
+<<<<<<< HEAD
 /* Style cho page-header (tiêu đề trang) */
+=======
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .page-header {
     padding: 25px 30px;
     background-color: #fff;
     border-bottom: 1px solid #dee2e6;
+<<<<<<< HEAD
     text-align: center; /* Thêm thuộc tính này để căn giữa nội dung */
+=======
+    text-align: center;
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 }
 
 .page-header h1 {
@@ -881,6 +963,7 @@ tbody tr.selected-row:hover {
     margin: 0;
 }
 
+<<<<<<< HEAD
 /* Search container styles */
 .search-container {
     margin-bottom: 20px;
@@ -893,6 +976,18 @@ tbody tr.selected-row:hover {
     align-items: center;
 }
 
+=======
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .search-group {
     display: flex;
     gap: 10px;
@@ -943,7 +1038,10 @@ tbody tr.selected-row:hover {
     cursor: pointer;
 }
 
+<<<<<<< HEAD
 /* Style for the search and add buttons */
+=======
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .btn-search, .btn-add, .btn-secondary {
     min-width: 120px;
     height: 38px;
@@ -1001,7 +1099,11 @@ tbody tr.selected-row:hover {
 
 .toast-notification {
     position: fixed;
+<<<<<<< HEAD
     top: 20px; /* Hiển thị ở trên cùng */
+=======
+    top: 20px; 
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
     left: 50%;
     transform: translateX(-50%);
     z-index: 3000;
@@ -1060,5 +1162,30 @@ tbody tr.selected-row:hover {
     color: #333;
 }
 
+<<<<<<< HEAD
 /* ---- Header Chung (Family Hospital) ---- */
 
+=======
+.table-scroll-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 270px); 
+}
+
+.search-container {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background-color: white;
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#departmentTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #EFF6FF;
+    box-shadow: inset 0 -1px 0 #e0e0e0;
+}
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe

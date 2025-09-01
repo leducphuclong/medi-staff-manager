@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //package com.MediStaffManager.controller;
 //
 //import com.MediStaffManager.bean.Employee;
@@ -168,6 +169,25 @@ public class NhanVienController {
     // Method to retrieve all department from the BO
     public List<Object[]> layDanhSachPhongBan() {
         return phongBanBO.layDanhSachPhongBan();
+=======
+package com.MediStaffManager.controller;
+
+import com.MediStaffManager.bo.NhanVienBO;  // Updated BO import
+import com.MediStaffManager.bean.NhanVien;  // Updated bean import
+import java.util.List;
+
+public class NhanVienController {
+    private NhanVienBO nhanVienBO;
+
+    // Constructor to initialize the BO (Business Object)
+    public NhanVienController() {
+        this.nhanVienBO = new NhanVienBO();  // Initializes the NhanVienBO to handle business logic
+    }
+
+    // Method to retrieve all employees from the BO
+    public List<NhanVien> layToanBoNhanVien() {
+        return nhanVienBO.layToanBoNhanVien();  // Call the BO to fetch employee data
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
     }
     
     public boolean xoaNhanVien(int idNhanVien) {
@@ -176,6 +196,7 @@ public class NhanVienController {
 
     // Optionally, you can add more methods to handle specific operations:
     // Example: public NhanVien getEmployeeById(int id) { return nhanVienBO.getEmployeeById(id); }
+<<<<<<< HEAD
     
     public boolean xoaNhieuNhanVien(List<Integer> ids) {
         return nhanVienBO.xoaNhieuNhanVien(ids);
@@ -366,3 +387,6 @@ public class NhanVienController {
         }
     }
 }
+=======
+}
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe

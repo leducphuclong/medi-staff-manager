@@ -1,5 +1,6 @@
 /* ThongKe.css */
 
+<<<<<<< HEAD
 /* ---- Biến màu và Font ---- */
 :root {
   --primary-blue: #033e8c;
@@ -13,10 +14,14 @@
 }
 
 /* ---- Reset và Body ---- */
+=======
+/* ---- Reset cơ bản ---- */
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+<<<<<<< HEAD
 }
 
 body {
@@ -81,18 +86,100 @@ body {
   border-color: var(--primary-blue);
 }
 
+=======
+
+}
+
+body, button, input, select, textarea, table, th, td, h1, h2, h3, h4, h5, h6, p, span, label, div {
+  font-family: Arial, sans-serif;
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  color: #033e8c; /* Xanh đậm cho chữ */
+  padding: 20px;
+}
+
+#container {
+  max-width: 1000px; /* Giới hạn chiều rộng */
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  margin: 0 auto; /* Canh giữa */
+  padding: 20px 20px;
+  position: relative; /* Để có thể đặt các phần tử con tuyệt đối */
+
+  
+}
+/* ---- Form-group ---- */
+.form-group {
+  max-width: 100%; /* Chiếm toàn bộ chiều rộng */
+  display: flex;
+  align-items: center;
+  padding: 15px 15px;
+  background-color: #ffffff; /* Nền trắng cho container */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+  border-radius: 8px; /* Bo góc nhẹ */
+  margin-bottom: 20px;
+}
+
+/* Nhỏ lại dropdown (select) và input thành ô chữ nhật cố định */
+.form-group label {
+  width: 140px;
+  font-weight: 600;
+  color: #03407c;
+}
+
+.form-group select,
+.form-group input[type="month"],
+.form-group input[type="number"] {
+  width: 150px; /* Cố định chiều ngang */
+  padding: 8px 10px;
+  border: 1px solid #a8cce8;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #03407c;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
+  height: 40px; /* Chiều cao cố định */
+}
+
+.form-group select:focus,
+.form-group input[type="month"]:focus,
+.form-group input[type="number"]:focus {
+  outline: none;
+  border-color: #005caa;
+}
+
+/* Ẩn group theo mặc định */
+#group-thang,
+#group-quy,
+#group-nam {
+  justify-content: flex-start;
+}
+
+/* ---- Nút “Xem” với icon con mắt vàng, nền xanh, chữ đen ---- */
+/* ---- Nút “Xem” với Font Awesome, nền xanh lá cây, chữ đen ---- */
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
 .button-see {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+<<<<<<< HEAD
   background-color: var(--accent-orange);
   color: #ffffff;
   border: none;
   font-size: 15px;
+=======
+  background-color: #FF8C00;      /* Cam đậm */
+  color: #ffffff;                 /* Chữ trắng */
+  border: none;
+  font-size: 14px;
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
+<<<<<<< HEAD
   height: 44px;
   padding: 0 20px;
   white-space: nowrap;
@@ -188,3 +275,115 @@ tbody tr:hover {
     align-items: stretch;
   }
 }
+=======
+  height: 40px;                   /* Chiều cao cố định */
+  margin-left: 10px;          /* Khoảng cách với các input */
+  width: auto;                /* Chiều rộng tự động */
+  padding: 8px 12px;           /* Padding ngang */
+}
+
+.button-see:hover {
+  background-color: #FFA500;      /* Cam nhạt khi hover */
+}
+
+#thangNamInput{
+	padding: 12px 16px;
+	 font-size: 16px;
+	 height: 40px;
+	 border-radius: 6px;
+	 border: 1px solid #ccc;
+	 background-color: #F0F8FF; /* Sửa #ffff thành #fff chuẩn */
+}
+#namQuyInput{
+	margin-right: 10px;
+}
+
+/* ---- Dòng tiêu đề kết quả căn giữa, màu chữ xanh đậm ---- */
+.result-title {
+  text-align: center;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #005caa;
+}
+
+/* ---- Kết quả ---- */
+#resultContainer {
+  margin-top: 24px;
+}
+
+/* Bảng kết quả */
+table {
+  width: 50%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Canh giữa bảng */
+}
+/* Canh giữa nội dung của header */
+table thead th {
+  text-align: center;
+}
+
+/* Canh giữa nội dung của body */
+table tbody td {
+  text-align: center;
+}
+
+
+/* Header của bảng: nền vàng nhạt, chữ đen, in đậm */
+th {
+  background-color: #fffacd; /* Vàng nhạt */
+  color: #000000;
+  font-weight: bold;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2eaf1;
+  width: 33.33%; /* 3 cột bằng nhau */
+  text-align: center; /* Căn giữa chữ trong header */
+}
+
+td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2eaf1;
+  width: 33.33%; /* 3 cột bằng nhau */
+  text-align: center; /* Căn giữa chữ trong ô */
+}
+
+tr:nth-child(even) {
+  background-color: #f9fbfd;
+}
+
+tr:hover {
+  background-color: #eef6fc;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 600px) {
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-group label {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  .button-see {
+    width: 100%;
+    justify-content: center;
+  }
+}
+/* Container cho biểu đồ */
+#chartContainerWrapper {
+  width: 100%;
+  max-width: 600px; /* Giới hạn chiều ngang */
+  margin: 0 auto;   /* Canh giữa */
+}
+
+#chartContainer {
+  width: 100% !important;
+  height: 350px !important; /* Cao tùy ý */
+}
+>>>>>>> ThaoDuyen-QuanLyLuong-ThongKe
