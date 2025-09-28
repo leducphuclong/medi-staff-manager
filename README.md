@@ -2,10 +2,11 @@
 
 ## 👥 Contributors
 
-* [@leducphuclong](https://github.com/leducphuclong) – Project Lead, Backend & Architecture
-* [@phunolg](https://github.com/phunolg) – UI/UX Design, JavaFX Frontend
-* [@TuaLearnCode](https://github.com/TuaLearnCode) – Database Design & Integration
-* [@hoi936](https://github.com/hoi936) – Report, Testing & Chart.js Visualization
+* [@phunolg](https://github.com/phunolg) – Team Leader, Department & Payroll Statistics Management, JavaFX Frontend  
+* [@leducphuclong](https://github.com/leducphuclong) – Employee Management Module, System Architecture  
+* [@TuaLearnCode](https://github.com/TuaLearnCode) – Database Design & Account Management Integration  
+* [@hoi936](https://github.com/hoi936) – Reporting, Testing & Salary Statistics Visualization
+
 
 ---
 
